@@ -1,0 +1,18 @@
+{
+  "name": "electron-antrax",
+  "version": "0.0.1",
+  "description": "An Electron popup for Antrax Morpheus",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "demo"
+  ],
+  "author": "m.bykov@gmail.com",
+  "license": "GNU GPL",
+  "devDependencies": {
+    "electron": "^1.4.1"
+  }
+}
