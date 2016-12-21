@@ -6,6 +6,9 @@ const path = require('path')
 const BrowserWindow = require('electron').remote.BrowserWindow
 const electron = require('electron').remote
 const clipboard = electron.clipboard
+const session = electron.session
+const ses = session.fromPartition('persist:name')
+const BaseURL = 'http://localhost'
 
 // const newWindowBtn = document.getElementById('new-window')
 // newWindowBtn.addEventListener('click', function (event) {})
@@ -14,6 +17,8 @@ const winPath = path.join('file:\/\/', __dirname, 'index.html')
 let win;
 // win = new BrowserWindow({ width: 700, height: 500 })
 
+
+// οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
 function listenSelection(win) {
     let oldmsg = '';
     setInterval(function(){
@@ -23,11 +28,50 @@ function listenSelection(win) {
         oldmsg = msg
         // console.log('test:', msg)
         if (!win) {
-            win = new BrowserWindow({ width: 700, height: 500 })
-            win.on('close', function () { win = null })
+            win = new BrowserWindow({ width: 700, height: 500})
+            let xypos = 0;
+            let size = 0;
+            win.on('move', updateReply)
+            win.on('resize', updateReply)
+            function updateReply() {
+                xypos = win.getPosition()
+                size = win.getSize()
+            }
+            win.on('close', function (win) {
+                // let position = win.getPosition()
+                // let size = win.getSize()
+                let value = JSON.stringify(xypos.concat(size))
+                // new Notification('set cookie', {
+                    // body: value
+                // })
+                setCookie(value, 'position')
+            })
+            win.on('closed', function () {
+                win = null
+            })
             win.loadURL(winPath)
-            // win.webContents.openDevTools()
+
+            let name = 'position'
+            let cvalue = {
+                name: name // the request must have this format to search the cookie.
+            }
+            let x = 1206;
+            let y = 10;
+            ses.cookies.get(cvalue, function(error, cookies) {
+                let pos = cookies[0].value
+                let position = JSON.parse(pos)
+                x = position[0]
+                y = position[1]
+                win.setPosition(x, y)
+            });
+
+            // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
+
+            win.webContents.openDevTools()
             win.show()
+            // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
+            //
+
             win.setAlwaysOnTop(true)
             win.webContents.on('did-finish-load', function() {
                 win.webContents.send('ping', msg)
@@ -37,6 +81,37 @@ function listenSelection(win) {
         }
     }, 100);
 }
+
+
+function setCookie(data, name) {
+    let expiration = new Date();
+    let hour = expiration.getHours();
+    hour = hour + 6;
+    expiration.setHours(hour);
+    ses.cookies.set({
+        url: BaseURL, //the url of the cookie.
+        name: name, // a name to identify it.
+        value: data, // the value that you want to save
+        expirationDate: expiration.getTime()
+    }, function(error) {
+        /*console.log(error);*/
+    });
+}
+
+function getCookie(name, cb) {
+    let value = {
+        name: name // the request must have this format to search the cookie.
+    };
+    ses.cookies.get(value, function(error, cookies) {
+        let position = cookies[0].value
+        cb(position)
+        // console.console.log(cookies[0].value); // the value saved on the cookie
+        // let myNotification = new Notification('get cookie', {
+            // body: cb(cookies[0].value)
+        // })
+    });
+}
+
 
 // punctuation \u002E\u002C\u0021\u003B\u00B7\u0020 - ... middle dot, space
 // parens ()[]{-/

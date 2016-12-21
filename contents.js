@@ -1,10 +1,30 @@
 console.log('INSIDE HTML')
-// console.log('RENDERER HTML!')
+
+// let antrax = document.getElementById('antrax-result')
+
 require('electron').ipcRenderer.on('ping', (event, message) => {
     // console.log('remote:', message)  // Prints 'whoooooooh!'
     let antrax = document.getElementById('antrax-result')
     antrax.textContent = message;
 })
+
+// var cumulativeOffset = function(element) {
+//     var top = 0, left = 0;
+//     do {
+//         top += element.offsetTop  || 0;
+//         left += element.offsetLeft || 0;
+//         element = element.offsetParent;
+//     } while(element);
+
+//     return {
+//         top: top,
+//         left: left
+//     };
+// };
+
+
+// console.log('ANT:', antrax)
+// console.log('POS:', cumulativeOffset(antrax))
 
 /*
 
