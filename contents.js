@@ -7,12 +7,11 @@ const antrax = require('./antrax')
 
 
 require('electron').ipcRenderer.on('ping', (event, json) => {
-    // console.log('remote:', message)  // Prints 'whoooooooh!'
     let oRes = document.getElementById('antrax-result')
     let obj = JSON.parse(json)
-    antrax.query(obj.msg, obj.num, function(res) {
-        log('KUKU', res)
-        oRes.textContent = obj.msg;
+    antrax.query(obj.msg, obj.num, function(chains) {
+        log('cnt: CHAINS', chains)
+        oRes.textContent = obj.msg
     })
 })
 

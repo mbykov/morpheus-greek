@@ -24,7 +24,10 @@ function listenSelection(win) {
     setInterval(function(){
         let str = clipboard.readText()
         str = cleanGreek(str)
-        if (str == oldstr) return
+        if (!str || str == oldstr) return
+        // new Notification('str', {
+            // body: str.length
+        // })
         oldstr = str
         let num = str.split('|')[1]
         if (!num) num = 1
@@ -123,7 +126,11 @@ function getCookie(name, cb) {
 // greek 0370-03FF 1F00–1FFF
 // diactitic 0300-036F
 function cleanGreek(str) {
-    return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '');
+    let greek = str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
+    if (!/[\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/.test(greek[0])) return
+    return greek
+    // FIXME: добавить скобки, и в скобках abcde по кр.мере
+    // return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
 }
 
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
