@@ -20,13 +20,17 @@ let win;
 
 // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
 function listenSelection(win) {
-    let oldmsg = '';
+    let oldstr = '';
     setInterval(function(){
-        let msg = clipboard.readText()
-        msg = cleanGreek(msg)
-        if (msg == oldmsg) return
-        oldmsg = msg
-        // console.log('test:', msg)
+        let str = clipboard.readText()
+        str = cleanGreek(str)
+        if (str == oldstr) return
+        oldstr = str
+        let num = str.split('|')[1]
+        if (!num) num = 1
+        // let msg = [str, '|1'].join('')
+        let msg = JSON.stringify({msg: str, num: num})
+        // console.log('MSG:', msg)
         if (!win) {
             win = new BrowserWindow({ width: 700, height: 500})
             let xypos = 0;
@@ -69,7 +73,7 @@ function listenSelection(win) {
 
             win.webContents.openDevTools()
             win.show()
-            // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
+            // . οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
             //
 
             win.setAlwaysOnTop(true)
