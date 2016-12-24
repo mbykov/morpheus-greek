@@ -29,11 +29,16 @@ function listenSelection(win) {
             // body: str.length
         // })
         oldstr = str
-        let num = str.split('|')[1]
-        if (!num) num = 1
-        // let msg = [str, '|1'].join('')
-        let msg = JSON.stringify({msg: str, num: num})
-        // console.log('MSG:', msg)
+        // num:
+        // let num = str.split('|')[1]
+        // str = str.split('|')[0]
+        let num
+        if (!num) num = 0 // FIXME: найти длиннейшее слово
+        if (!str) str = 'KUKUKU'
+        let sent = punctuation(str)
+        sent.num = num
+        let msg = JSON.stringify(sent)
+
         if (!win) {
             win = new BrowserWindow({ width: 700, height: 500})
             let xypos = 0;
@@ -120,18 +125,28 @@ function getCookie(name, cb) {
 }
 
 
-// punctuation \u002E\u002C\u0021\u003B\u00B7\u0020 - ... middle dot, space
+// punctuation \u002E\u002C\u0021\u003B\u00B7\u0020\u0027 - ... middle dot, space, apostrophe
 // parens ()[]{-/
 // \u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F
 // greek 0370-03FF 1F00–1FFF
 // diactitic 0300-036F
 function cleanGreek(str) {
-    let greek = str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
+    let greek = str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0027\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
     if (!/[\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/.test(greek[0])) return
     return greek
     // FIXME: добавить скобки, и в скобках abcde по кр.мере
     // return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
 }
+
+function punctuation(str) {
+    if (!str) str = 'NOSTRBLAH'
+    let sentence = str.split(/[\u002E\u002C\u0021\u003B\u00B7]/)[0]
+    let tail = str.split(sentence)[1]
+    let punct = null
+    if (tail) punct = tail[0]
+    return {sentence: sentence, punct: punct}
+}
+
 
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
 
