@@ -77,9 +77,10 @@ function listenSelection(win) {
             });
 
             // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
-            win.webContents.openDevTools()
+            // win.webContents.openDevTools()
 
             win.show()
+            win.focus()
             // . οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
             //
 
@@ -89,6 +90,7 @@ function listenSelection(win) {
             })
         } else {
             win.webContents.send('ping', msg)
+            win.focus()
         }
     }, 100);
 }

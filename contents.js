@@ -31,6 +31,7 @@ function drawHeader(clause, num) {
     let keys = _.keys(clause)
     keys.forEach(function(key, idx) {
         let span = sa(key)
+        span.idx = idx
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
@@ -107,6 +108,7 @@ function remove(el) {
 }
 
 function closeAll() {
+    window.close()
     // var popups = qs('.morph-popup');
     // var arr = [].slice.call(popups);
     // arr.forEach(function(popup) {
@@ -119,24 +121,27 @@ function closeAll() {
 
 document.onkeyup = function(e) {
     if (e.which === 27) { //Esc
-        // closeAll();
-        // <a id="close" href="javascript:window.close()">Close this Window</a>
-        window.close()
-        // log('ESCAPE')
-    } else if (e.which === 37) {
-        prevSibling(e)
+        closeAll();
+    } else if ([37, 39].includes(e.which)) {
+        moveCurrent(e)
     }
 }
 
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
-function prevSibling(e) {
+function moveCurrent(e) {
     let el = q('.antrax-current')
-    log('EL', el)
-    let next = el.nextSibling
-    log('EL NEXT', next)
-    classes(el).remove('antrax-form')
-    classes(next).add('antrax-form')
+    if (!el) return
+    let idx = el.idx
+    let words = qs('#antrax-header span.antrax-form')
+    let size = words.length
+    let dir = (e.which == 37) ? -1 : 1
+    let next = idx+dir
+    if (next == size) next = 0
+    if (next == -1) next = size -1
+    let nextEl = words[next]
+    classes(el).remove('antrax-current')
+    classes(nextEl).add('antrax-current')
 }
 
 
