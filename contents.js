@@ -19,22 +19,23 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     antrax.query(obj.sentence, obj.num, function(clause) {
         log('popup:', clause)
         oRes.textContent = obj.sentence
-        drawHeader(clause)
+        drawHeader(clause, obj.num)
 
     })
 })
 
 
-function drawHeader(clause) {
+function drawHeader(clause, num) {
     let oHeader = q('#antrax-header')
     empty(oHeader)
     let keys = _.keys(clause)
-    keys.forEach(function(key) {
+    keys.forEach(function(key, idx) {
         let span = sa(key)
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
         classes(span).add('antrax-form')
+        if (idx == num) classes(span).add('antrax-current')
     })
     bindEvents(oHeader)
 }
