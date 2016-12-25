@@ -5,6 +5,8 @@
 // let antrax = document.getElementById('antrax-result')
 const antrax = require('./antrax')
 const _ = require('underscore')
+const Events = require('component-events');
+const classes = require('component-classes');
 
 
 /* δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ ἐν τῇ Φθιῶτιδι ἰσχυσάντων, καὶ ἐπαγομένων αὐτοὺς ἐπ' ὠφελίᾳ ἐς τὰς ἄλλας πόλεις, καθ' ἑκάστους μὲν ἤδη τῇ ὁμιλίᾳ μᾶλλον καλεῖσθαι Ἕλληνας. οὐ μέντοι πολλοῦ γε χρόνου ἐδύνατο καὶ ἅπασιν ἐκνικῆσαι. τεκμηριοῖ δὲ μάλιστα Ὅμερος πολλῷ γὰρ ὕστερον ἔτι καὶ τῶν Τρωικῶν γενόμενος οὐδαμοῦ οὕτω τοὺς ξύμπαντας ὠνόμασεν οὐδ' ἄλλους ἢ τοὺς μετὰ Ἀχιλλέως ἐκ τῆς Φθιώτιδος. οἵπερ καὶ πρῶτοι Ἕλληνες ἧσαν, Δαναοὺς δὲ ἐν τοῖς ἔπεσι καὶ Ἀργείους καὶ Ἀχαιοὺς ἀνακαλεῖ. οὐ μὴν οὐδὲ βαρβάρους εἴρηκε διὰ τὸ μηδὲ Ἕλληνάς πω, ὡς ἐμοὶ δοκεῖ. ἀντίπαλον ἐς ἓν ὄνομα ἀποκεκρίσθαι. οἱ δ' οὖν ὡς ἕκαστοι Ἕλληνες κατὰ πόλεις τε ὅσοι ἀλλήλων ξυνίεσαν καὶ ξύμπαντες ὕστερον κληθέντες οὐδὲν πρὸ τῶν Τρωικῶν δι' ἀσθένειαν καὶ ἀμειξίαν ἀλλήλων ἁθρόοι ἔπραξαν. ἀλλὰ καὶ ταύτην τὴν στρατείαν θαλάσσῃ ἤδη πλείω χρώμενοι ξυνῆλθον.
@@ -17,16 +19,48 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     antrax.query(obj.sentence, obj.num, function(clause) {
         log('popup:', clause)
         oRes.textContent = obj.sentence
+        drawHeader(clause)
+
     })
 })
 
 
 function drawHeader(clause) {
-    let oHeader = document.getElementById('antrax-header')
+    let oHeader = q('#antrax-header')
+    empty(oHeader)
     let keys = _.keys(clause)
+    keys.forEach(function(key) {
+        let span = sa(key)
+        let space = cret(' ')
+        oHeader.appendChild(span)
+        oHeader.appendChild(space)
+        classes(span).add('antrax-form')
+    })
+    bindEvents(oHeader)
 }
 
-function xxx(sentence) {
+function bindEvents(el) {
+    let events = Events(el, {
+        nextForm: function(ev){
+            // alert('clicked the first');
+            log('CLICK', ev.target.textContent)
+        }
+    });
+    events.bind('click .antrax-form', 'nextForm')
+}
+
+
+
+function nextForm(ev) {
+    s
+
+}
+
+function xxx() {
+
+}
+
+function xxx() {
 
 }
 
@@ -50,7 +84,7 @@ function cret(str) {
 
 function sa(str) {
     var oSa = cre('span');
-    classes(oSa).add('nagari');
+    // classes(oSa).add('nagari');
     oSa.textContent = str;
     return oSa;
 }

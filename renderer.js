@@ -9,6 +9,7 @@ const clipboard = electron.clipboard
 const session = electron.session
 const ses = session.fromPartition('persist:name')
 const BaseURL = 'http://localhost'
+const orthos = require('../../greek/orthos');
 
 // const newWindowBtn = document.getElementById('new-window')
 // newWindowBtn.addEventListener('click', function (event) {})
@@ -25,13 +26,11 @@ function listenSelection(win) {
         let str = clipboard.readText()
         str = cleanGreek(str)
         if (!str || str == oldstr) return
-        // new Notification('str', {
-            // body: str.length
-        // })
         oldstr = str
         // num:
         // let num = str.split('|')[1]
         // str = str.split('|')[0]
+        str = orthos.toComb(str);
         let num
         if (!num) num = 0 // FIXME: найти длиннейшее слово
         if (!str) str = 'KUKUKU'
