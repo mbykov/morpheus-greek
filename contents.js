@@ -42,20 +42,26 @@ function drawHeader(clause, num) {
 
 function bindEvents(el) {
     let events = Events(el, {
-        nextForm: function(e){
+        // nextForm: function(e){
+        //     // alert('clicked the first');
+        //     log('NEXT', e.which)
+        //     if (e.which == 37) { // left
+        //         let next = el.nextSibling
+        //         classes(el).remove('antrax-form')
+        //         classes(next).add('antrax-form')
+
+        //     }
+        // },
+        // nextForm: prevSibling(el),
+        thisForm: function(e){
             // alert('clicked the first');
             log('CLICK', e.target.textContent)
         }
     });
-    events.bind('click .antrax-form', 'nextForm')
+    // events.bind('click .antrax-form', 'thisForm')
+    events.bind('keyup', 'nextForm')
 }
 
-
-
-function nextForm(ev) {
-    s
-
-}
 
 function xxx() {
 
@@ -110,13 +116,29 @@ function closeAll() {
     // if (oTip) oTip.parentElement.removeChild(oTip);
 }
 
+
 document.onkeyup = function(e) {
     if (e.which === 27) { //Esc
         // closeAll();
         // <a id="close" href="javascript:window.close()">Close this Window</a>
         window.close()
         // log('ESCAPE')
+    } else if (e.which === 37) {
+        prevSibling(e)
     }
 }
+
+// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+
+function prevSibling(e) {
+    let el = q('.antrax-current')
+    log('EL', el)
+    let next = el.nextSibling
+    log('EL NEXT', next)
+    classes(el).remove('antrax-form')
+    classes(next).add('antrax-form')
+}
+
+
 
 function log() { console.log.apply(console, arguments); }
