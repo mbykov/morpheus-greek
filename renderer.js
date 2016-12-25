@@ -77,8 +77,8 @@ function listenSelection(win) {
             });
 
             // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
-
             win.webContents.openDevTools()
+
             win.show()
             // . οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
             //

@@ -42,9 +42,9 @@ function drawHeader(clause, num) {
 
 function bindEvents(el) {
     let events = Events(el, {
-        nextForm: function(ev){
+        nextForm: function(e){
             // alert('clicked the first');
-            log('CLICK', ev.target.textContent)
+            log('CLICK', e.target.textContent)
         }
     });
     events.bind('click .antrax-form', 'nextForm')
@@ -114,8 +114,8 @@ document.onkeyup = function(e) {
     if (e.which === 27) { //Esc
         // closeAll();
         // <a id="close" href="javascript:window.close()">Close this Window</a>
-        // window.close()
-        log('ESCAPE')
+        window.close()
+        // log('ESCAPE')
     }
 }
 
