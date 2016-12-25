@@ -24,7 +24,7 @@ function listenSelection(win) {
     let oldstr = '';
     setInterval(function(){
         let str = clipboard.readText()
-        str = cleanGreek(str)
+        str = cleanGreek(str.trim())
         if (!str || str == oldstr) return
         oldstr = str
         // num:
@@ -39,7 +39,7 @@ function listenSelection(win) {
         let msg = JSON.stringify(sent)
 
         if (!win) {
-            win = new BrowserWindow({ width: 700, height: 500})
+            win = new BrowserWindow({ width: 700, height: 500, frame: false})
             let xypos = 0;
             let size = 0;
             win.on('move', updateReply)
@@ -78,7 +78,6 @@ function listenSelection(win) {
 
             // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
             // win.webContents.openDevTools()
-
             win.show()
             win.focus()
             // . οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
