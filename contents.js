@@ -13,18 +13,67 @@ const Tree = require('./tree');
 /* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
 δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ ἐν τῇ Φθιῶτιδι ἰσχυσάντων, καὶ ἐπαγομένων αὐτοὺς ἐπ' ὠφελίᾳ ἐς τὰς ἄλλας πόλεις, καθ' ἑκάστους μὲν ἤδη τῇ ὁμιλίᾳ μᾶλλον καλεῖσθαι Ἕλληνας. οὐ μέντοι πολλοῦ γε χρόνου ἐδύνατο καὶ ἅπασιν ἐκνικῆσαι. τεκμηριοῖ δὲ μάλιστα Ὅμερος πολλῷ γὰρ ὕστερον ἔτι καὶ τῶν Τρωικῶν γενόμενος οὐδαμοῦ οὕτω τοὺς ξύμπαντας ὠνόμασεν οὐδ' ἄλλους ἢ τοὺς μετὰ Ἀχιλλέως ἐκ τῆς Φθιώτιδος. οἵπερ καὶ πρῶτοι Ἕλληνες ἧσαν, Δαναοὺς δὲ ἐν τοῖς ἔπεσι καὶ Ἀργείους καὶ Ἀχαιοὺς ἀνακαλεῖ. οὐ μὴν οὐδὲ βαρβάρους εἴρηκε διὰ τὸ μηδὲ Ἕλληνάς πω, ὡς ἐμοὶ δοκεῖ. ἀντίπαλον ἐς ἓν ὄνομα ἀποκεκρίσθαι. οἱ δ' οὖν ὡς ἕκαστοι Ἕλληνες κατὰ πόλεις τε ὅσοι ἀλλήλων ξυνίεσαν καὶ ξύμπαντες ὕστερον κληθέντες οὐδὲν πρὸ τῶν Τρωικῶν δι' ἀσθένειαν καὶ ἀμειξίαν ἀλλήλων ἁθρόοι ἔπραξαν. ἀλλὰ καὶ ταύτην τὴν στρατείαν θαλάσσῃ ἤδη πλείω χρώμενοι ξυνῆλθον.
 */
+let clause;
+
 require('electron').ipcRenderer.on('ping', (event, json) => {
     let oRes = document.getElementById('antrax-result')
     let obj = JSON.parse(json)
     log('MSG', obj)
-    antrax.query(obj.sentence, obj.num, function(clause) {
+    antrax.query(obj.sentence, obj.num, function(idGroups) {
+        clause = idGroups
         log('popup:', clause)
         // oRes.textContent = obj.sentence
         drawHeader(clause, obj.num)
         // check(obj.sentence)
-        drawMorph(clause, obj.num)
+        let num = obj.num
+
+        drawMorph(clause, num)
     })
 })
+
+function conform(clause, num) {
+    // log('CONFORM words', clause, num);
+    let currents = clause[num]
+    log('CUR', currents)
+    let chains = [];
+    currents.forEach(function(cur) {
+        if (!cur.gend) {
+            chains.push(cur);
+            return;
+        }
+        // log('cur-dict', cur.dict);
+        let chain = [];
+        for (let idx in clause) {
+            let rows = clause[idx]
+            // τῶν παλαιῶν ἀσθένειαν
+            rows.forEach(function(word, idy) {
+                // log('W', idx, word.form);
+                if (cur.gend != word.gend || cur.numcase != word.numcase) return
+                // if (!cur.dict) //
+                // if (word.dict && word.dict.slice(-cur.dict.length) != cur.dict) return;
+                chain.push(word);
+            });
+        }
+        // if (chain.length < 2) return;
+        chains.push(chain);
+        let max = _.max(chains.map(function(ch) { return ch.length; }));
+        // log('MAX', max);
+        chains = _.select(chains, function(ch) { return ch.length == max; });
+    });
+    return chains;
+}
+
+
+function drawMorph(clause, num) {
+    let anchor = document.getElementById('antrax-tree');
+    empty(anchor)
+    let chains = conform(clause, num)
+    log('CHAINS', chains)
+
+    let tree = new Tree(anchor)
+    let data = parseData(clause, num)
+    tree.data(data)
+}
 
 function parseData(clause, num) {
     let data = [{
@@ -42,21 +91,21 @@ function parseData(clause, num) {
     return data
 }
 
-function drawMorph(clause, num) {
-    let anchor = document.getElementById('antrax-tree');
-    empty(anchor)
-    let tree = new Tree(anchor)
-    let data = parseData(clause, num)
-    tree.data(data)
-}
-
 function drawHeader(clause, num) {
     let oHeader = q('#antrax-header')
     empty(oHeader)
-    let keys = _.keys(clause)
-    keys.forEach(function(key, idx) {
-        let span = sa(key)
-        span.idx = idx
+    // let keys = _.keys(clause)
+    // let keys = clause.map(function(word) { return word.form})
+    // keys могут повторяться в строке:
+    // let keysidx = _.groupBy(clause, function(word) { return word.idx })
+    let idxs = _.keys(clause)
+
+    // τῶν παλαιῶν ἀσθένειαν οὐχ
+    idxs.forEach(function(idx, i) {
+        let form = clause[idx][0].form
+        // log('IDX', idx, clause[idx])
+        let span = sa(form)
+        span.idx = i
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
@@ -143,6 +192,7 @@ document.onkeyup = function(e) {
     if (e.which === 27) { //Esc
         closeAll()
     } else if ([37, 39].includes(e.which)) {
+
         moveCurrent(e)
     }
 }
@@ -162,6 +212,7 @@ function moveCurrent(e) {
     let nextEl = words[next]
     classes(el).remove('antrax-current')
     classes(nextEl).add('antrax-current')
+    drawMorph(clause, next)
 }
 
 let x = q('#antrax-close')
