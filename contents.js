@@ -7,6 +7,7 @@ const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events');
 const classes = require('component-classes');
+const Tree = require('./tree');
 
 
 /* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
@@ -18,12 +19,36 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     log('MSG', obj)
     antrax.query(obj.sentence, obj.num, function(clause) {
         log('popup:', clause)
-        oRes.textContent = obj.sentence
+        // oRes.textContent = obj.sentence
         drawHeader(clause, obj.num)
-        check(obj.sentence)
+        // check(obj.sentence)
+        drawMorph(clause, obj.num)
     })
 })
 
+function parseData(clause, num) {
+    let data = [{
+        text: 'o-text'
+    }, {
+        text: 'first title',
+        id: 'first',
+        children:[
+            {text: '2-text'},
+            {text: '3-text'}
+        ]
+    }, {
+        text: 'end'
+    }]
+    return data
+}
+
+function drawMorph(clause, num) {
+    let anchor = document.getElementById('antrax-tree');
+    empty(anchor)
+    let tree = new Tree(anchor)
+    let data = parseData(clause, num)
+    tree.data(data)
+}
 
 function drawHeader(clause, num) {
     let oHeader = q('#antrax-header')
