@@ -21,13 +21,14 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     let oRes = document.getElementById('antrax-result')
     let obj = JSON.parse(json)
     log('MSG', obj)
-    antrax.query(obj.sentence, obj.num, function(idGroups) {
-        clause = idGroups
-        log('popup:', clause)
+    antrax.query(obj.sentence, obj.num, function(_clause) {
+        clause = _clause
+        log('clause:', clause)
         // oRes.textContent = obj.sentence
-        drawHeader(clause, obj.num)
         // check(obj.sentence)
+
         let num = obj.num
+        drawHeader(clause, num)
         drawMorph(clause, num)
     })
 })
@@ -39,12 +40,12 @@ function drawMorph(clause, num) {
     log('CHAINS', chains)
 
     let tree = new Tree(anchor)
-    let data = parseData(clause, num)
+    let data = parseCurrent(chains, num)
     tree.data(data)
 }
 
 function conform(clause, num) {
-    // log('CONFORM words', clause, num);
+    log('CONFORM', clause, num);
     let currents = clause[num]
     log('CUR', currents)
     let chains = [];
@@ -76,7 +77,7 @@ function conform(clause, num) {
 }
 
 
-function parseData(clause, num) {
+function parseCurrent(chains, num) {
     let data = [{
         text: 'o-text'
     }, {
@@ -95,16 +96,9 @@ function parseData(clause, num) {
 function drawHeader(clause, num) {
     let oHeader = q('#antrax-header')
     empty(oHeader)
-    // let keys = _.keys(clause)
-    // let keys = clause.map(function(word) { return word.form})
-    // keys могут повторяться в строке:
-    // let keysidx = _.groupBy(clause, function(word) { return word.idx })
     let idxs = _.keys(clause)
-
-    // τῶν παλαιῶν ἀσθένειαν οὐχ
     idxs.forEach(function(idx, i) {
         let form = clause[idx][0].form
-        // log('IDX', idx, clause[idx])
         let span = sa(form)
         span.idx = i
         let space = cret(' ')
@@ -193,7 +187,6 @@ document.onkeyup = function(e) {
     if (e.which === 27) { //Esc
         closeAll()
     } else if ([37, 39].includes(e.which)) {
-
         moveCurrent(e)
     }
 }
