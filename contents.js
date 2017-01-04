@@ -38,12 +38,13 @@ function drawMorph(clause, num) {
     empty(anchor)
     let chains = conform(clause, num)
     log('CHAINS', chains)
-
+    // 1- подчернуть chains и 2 - показать tree-current
     let tree = new Tree(anchor)
-    let data = parseCurrent(chains, num)
+    let data = parseCurrent(clause, num)
     tree.data(data)
 }
 
+// соответствий м.б. много
 function conform(clause, num) {
     log('CONFORM', clause, num);
     let currents = clause[num]
@@ -77,21 +78,52 @@ function conform(clause, num) {
 }
 
 
-function parseCurrent(chains, num) {
-    let data = [{
-        text: 'o-text'
-    }, {
-        text: 'first title',
-        id: 'first',
-        children:[
-            {text: '2-text'},
-            {text: '3-text'}
-        ]
-    }, {
-        text: 'end'
-    }]
+function parseCurrent(clause, num) {
+    let raws = clause[num]
+    let currents = _.select(raws, function(raw) { return !raw.empty})
+    // если не глагол . . .
+    //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+    let data = []
+    let gdicts = _.groupBy(currents, 'dict')
+    for (let gdict in gdicts) {
+        let group = gdicts[gdict]
+        let trns = group[0].trn.split(' | ')
+        let children = trns.map(function(trn) { return {text: trn}})
+        let gmorphs = _.groupBy(group, 'numcase')
+        let gends = []
+        for (let numcase in gmorphs) {
+            let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
+            let morph = [JSON.stringify(gends), numcase].join('.')
+            let header = [gdict, morph].join(': ')
+            let dobj = {text: header, id: gdict, children: children}
+            data.push(dobj)
+        }
+        // log('GM', gdict, 33, gmorphs)
+    }
+
+    currents.forEach(function(cur, idx) {
+        let morph = [cur.gend, cur.numcase].join('.')
+        let header = [cur.dict, morph].join(': ')
+        let trns = cur.trn.split(' | ')
+        let children = trns.map(function(trn) { return {text: trn}})
+        let dobj = {text: header, id: idx.toString(), children: children}
+        // data.push(dobj)
+    })
+    // log('DATA curs', currents)
     return data
 }
+// let data = [{
+//     text: 'o-text'
+// }, {
+//     text: 'first title',
+//     id: 'first',
+//     children:[
+//         {text: '2-text'},
+//         {text: '3-text'}
+//     ]
+// }, {
+//     text: 'end'
+// }]
 
 function drawHeader(clause, num) {
     let oHeader = q('#antrax-header')
