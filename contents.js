@@ -14,6 +14,7 @@ const Tree = require('./tree')
 ICT KEYS ["παλαιᾶ", "παλαιά", "παλαια", "παλαιας", "παλαιῆ", "παλαιη", "παλαιής", "παλαιης", "παλαιόν", "παλαιός", "ἀσθένεια", "ἀσθένειας"]
 ὠχρός
 πηχυς ιχθυς
+λυω -
 */
 let clause;
 
@@ -49,6 +50,7 @@ function drawMorph(clause, num) {
 // border-bottom-color: green;
 // или м.б разные words, кроме current? А если разные, то что делать?
 // и как будут еще сгруппированы chains? а если прибавится связей?
+// .πωνυμ
 
 function underline(clause, chains) {
     let uns = qs('.underlined')
@@ -58,7 +60,7 @@ function underline(clause, chains) {
     })
 
     let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
-    if (!chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
+    if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
     log('CCCCCC', chains)
     if (chain.length < 2) return
     let words = qs('#antrax-header span.antrax-form')
@@ -77,7 +79,7 @@ function conform(clause, num) {
     let chains = [];
     currents.forEach(function(cur) {
         if (!cur.gend) {
-            chains.push(cur);
+            chains.push([cur]);
             return;
         }
         // log('cur-dict', cur.dict);
@@ -130,6 +132,8 @@ function parseCurrent(chains, num) {
                 let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
                 let morph = [JSON.stringify(gends), numcase].join('.')
                 let header = [gdict, morph].join(': ')
+                // let oMorph = sa(header)
+                // classes(oMorph).add('oMorph')
                 let dobj = {text: header, id: gdict, children: children}
                 data.push(dobj)
             }

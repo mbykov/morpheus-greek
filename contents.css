@@ -57,3 +57,16 @@ body {
 .underlined {
     border-bottom: 2px solid white;
 }
+
+.tree-leaf {
+    text-indent: -1em;
+    padding-left: 1em;
+}
+
+.oMorph {
+}
+
+.dict-pos {
+    font-size: 28px;
+    color: maroon;
+}
