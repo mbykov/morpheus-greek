@@ -53,3 +53,7 @@ body {
     margin-top: 10px;
 
 }
+
+.underlined {
+    border-bottom: 2px solid white;
+}

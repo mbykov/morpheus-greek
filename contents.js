@@ -39,15 +39,40 @@ function drawMorph(clause, num) {
     let chains = conform(clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
+    underline(clause, chains)
     let tree = new Tree(anchor)
-    let data = parseCurrent(clause, num)
+    let data = parseCurrent(chains, num)
     tree.data(data)
 }
 
-// соответствий м.б. много
+// border-bottom: 1px solid blue;
+// border-bottom-color: green;
+// или м.б разные words, кроме current? А если разные, то что делать?
+// и как будут еще сгруппированы chains? а если прибавится связей?
+
+function underline(clause, chains) {
+    let uns = qs('.underlined')
+    uns.forEach(function(el) {
+        // log('UNDERLINED', el)
+        classes(el).remove('underlined')
+    })
+
+    let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
+    if (!chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
+    log('CCCCCC', chains)
+    if (chain.length < 2) return
+    let words = qs('#antrax-header span.antrax-form')
+    chain.forEach(function(word) {
+        let el = words[word.idx]
+        classes(el).add('underlined')
+    })
+}
+
+// здесь поиск chains для num
 function conform(clause, num) {
-    log('CONFORM', clause, num);
+    // log('CONFORM', clause, num);
     let currents = clause[num]
+    currents = _.select(currents, function(raw) { return !raw.empty})
     log('CUR', currents)
     let chains = [];
     currents.forEach(function(cur) {
@@ -78,17 +103,18 @@ function conform(clause, num) {
 }
 
 
-function parseCurrent(clause, num) {
-    let raws = clause[num]
-    let currents = _.select(raws, function(raw) { return !raw.empty})
+function parseCurrent(chains, num) {
+    let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
     // если не глагол . . .
     // все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
     // <<=========================================
     // и словарь - по одному var
     // причастия начать - нужна таблица стемов глаголов?
     // кажется, можно без таблицы все, кроме leluka - не считая неправильных
+    // terms залить заново, не form и dict
     //
     //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+    //
     let data = []
     let gdicts = _.groupBy(currents, 'dict')
     for (let gdict in gdicts) {
@@ -151,7 +177,9 @@ function drawHeader(clause, num) {
     idxs.forEach(function(idx, i) {
         let form = clause[idx][0].form
         let span = sa(form)
+        // let id = ['id_', idx].join('')
         span.idx = i
+        // span.setAttribute('idx') = idx
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
