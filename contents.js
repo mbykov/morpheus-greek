@@ -30,7 +30,7 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 
         let num = obj.num
         drawHeader(clause, num)
-        drawMorph(clause, num)
+        // drawMorph(clause, num)
     })
 })
 
@@ -46,80 +46,86 @@ function drawMorph(clause, num) {
     tree.data(data)
 }
 
-// border-bottom: 1px solid blue;
-// border-bottom-color: green;
-// или м.б разные words, кроме current? А если разные, то что делать?
-// и как будут еще сгруппированы chains? а если прибавится связей?
-// .πωνυμ
-
-function underline(clause, chains) {
-    let uns = qs('.underlined')
-    uns.forEach(function(el) {
-        // log('UNDERLINED', el)
-        classes(el).remove('underlined')
-    })
-
-    let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
-    if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
-    log('CCCCCC', chains)
-    if (chain.length < 2) return
-    let words = qs('#antrax-header span.antrax-form')
-    chain.forEach(function(word) {
-        let el = words[word.idx]
-        classes(el).add('underlined')
-    })
-}
-
-// здесь поиск chains для num
+// поиск chains для current num
 function conform(clause, num) {
     // log('CONFORM', clause, num);
     let currents = clause[num]
     currents = _.select(currents, function(raw) { return !raw.empty})
     log('CUR', currents)
     let chains = [];
-    currents.forEach(function(cur) {
-        if (!cur.gend) {
-            chains.push([cur]);
-            return;
-        }
-        // log('cur-dict', cur.dict);
+    let names = _.select(currents, function(cur) { return cur.gend})
+    let nonames = _.select(currents, function(cur) { return !cur.gend})
+    nonames.forEach(function(cur) {
+        chains.push([cur]);
+    })
+    names.forEach(function(cur) {
         let chain = [];
         for (let idx in clause) {
             let rows = clause[idx]
-            // τῶν παλαιῶν ἀσθένειαν
             rows.forEach(function(word, idy) {
                 // log('W', idx, word.form);
                 if (cur.gend != word.gend || cur.numcase != word.numcase) return
-                // if (!cur.dict) //
-                // if (word.dict && word.dict.slice(-cur.dict.length) != cur.dict) return;
                 chain.push(word);
             });
         }
-        // if (chain.length < 2) return;
+        // если для каждой chain voc = 1, то voc убрать - верно-ли?
+        let vocs = 0
+        chain.forEach(function(word) { if (word.numcase.split('.')[1] == 'voc') vocs += 1})
+        // log('VOCS', vocs)
+        if (vocs == 1) return
+        // log('CH', vocs, chain)
         chains.push(chain);
-        let max = _.max(chains.map(function(ch) { return ch.length; }));
-        // log('MAX', max);
-        chains = _.select(chains, function(ch) { return ch.length == max; });
-    });
+        // log('CHCHs', vocs, chains)
+    })
+    let max = _.max(chains.map(function(ch) { return ch.length; }));
+    // log('MAX', max);
+    chains = _.select(chains, function(ch) { return ch.length == max; });
     return chains;
 }
 
 
+// если не глагол . . .
+// все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
+// <<=========================================
+// и словарь - по одному var
+// причастия начать - нужна таблица стемов глаголов?
+// <<===================== HERE WE ARE
+// кажется, можно без таблицы все, кроме leluka - не считая неправильных
+// terms залить заново, не form и dict
+// в seed_ls - выделить indecls
+//
+//  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+// αἰνολέων, οντος, ὁ, dreadful lion
+//
+
+// группировка morphs и оформление tree
 function parseCurrent(chains, num) {
     let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    // если не глагол . . .
-    // все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
-    // <<=========================================
-    // и словарь - по одному var
-    // причастия начать - нужна таблица стемов глаголов?
-    // кажется, можно без таблицы все, кроме leluka - не считая неправильных
-    // terms залить заново, не form и dict
-    //
-    //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
-    //
     let data = []
+    currents.forEach(function(cur) {
+        let pos = cur.pos
+        let dtree = []
+        switch(pos) {
+        case 'verb':
+            log('==V')
+            break
+        case 'name':
+            log('==N')
+            break
+        case 'conj':
+            log('==C')
+            //
+            break
+        default:
+            log('=POS=', pos)
+        }
+    })
+    // могут быть 2 разные dict? конечно, из разных словарей
     let gdicts = _.groupBy(currents, 'dict')
+    log('GDICTS SIZE', _.keys(gdicts).length)
     for (let gdict in gdicts) {
+        log('_ID')
+
         let group = gdicts[gdict]
         let trns = group[0].trn.split(' | ')
         let children = trns.map(function(trn) { return {text: trn}})
@@ -127,19 +133,18 @@ function parseCurrent(chains, num) {
         let ggends = _.groupBy(group, 'gend')
         log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
         // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-        if (_.keys(gmorphs) > _.keys(ggends)) {
+        if (_.keys(gmorphs).length < _.keys(ggends).length) {
             for (let numcase in gmorphs) {
                 let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
                 let morph = [JSON.stringify(gends), numcase].join('.')
                 let header = [gdict, morph].join(': ')
-                // let oMorph = sa(header)
-                // classes(oMorph).add('oMorph')
                 let dobj = {text: header, id: gdict, children: children}
                 data.push(dobj)
             }
         } else {
             for (let gend in ggends) {
                 let morphs = ggends[gend].map(function(gg) { return gg.numcase})
+                // morphs = removeVoc(morphs)
                 let morph = [gend, JSON.stringify(morphs)].join('.')
                 let header = [gdict, morph].join(': ')
                 let dobj = {text: header, id: gdict, children: children}
@@ -149,18 +154,22 @@ function parseCurrent(chains, num) {
         // log('GM', gdict, 33, gmorphs)
         }
     }
-
-    currents.forEach(function(cur, idx) {
-        let morph = [cur.gend, cur.numcase].join('.')
-        let header = [cur.dict, morph].join(': ')
-        let trns = cur.trn.split(' | ')
-        let children = trns.map(function(trn) { return {text: trn}})
-        let dobj = {text: header, id: idx.toString(), children: children}
-        // data.push(dobj)
-    })
-    // log('DATA curs', currents)
     return data
 }
+
+// эта хрень должна реагировать только на обращение:
+function removeVoc(morphs) {
+    let cleans = []
+    let hasNom = false
+    morphs.forEach(function(morph) {
+        if (morph.split('.')[1] == 'nom') hasNom = true
+    })
+    morphs.forEach(function(morph) {
+        if (hasNom && morph.split('.')[1] != 'voc') cleans.push(morph)
+    })
+    return cleans
+}
+
 // let data = [{
 //     text: 'o-text'
 // }, {
@@ -205,6 +214,29 @@ function bindEvents(el) {
     });
     events.bind('click .antrax-form', 'current')
 }
+
+
+// или м.б разные words, кроме current? А если разные, то что делать?
+// и как будут еще сгруппированы chains? а если прибавится связей?
+// .πωνυμ
+function underline(clause, chains) {
+    let uns = qs('.underlined')
+    uns.forEach(function(el) {
+        // log('UNDERLINED', el)
+        classes(el).remove('underlined')
+    })
+
+    let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
+    if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
+    if (chain.length < 2) return
+    // log('underline chains', chains)
+    let words = qs('#antrax-header span.antrax-form')
+    chain.forEach(function(word) {
+        let el = words[word.idx]
+        classes(el).add('underlined')
+    })
+}
+
 
 function check(sentence) {
     let err = q('#xxx')
