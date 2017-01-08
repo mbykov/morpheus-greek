@@ -24,13 +24,13 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     log('MSG', obj)
     antrax.query(obj.sentence, obj.num, function(_clause) {
         clause = _clause
-        log('clause:', clause)
+        // log('clause:', clause)
         // oRes.textContent = obj.sentence
         // check(obj.sentence)
 
         let num = obj.num
         drawHeader(clause, num)
-        // drawMorph(clause, num)
+        drawMorph(clause, num)
     })
 })
 
@@ -40,10 +40,10 @@ function drawMorph(clause, num) {
     let chains = conform(clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
-    underline(clause, chains)
-    let tree = new Tree(anchor)
-    let data = parseCurrent(chains, num)
-    tree.data(data)
+    // underline(clause, chains)
+    // let tree = new Tree(anchor)
+    // let data = parseCurrent(chains, num)
+    // tree.data(data)
 }
 
 // поиск chains для current num
@@ -51,31 +51,53 @@ function conform(clause, num) {
     // log('CONFORM', clause, num);
     let currents = clause[num]
     currents = _.select(currents, function(raw) { return !raw.empty})
-    log('CUR', currents)
+    log('CUR=>', currents)
     let chains = [];
-    let names = _.select(currents, function(cur) { return cur.gend})
-    let nonames = _.select(currents, function(cur) { return !cur.gend})
+    let names = _.select(currents, function(cur) { return cur.morphs})
+    let nonames = _.select(currents, function(cur) { return !cur.morphs})
     nonames.forEach(function(cur) {
+        cur.noname = true
         chains.push([cur]);
     })
+    // log('CUR NAMES', names)
     names.forEach(function(cur) {
         let chain = [];
+        let ccur = {cc: true, dict: cur.dict, form: cur.form, idx: cur.idx, pos: cur.pos, type: cur.type, trn: cur.trn, morphs: []}
         for (let idx in clause) {
             let rows = clause[idx]
             rows.forEach(function(word, idy) {
                 // log('W', idx, word.form);
-                if (cur.gend != word.gend || cur.numcase != word.numcase) return
-                chain.push(word);
-            });
+                if (idy == num) return
+                if (!word.morphs) return
+                let cword = {cw: true, dict: word.dict, form: word.form, idx: word.idx, pos: word.pos, type: word.type, trn: word.trn, morphs: []}
+                cur.morphs.forEach(function(cmorph) {
+                    word.morphs.forEach(function(wmorph) {
+                        if (JSON.stringify(cmorph) == JSON.stringify(wmorph)) {
+                            ccur.morphs.push(cmorph)
+                            cword.morphs.push(cmorph)
+                        }
+                    })
+                })
+                if (ccur.morphs.length) {
+                    chain.push(ccur)
+                    chain.push(cword)
+                } else {
+                    chain.push(cur)
+                }
+                // τόδε τῶν παλαιῶν
+                // if (cur.gend != word.gend || cur.numcase != word.numcase) return
+                // chain.push(word)
+            })
         }
+        log('_____chain', chain)
         // если для каждой chain voc = 1, то voc убрать - верно-ли?
-        let vocs = 0
-        chain.forEach(function(word) { if (word.numcase.split('.')[1] == 'voc') vocs += 1})
-        // log('VOCS', vocs)
-        if (vocs == 1) return
-        // log('CH', vocs, chain)
-        chains.push(chain);
-        // log('CHCHs', vocs, chains)
+        // let vocs = 0
+        // chain.forEach(function(word) { if (word.numcase.split('.')[1] == 'voc') vocs += 1})
+        // // log('VOCS', vocs)
+        // if (vocs == 1) return
+        // // log('CH', vocs, chain)
+        // chains.push(chain);
+        // // log('CHCHs', vocs, chains)
     })
     let max = _.max(chains.map(function(ch) { return ch.length; }));
     // log('MAX', max);
@@ -184,10 +206,12 @@ function removeVoc(morphs) {
 // }]
 
 function drawHeader(clause, num) {
+    log('HEADER', clause, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     let idxs = _.keys(clause)
     idxs.forEach(function(idx, i) {
+        // если есть dict кроме empty, их оставить, empty откинуть, а если нет, то empty
         let form = clause[idx][0].form
         let span = sa(form)
         // let id = ['id_', idx].join('')
@@ -198,6 +222,7 @@ function drawHeader(clause, num) {
         oHeader.appendChild(space)
         classes(span).add('antrax-form')
         if (idx == num) classes(span).add('antrax-current')
+        // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
     })
     bindEvents(oHeader)
 }
