@@ -40,34 +40,39 @@ function drawMorph(clause, num) {
     let chains = conform(clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
-    // underline(clause, chains)
-    // let tree = new Tree(anchor)
-    // let data = parseCurrent(chains, num)
-    // tree.data(data)
+    underline(clause, chains)
+    let tree = new Tree(anchor)
+    let data = parseCurrent(chains, num)
+    tree.data(data)
+    // τόδε τῶν παλαιῶν
 }
 
 // поиск chains для current num
+// добавление конечных форм
 function conform(clause, num) {
     // log('CONFORM', clause, num);
     let currents = clause[num]
     currents = _.select(currents, function(raw) { return !raw.empty})
-    log('CUR=>', currents)
+    // log('CUR=>', currents)
     let chains = [];
     let names = _.select(currents, function(cur) { return cur.morphs})
     let nonames = _.select(currents, function(cur) { return !cur.morphs})
+    let ffs = _.select(currents, function(cur) { return cur.type == 'form'}) // FFS
     nonames.forEach(function(cur) {
         cur.noname = true
-        chains.push([cur]);
+        // chains.push([cur]);
     })
-    // log('CUR NAMES', names)
+    // log('CUR NUM', num)
+    log('CUR NAMES', names)
     names.forEach(function(cur) {
         let chain = [];
         let ccur = {cc: true, dict: cur.dict, form: cur.form, idx: cur.idx, pos: cur.pos, type: cur.type, trn: cur.trn, morphs: []}
         for (let idx in clause) {
+            if (idx == num) continue
+            // log('IDX', idx)
             let rows = clause[idx]
             rows.forEach(function(word, idy) {
-                // log('W', idx, word.form);
-                if (idy == num) return
+                // log('Word', idy, word.form);
                 if (!word.morphs) return
                 let cword = {cw: true, dict: word.dict, form: word.form, idx: word.idx, pos: word.pos, type: word.type, trn: word.trn, morphs: []}
                 cur.morphs.forEach(function(cmorph) {
@@ -81,26 +86,26 @@ function conform(clause, num) {
                 if (ccur.morphs.length) {
                     chain.push(ccur)
                     chain.push(cword)
-                } else {
-                    chain.push(cur)
+                // } else {
+                    // chain.push(cur)
                 }
-                // τόδε τῶν παλαιῶν
-                // if (cur.gend != word.gend || cur.numcase != word.numcase) return
-                // chain.push(word)
             })
         }
-        log('_____chain', chain)
+        // τόδε τῶν παλαιῶν
+        if (!chain.length) chain = [cur]
+        if (ffs.length) chain = chain.concat(ffs) // FFS
+        // log('_____chain', chain)
         // если для каждой chain voc = 1, то voc убрать - верно-ли?
         // let vocs = 0
         // chain.forEach(function(word) { if (word.numcase.split('.')[1] == 'voc') vocs += 1})
         // // log('VOCS', vocs)
         // if (vocs == 1) return
         // // log('CH', vocs, chain)
-        // chains.push(chain);
+        chains.push(chain);
         // // log('CHCHs', vocs, chains)
     })
     let max = _.max(chains.map(function(ch) { return ch.length; }));
-    // log('MAX', max);
+    log('MAX', max);
     chains = _.select(chains, function(ch) { return ch.length == max; });
     return chains;
 }
@@ -121,6 +126,7 @@ function conform(clause, num) {
 //
 
 // группировка morphs и оформление tree
+// а если cur в разных chains состоит?
 function parseCurrent(chains, num) {
     let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
     let data = []
