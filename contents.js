@@ -30,17 +30,18 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 
         let num = obj.num
         drawHeader(clause, num)
-        drawMorph(clause, num)
+        drawMorphs(clause, num)
     })
 })
 
-function drawMorph(clause, num) {
-    let anchor = document.getElementById('antrax-tree');
-    empty(anchor)
+function drawMorphs(clause, num) {
+    // let anchor = document.getElementById('antrax-tree');
+    // empty(anchor)
     let chains = conform(clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
     // underline(clause, chains)
+    drawMorphHeaders(chains, num)
     // let tree = new Tree(anchor)
     // let data = parseCurrent(chains, num)
     // tree.data(data)
@@ -61,9 +62,10 @@ function conform(clause, num) {
     nomorphs.forEach(function(cur) {
         cur.nomorph = true
         chains.push([cur]);
-        return
     })
+    if (!cnames.length) return chains
 
+    // все красиво, но как искать связи в глаголах, etc?
     let cmorphs = _.flatten(cnames.map(function(n) { return n.morphs}))
     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
     log('CSTRS', cstrs)
@@ -117,33 +119,66 @@ function conform(clause, num) {
 // terms залить заново, не form и dict
 // в seed_ls - выделить indecls
 //
-//  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
-// αἰνολέων, οντος, ὁ, dreadful lion
-//
-
-// группировка morphs и оформление tree
-// а если cur в разных chains состоит?
-function parseCurrent(chains, num) {
+function drawMorphHeaders(chains, num) {
     let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    let data = []
+    log('CS', currents)
+
     currents.forEach(function(cur) {
         let pos = cur.pos
         let dtree = []
         switch(pos) {
         case 'verb':
-            log('==V')
+            // log('==V')
             break
+        case 'art':
         case 'name':
-            log('==N')
+            showName(cur)
             break
         case 'conj':
-            log('==C')
+            // log('==C')
             //
             break
         default:
+            let oMorphs = q('#antrax-morphs')
+            empty(oMorphs)
             log('=POS=', pos)
         }
     })
+}
+
+//  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+// αἰνολέων, οντος, ὁ, dreadful lion
+// XXX
+
+function showName(cur) {
+    log('==NAME==')
+    let oMorphs = q('#antrax-morphs')
+    empty(oMorphs)
+    let oMorph = cre('div')
+    let dict = [cur.dict, cur.pos].join(' - ')
+    let odict = sa(dict)
+    let comma = cret(', ')
+    let morph = sa('kukukuku')
+    oMorph.appendChild(odict)
+    oMorph.appendChild(comma)
+    oMorph.appendChild(morph)
+    oMorphs.appendChild(oMorph)
+}
+
+
+
+
+
+// группировка morphs и оформление tree
+// а если cur в разных chains состоит?
+
+// DEPR
+
+function parseCurrent_(chains, num) {
+    let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
+    // log('C', currents)
+    let data = [{text: 'o-text'}]
+    return data
     // могут быть 2 разные dict? конечно, из разных словарей
     // log('CURRS', currents)
     let gdicts = _.groupBy(currents, 'dict')
@@ -348,7 +383,7 @@ function moveCurrent(e) {
     let nextEl = words[next]
     classes(el).remove('antrax-current')
     classes(nextEl).add('antrax-current')
-    drawMorph(clause, next)
+    drawMorphs(clause, next)
 }
 
 let x = q('#antrax-close')
