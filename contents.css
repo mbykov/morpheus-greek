@@ -67,14 +67,16 @@ body {
 }
 
 .tree-leaf {
-    text-indent: -1em;
-    padding-left: 1em;
+    text-indent: -1.5em;
+    padding-left: 3em;
 }
 
-.oMorph {
-}
+/* .oMorph { */
+/* } */
 
 .dict-pos {
-    font-size: 28px;
+    font-size: 22px;
     color: maroon;
+    padding-left: 20px;
+    cursor: pointer;
 }

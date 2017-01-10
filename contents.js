@@ -127,7 +127,6 @@ function drawChains(chains, num) {
 
     currents.forEach(function(cur) {
         let pos = cur.pos
-        let dtree = []
         switch(pos) {
         case 'verb':
             // log('==V')
@@ -137,15 +136,17 @@ function drawChains(chains, num) {
         case 'noun':
         case 'adj':
         case 'part':
+        case 'pron':
             showName(cur)
             break
         case 'conj':
-            // log('==C')
-            //
+            showConj(cur)
             break
         default:
             let oMorphs = q('#antrax-morphs')
             empty(oMorphs)
+            let anchor = document.getElementById('antrax-dicts');
+            empty(anchor)
             log('=POS=', pos)
         }
     })
@@ -155,8 +156,32 @@ function drawChains(chains, num) {
 // αἰνολέων, οντος, ὁ, dreadful lion
 // XXX
 
+function showConj(cur) {
+    let oMorphs = q('#antrax-morphs')
+    empty(oMorphs)
+    let oMorph = cre('div')
+    let dict = cur.form // FIXME:
+    let dictpos = [dict, cur.pos].join(' - ')
+    let odict = sa(dictpos)
+    oMorph.appendChild(odict)
+    oMorphs.appendChild(oMorph)
+    let data = [{text: 'dtype', id: '1', children: [{text: cur.trn}]}]
+    showTree(data)
+}
+
+function showTree(data) {
+    let anchor = document.getElementById('antrax-dicts');
+    remove(anchor)
+    anchor = cre('div')
+    anchor.id = 'antrax-dicts'
+    let parent = q('#antrax-results')
+    parent.appendChild(anchor)
+    // empty(anchor)
+    let tree = new Tree(anchor)
+    tree.data(data)
+}
+
 function showName(cur) {
-    log('==NAME==')
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
     let oMorph = cre('div')
@@ -165,18 +190,37 @@ function showName(cur) {
     let comma = cret(', ')
     let mstr = compactNameMorph(cur)
     let morphs = sa(mstr)
-    let dicts = dictData(cur.dicts)
     oMorph.appendChild(odict)
     oMorph.appendChild(comma)
     oMorph.appendChild(morphs)
     oMorphs.appendChild(oMorph)
-}
-
-function dictData(dicts) {
-    log('DD', dicts)
+    let data = dictData(cur.dicts)
+    let anchor = document.getElementById('antrax-dicts');
+    remove(anchor)
+    anchor = cre('div')
+    anchor.id = 'antrax-dicts'
+    let parent = q('#antrax-results')
+    parent.appendChild(anchor)
+    // empty(anchor)
+    let tree = new Tree(anchor)
+    tree.data(data)
 }
 
 // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
+
+function dictData(dicts) {
+    log('DD', dicts)
+    let data = []
+    dicts.forEach(function(dict, idx) {
+        let text = dict.dtype || 'dname'
+        let id = [text, idx].join('_')
+        let strs = dict.trn.split(' | ')
+        let children = strs.map(function(str) { return {text: str}})
+        data.push({text: text, id: id, children: children})
+    })
+    return data
+}
+
 function compactNameMorph(cur) {
     let result
     log('MORPHS', cur.morphs)
@@ -192,7 +236,7 @@ function compactNameMorph(cur) {
         }
     } else {
         for (let gend in ggends) {
-            let morphs = ggends[gend].map(function(gg) { return gg.numcase})
+            morphs = ggends[gend].map(function(gg) { return gg.numcase})
             morphs = _.uniq(morphs).sort()
             // morphs = removeVoc(morphs)
             morphs = [gend, JSON.stringify(morphs)].join('.')

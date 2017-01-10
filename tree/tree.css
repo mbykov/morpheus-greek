@@ -1,7 +1,10 @@
-.tree-text,
-.tree-leaf {
+.tree-text, {
   padding-left: 20px;
   cursor: pointer;
+}
+.tree-leaf {
+    /* padding-left: 20px; */
+    cursor: pointer;
 }
 .tree-branch {
   position: relative;
