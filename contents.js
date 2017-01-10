@@ -41,7 +41,7 @@ function drawMorphs(clause, num) {
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
     // underline(clause, chains)
-    drawMorphHeaders(chains, num)
+    drawChains(chains, num)
     // let tree = new Tree(anchor)
     // let data = parseCurrent(chains, num)
     // tree.data(data)
@@ -68,6 +68,7 @@ function conform(clause, num) {
     // все красиво, но как искать связи в глаголах, etc?
     let cmorphs = _.flatten(cnames.map(function(n) { return n.morphs}))
     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
+    cstrs = _.uniq(cstrs)
     log('CSTRS', cstrs)
     let c = cnames[0]
     let cdicts = cnames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
@@ -85,6 +86,7 @@ function conform(clause, num) {
         let onames = _.select(otherows, function(cur) { return cur.morphs})
         let omorphs = _.flatten(onames.map(function(n) { return n.morphs}))
         let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
+        ostrs = _.uniq(ostrs)
         log('OSTRS', ostrs)
         let common = _.intersection(cstrs, ostrs)
         let newmorphs, o, onew, odicts
@@ -119,9 +121,9 @@ function conform(clause, num) {
 // terms залить заново, не form и dict
 // в seed_ls - выделить indecls
 //
-function drawMorphHeaders(chains, num) {
+function drawChains(chains, num) {
     let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    log('CS', currents)
+    log('dMH curs', currents)
 
     currents.forEach(function(cur) {
         let pos = cur.pos
@@ -132,6 +134,9 @@ function drawMorphHeaders(chains, num) {
             break
         case 'art':
         case 'name':
+        case 'noun':
+        case 'adj':
+        case 'part':
             showName(cur)
             break
         case 'conj':
@@ -158,14 +163,45 @@ function showName(cur) {
     let dict = [cur.dict, cur.pos].join(' - ')
     let odict = sa(dict)
     let comma = cret(', ')
-    let morph = sa('kukukuku')
+    let mstr = compactNameMorph(cur)
+    let morphs = sa(mstr)
+    let dicts = dictData(cur.dicts)
     oMorph.appendChild(odict)
     oMorph.appendChild(comma)
-    oMorph.appendChild(morph)
+    oMorph.appendChild(morphs)
     oMorphs.appendChild(oMorph)
 }
 
+function dictData(dicts) {
+    log('DD', dicts)
+}
 
+// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
+function compactNameMorph(cur) {
+    let result
+    log('MORPHS', cur.morphs)
+    let gmorphs = _.groupBy(cur.morphs, 'numcase')
+    let ggends = _.groupBy(cur.morphs, 'gend')
+    log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
+    let morphs
+    if (_.keys(gmorphs).length <= _.keys(ggends).length) {
+        for (let numcase in gmorphs) {
+            let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
+            gends = _.uniq(gends).sort()
+            morphs = [JSON.stringify(gends), numcase].join('.')
+        }
+    } else {
+        for (let gend in ggends) {
+            let morphs = ggends[gend].map(function(gg) { return gg.numcase})
+            morphs = _.uniq(morphs).sort()
+            // morphs = removeVoc(morphs)
+            morphs = [gend, JSON.stringify(morphs)].join('.')
+        }
+    }
+    // let str = [cur.dict, morph].join(': ')
+    // result = sa(str)
+    return morphs
+}
 
 
 
