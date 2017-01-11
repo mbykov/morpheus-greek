@@ -40,7 +40,7 @@ function drawMorphs(clause, num) {
     let chains = conform(clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
-    // underline(clause, chains)
+    underline(chains)
     drawChains(chains, num)
     // let tree = new Tree(anchor)
     // let data = parseCurrent(chains, num)
@@ -123,7 +123,7 @@ function conform(clause, num) {
 //
 function drawChains(chains, num) {
     let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    log('dMH curs', currents)
+    // log('drawChains curs', currents)
 
     currents.forEach(function(cur) {
         let pos = cur.pos
@@ -139,7 +139,9 @@ function drawChains(chains, num) {
         case 'pron':
             showName(cur)
             break
+        case 'particle':
         case 'conj':
+        case 'adv':
             showConj(cur)
             break
         default:
@@ -209,7 +211,7 @@ function showName(cur) {
 // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 
 function dictData(dicts) {
-    log('DD', dicts)
+    // log('Dicts', dicts)
     let data = []
     dicts.forEach(function(dict, idx) {
         let text = dict.dtype || 'dname'
@@ -223,10 +225,10 @@ function dictData(dicts) {
 
 function compactNameMorph(cur) {
     let result
-    log('MORPHS', cur.morphs)
+    // log('MORPHS', cur.morphs)
     let gmorphs = _.groupBy(cur.morphs, 'numcase')
     let ggends = _.groupBy(cur.morphs, 'gend')
-    log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
+    // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
     let morphs
     if (_.keys(gmorphs).length <= _.keys(ggends).length) {
         for (let numcase in gmorphs) {
@@ -361,21 +363,28 @@ function bindEvents(el) {
 // или м.б разные words, кроме current? А если разные, то что делать?
 // и как будут еще сгруппированы chains? а если прибавится связей?
 // .πωνυμ
-function underline(clause, chains) {
+function underline(chains) {
     let uns = qs('.underlined')
     uns.forEach(function(el) {
-        // log('UNDERLINED', el)
         classes(el).remove('underlined')
     })
 
-    let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
-    if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
-    if (chain.length < 2) return
+    // log('LINE CHAINS', chains)
+
+
+    // let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
+    // if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
+    // if (chain.length < 2) return
     // log('underline chains', chains)
+    // μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
     let words = qs('#antrax-header span.antrax-form')
-    chain.forEach(function(word) {
-        let el = words[word.idx]
-        classes(el).add('underlined')
+    chains.forEach(function(chain) {
+        if (chain.length < 2) return
+        chain.forEach(function(word) {
+            log('line word.idx')
+            let el = words[word.idx]
+            classes(el).add('underlined')
+        })
     })
 }
 
