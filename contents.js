@@ -34,21 +34,6 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     })
 })
 
-function drawMorphs(clause, num) {
-    // let anchor = document.getElementById('antrax-tree');
-    // empty(anchor)
-    let currents = clause[num]
-    currents = _.select(currents, function(raw) { return !raw.empty})
-    let chains = conform(currents, clause, num)
-    log('CHAINS', chains)
-    // 1- подчернуть chains и 2 - показать tree-current
-    if (chains) {
-        underline(chains)
-        currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    }
-    drawCurrents(currents)
-}
-
 // поиск chains для current num
 // chains мне нужны ТОЛЬКО для подчеркивания - пока names
 // все красиво, но как искать связи в глаголах, etc?
@@ -121,19 +106,30 @@ function conform(currents, clause, num) {
 }
 
 
-// если не глагол . . .
 // все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
 // <<=========================================
-// и словарь - по одному var
 // причастия начать - нужна таблица стемов глаголов?
-// <<===================== HERE WE ARE
 // кажется, можно без таблицы все, кроме leluka - не считая неправильных
 // terms залить заново, не form и dict
 // в seed_ls - выделить indecls
 // ff вешать в dicts
 // dict-morphs - создавать div и append
-//
-function drawCurrents(currents) {
+
+function drawMorphs(clause, num) {
+    // let anchor = document.getElementById('antrax-tree');
+    // empty(anchor)
+    let currents = clause[num]
+    currents = _.select(currents, function(cur) { return !cur.empty})
+    let simpleterms = _.select(currents, function(cur) { return !cur.morphs && cur.type == 'term'})
+    currents = _.select(currents, function(cur) { return cur.morphs})
+    let chains = conform(currents, clause, num)
+    log('CHAINS', chains)
+    // 1- подчернуть chains и 2 - показать tree-current
+    if (chains) {
+        underline(chains)
+        currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
+    }
+
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
     let oDicts = q('#antrax-dicts')
@@ -143,6 +139,30 @@ function drawCurrents(currents) {
     let parent = q('#antrax-results')
     parent.appendChild(oDicts)
 
+    drawSimpleTerm(simpleterms)
+    drawCurrents(currents)
+}
+
+// λέγω
+// ffs - нет morphs - сразу dicts
+function drawSimpleTerm(sts) {
+    sts.forEach(function(dict) {
+        let oMorphs = q('#antrax-morphs')
+        let oMorph = cre('div')
+        let form = dict.form // FIXME:
+        let dictpos = [dict.form, dict.pos].join(', ')
+        let oDP = sa(dictpos)
+        let comma = cret('; ')
+        let oTrn = sa(dict.trn)
+        classes(oTrn).add('black')
+        oMorph.appendChild(oDP)
+        oMorph.appendChild(comma)
+        oMorph.appendChild(oTrn)
+        oMorphs.appendChild(oMorph)
+    })
+}
+
+function drawCurrents(currents) {
     currents.forEach(function(cur) {
         let pos = cur.pos
         switch(pos) {
@@ -171,6 +191,7 @@ function drawCurrents(currents) {
 
 //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 // αἰνολέων, οντος, ὁ, dreadful lion
+// ἀπόδεξις, εως, ἡ, (ἀποδέχομαι) acceptance
 // XXX
 
 function showConj(cur) {
