@@ -37,35 +37,40 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 function drawMorphs(clause, num) {
     // let anchor = document.getElementById('antrax-tree');
     // empty(anchor)
-    let chains = conform(clause, num)
+    let currents = clause[num]
+    currents = _.select(currents, function(raw) { return !raw.empty})
+    let chains = conform(currents, clause, num)
     log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
-    underline(chains)
-    drawChains(chains, num)
-    // let tree = new Tree(anchor)
-    // let data = parseCurrent(chains, num)
-    // tree.data(data)
-    // τόδε τῶν παλαιῶν
+    if (chains) {
+        underline(chains)
+        currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
+    }
+    drawCurrents(currents)
 }
 
 // поиск chains для current num
-// добавление конечных форм
-function conform(clause, num) {
-    // log('CONFORM', clause, num);
-    let currents = clause[num]
-    currents = _.select(currents, function(raw) { return !raw.empty})
-    // log('CUR=>', currents)
+// chains мне нужны ТОЛЬКО для подчеркивания - пока names
+// все красиво, но как искать связи в глаголах, etc?
+
+function conform(currents, clause, num) {
     let chains = [];
-    let cnames = _.select(currents, function(cur) { return cur.morphs})
+    // только полные current names:
+    let cnames = _.select(currents, function(cur) { return cur.pos == 'name'})
+    cnames = _.select(cnames, function(cur) { return cur.morphs})
+    if (!cnames.length) return
+    // XXX
+
+    let cverbs = _.select(currents, function(cur) { return cur.pos == 'verb' && cur.morphs})
     let nomorphs = _.select(currents, function(cur) { return !cur.morphs})
     log('CUR NAMES', cnames)
+    log('CUR VERBS', cverbs)
+    log('CUR NOMs', nomorphs)
     nomorphs.forEach(function(cur) {
-        cur.nomorph = true
-        chains.push([cur]);
+        // cur.nomorph = true
+        // chains.push([cur]);
     })
-    if (!cnames.length) return chains
 
-    // все красиво, но как искать связи в глаголах, etc?
     let cmorphs = _.flatten(cnames.map(function(n) { return n.morphs}))
     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
     cstrs = _.uniq(cstrs)
@@ -76,6 +81,8 @@ function conform(clause, num) {
 
     // chains - новые объекты
     //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+    // λέγω
+
     let dist = 3
     let chain = [cnew]
     for (let idx in clause) {
@@ -83,7 +90,10 @@ function conform(clause, num) {
         if (idx < num - dist) continue
         if (idx > num + dist) continue
         let otherows = clause[idx]
-        let onames = _.select(otherows, function(cur) { return cur.morphs})
+        // только полные others:
+        let onames = _.select(otherows, function(cur) { return !cur.empty})
+        onames = _.select(onames, function(cur) { return cur.pos == 'name'})
+        onames = _.select(onames, function(cur) { return cur.morphs})
         let omorphs = _.flatten(onames.map(function(n) { return n.morphs}))
         let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
         ostrs = _.uniq(ostrs)
@@ -97,15 +107,15 @@ function conform(clause, num) {
             odicts = onames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
             onew = {idx: o.idx, form: o.form, pos: o.pos, dict: o.dict, morphs: newmorphs, dicts: odicts}
             chain.push(onew)
-        // } else {
-            // chains.push(currents)
         }
+        if (chain.length > 1) chains.push(chain)
     }
-    chains.push(chain)
     log('NEW CHAINS', chains)
 
+    if (!chains.length) return
     let max = _.max(chains.map(function(ch) { return ch.length; }));
     log('MAX', max);
+    if (max == 1) return
     chains = _.select(chains, function(ch) { return ch.length == max; });
     return chains;
 }
@@ -120,16 +130,24 @@ function conform(clause, num) {
 // кажется, можно без таблицы все, кроме leluka - не считая неправильных
 // terms залить заново, не form и dict
 // в seed_ls - выделить indecls
+// ff вешать в dicts
+// dict-morphs - создавать div и append
 //
-function drawChains(chains, num) {
-    let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    // log('drawChains curs', currents)
+function drawCurrents(currents) {
+    let oMorphs = q('#antrax-morphs')
+    empty(oMorphs)
+    let oDicts = q('#antrax-dicts')
+    remove(oDicts)
+    oDicts = cre('div')
+    oDicts.id = 'antrax-dicts'
+    let parent = q('#antrax-results')
+    parent.appendChild(oDicts)
 
     currents.forEach(function(cur) {
         let pos = cur.pos
         switch(pos) {
         case 'verb':
-            // log('==V')
+            showVerb(cur)
             break
         case 'art':
         case 'name':
@@ -141,14 +159,11 @@ function drawChains(chains, num) {
             break
         case 'particle':
         case 'conj':
+        case 'prep':
         case 'adv':
             showConj(cur)
             break
         default:
-            let oMorphs = q('#antrax-morphs')
-            empty(oMorphs)
-            let anchor = document.getElementById('antrax-dicts');
-            empty(anchor)
             log('=POS=', pos)
         }
     })
@@ -160,32 +175,75 @@ function drawChains(chains, num) {
 
 function showConj(cur) {
     let oMorphs = q('#antrax-morphs')
-    empty(oMorphs)
+    // empty(oMorphs)
     let oMorph = cre('div')
     let dict = cur.form // FIXME:
     let dictpos = [dict, cur.pos].join(' - ')
     let odict = sa(dictpos)
     oMorph.appendChild(odict)
     oMorphs.appendChild(oMorph)
-    let data = [{text: 'dtype', id: '1', children: [{text: cur.trn}]}]
-    showTree(data)
+    appendDicts(cur)
 }
 
-function showTree(data) {
-    let anchor = document.getElementById('antrax-dicts');
-    remove(anchor)
-    anchor = cre('div')
-    anchor.id = 'antrax-dicts'
-    let parent = q('#antrax-results')
+function dictData(cur) {
+    // log('DDicts', cur.pos, cur.dict)
+    let data = []
+    let dicts = (cur.dicts) ? cur.dicts : [{dtype: cur.dtype, trn: cur.trn}]
+    dicts.forEach(function(dict, idx) {
+        let dname = dict.dtype || 'dname'
+        let id = [dname, idx].join('_')
+        let strs = dict.trn.split(' | ')
+        let children = strs.map(function(str) { return {text: str}})
+        data.push({text: dname, id: id, children: children})
+    })
+    // log('DData', data)
+    return data
+}
+
+function appendDicts(cur) {
+    let data = dictData(cur)
+    let anchor = cre('div')
+    let parent = q('#antrax-dicts')
     parent.appendChild(anchor)
-    // empty(anchor)
     let tree = new Tree(anchor)
     tree.data(data)
 }
 
+// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
+// λέγω
+function showVerb(cur) {
+    let oMorphs = q('#antrax-morphs')
+    // empty(oMorphs)
+    // let oDicts = q('#antrax-dicts')
+    // empty(oDicts)
+    let oMorph = cre('div')
+    let dict = [cur.dict, cur.pos].join(' - ')
+    let odict = sa(dict)
+    let comma = cret(', ')
+    // log('DRAW VERB', cur)
+
+    let mstr = compactVerbMorph(cur)
+    let morphs = sa(mstr)
+    oMorph.appendChild(odict)
+    oMorph.appendChild(comma)
+    oMorph.appendChild(morphs)
+    oMorphs.appendChild(oMorph)
+    appendDicts(cur)
+}
+
+function compactVerbMorph(cur) {
+    if (!cur.morphs.length) return ''
+    let result = cur.morphs.map(function(morph) {
+        // log('M', morph, morph.numpers)
+        return morph.numpers
+    })
+    // log('VERB MORPH', result)
+    return JSON.stringify(result)
+}
+
 function showName(cur) {
     let oMorphs = q('#antrax-morphs')
-    empty(oMorphs)
+    // empty(oMorphs)
     let oMorph = cre('div')
     let dict = [cur.dict, cur.pos].join(' - ')
     let odict = sa(dict)
@@ -196,31 +254,8 @@ function showName(cur) {
     oMorph.appendChild(comma)
     oMorph.appendChild(morphs)
     oMorphs.appendChild(oMorph)
-    let data = dictData(cur.dicts)
-    let anchor = document.getElementById('antrax-dicts');
-    remove(anchor)
-    anchor = cre('div')
-    anchor.id = 'antrax-dicts'
-    let parent = q('#antrax-results')
-    parent.appendChild(anchor)
-    // empty(anchor)
-    let tree = new Tree(anchor)
-    tree.data(data)
-}
-
-// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-
-function dictData(dicts) {
-    // log('Dicts', dicts)
-    let data = []
-    dicts.forEach(function(dict, idx) {
-        let text = dict.dtype || 'dname'
-        let id = [text, idx].join('_')
-        let strs = dict.trn.split(' | ')
-        let children = strs.map(function(str) { return {text: str}})
-        data.push({text: text, id: id, children: children})
-    })
-    return data
+    // log('showName', cur)
+    appendDicts(cur)
 }
 
 function compactNameMorph(cur) {
@@ -251,53 +286,6 @@ function compactNameMorph(cur) {
 
 
 
-// группировка morphs и оформление tree
-// а если cur в разных chains состоит?
-
-// DEPR
-
-function parseCurrent_(chains, num) {
-    let currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
-    // log('C', currents)
-    let data = [{text: 'o-text'}]
-    return data
-    // могут быть 2 разные dict? конечно, из разных словарей
-    // log('CURRS', currents)
-    let gdicts = _.groupBy(currents, 'dict')
-    log('GDICTS SIZE KEYS', _.keys(gdicts))
-    for (let gdict in gdicts) {
-        let group = gdicts[gdict]
-        log('_ID', gdict, group)
-        let trns = group[0].trn.split(' | ')
-        let children = trns.map(function(trn) { return {text: trn}})
-        let gmorphs = _.groupBy(group, 'numcase')
-        let ggends = _.groupBy(group, 'gend')
-        log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
-        // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-        if (_.keys(gmorphs).length < _.keys(ggends).length) {
-            for (let numcase in gmorphs) {
-                let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
-                let morph = [JSON.stringify(gends), numcase].join('.')
-                let header = [gdict, morph].join(': ')
-                let dobj = {text: header, id: gdict, children: children}
-                data.push(dobj)
-            }
-        } else {
-            for (let gend in ggends) {
-                let morphs = ggends[gend].map(function(gg) { return gg.numcase})
-                // morphs = removeVoc(morphs)
-                let morph = [gend, JSON.stringify(morphs)].join('.')
-                let header = [gdict, morph].join(': ')
-                let dobj = {text: header, id: gdict, children: children}
-                data.push(dobj)
-            }
-        // let gends = []
-        // log('GM', gdict, 33, gmorphs)
-        }
-    }
-    return data
-}
-
 // эта хрень должна реагировать только на обращение:
 function removeVoc(morphs) {
     let cleans = []
@@ -325,7 +313,7 @@ function removeVoc(morphs) {
 // }]
 
 function drawHeader(clause, num) {
-    log('HEADER', clause, num)
+    // log('HEADER', clause, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     let idxs = _.keys(clause)
@@ -368,10 +356,7 @@ function underline(chains) {
     uns.forEach(function(el) {
         classes(el).remove('underlined')
     })
-
     // log('LINE CHAINS', chains)
-
-
     // let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
     // if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
     // if (chain.length < 2) return
@@ -381,7 +366,7 @@ function underline(chains) {
     chains.forEach(function(chain) {
         if (chain.length < 2) return
         chain.forEach(function(word) {
-            log('line word.idx')
+            // log('line word.idx')
             let el = words[word.idx]
             classes(el).add('underlined')
         })
