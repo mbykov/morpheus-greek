@@ -25,10 +25,8 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     antrax.query(obj.sentence, obj.num, function(_clause) {
         clause = _clause
 
-        return
-        let num = obj.num
-        drawHeader(clause, num)
-        drawMorphs(clause, num)
+        drawHeader(clause, obj.num)
+        drawMorphs(clause, obj.num)
     })
 })
 
@@ -37,6 +35,7 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 // все красиво, но как искать связи в глаголах, etc?
 
 function conform(currents, clause, num) {
+    return
     let chains = [];
     // только полные current names:
     let cnames = _.select(currents, function(cur) { return cur.pos == 'name'})
@@ -63,8 +62,6 @@ function conform(currents, clause, num) {
     let cnew = {idx: c.idx, form: c.form, pos: c.pos, dict: c.dict, morphs: cmorphs, dicts: cdicts}
 
     // chains - новые объекты
-    //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
-    // λέγω
 
     let dist = 3
     let chain = [cnew]
@@ -116,117 +113,83 @@ function conform(currents, clause, num) {
 function drawMorphs(clause, num) {
     // let anchor = document.getElementById('antrax-tree');
     // empty(anchor)
-    let currents = clause[num]
-    currents = _.select(currents, function(cur) { return !cur.empty})
-    let simpleterms = _.select(currents, function(cur) { return !cur.morphs && cur.type == 'term'})
-    currents = _.select(currents, function(cur) { return cur.morphs})
-    let chains = conform(currents, clause, num)
-    log('CHAINS', chains)
+    let current = clause[num]
+    log('DRAW MORPHS START ========', num, current)
+    // currents = _.select(currents, function(cur) { return !cur.empty})
+    // let simpleterms = _.select(currents, function(cur) { return !cur.morphs && cur.type == 'term'})
+    // currents = _.select(currents, function(cur) { return cur.morphs})
+    let chains = conform(current, clause, num)
+    // log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
     if (chains) {
         underline(chains)
-        currents = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
+        // current = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
     }
 
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
-    let oDicts = q('#antrax-dicts')
-    remove(oDicts)
-    oDicts = cre('div')
-    oDicts.id = 'antrax-dicts'
-    let parent = q('#antrax-results')
-    parent.appendChild(oDicts)
+    // log('DRAW oMORPHS', oMorphs)
 
-    drawSimpleTerm(simpleterms)
-    drawCurrents(currents)
+    let oDict = q('#antrax-dict')
+    remove(oDict)
+    oDict = cre('div')
+    oDict.id = 'antrax-dict'
+    let parent = q('#antrax-results')
+    parent.appendChild(oDict)
+
+    drawCurrent(current)
 }
 
+// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
 // λέγω
-// ffs - нет morphs - сразу dicts
-function drawSimpleTerm(sts) {
-    sts.forEach(function(dict) {
+
+function drawCurrent(cur) {
+    log('CFO', cur.forms)
+    if (cur.forms) showForms(cur.forms)
+    if (cur.term) showName(cur.term)
+    if (cur.name) showName(cur.name)
+}
+
+function showName(cur) {
+    let oMorphs = q('#antrax-morphs')
+    let oDict = q('#antrax-dict')
+
+    let dictpos = [cur.dict, cur.pos].join(' - ')
+    // let odict = sa(dict)
+    // let comma = cret(', ')
+    let mstr = compactNameMorph(cur)
+    // let morphs = sa(mstr)
+    let head = [dictpos, mstr].join('; ')
+    // oMorphs.appendChild(header)
+    // header.appendChild(odict)
+    // header.appendChild(comma)
+    // header.appendChild(morphs)
+    // header = 'kuku'
+
+    let strs = cur.trn.split(' | ')
+    let children = strs.map(function(str) { return {text: str}})
+    let data = [{text: head, id: 'dictpos', children: children}]
+    let tree = new Tree(oDict)
+    tree.data(data)
+
+}
+
+function showForms(forms) {
+    forms.forEach(function(form) {
+        log('DRAW FORM', form)
         let oMorphs = q('#antrax-morphs')
         let oMorph = cre('div')
-        let form = dict.form // FIXME:
-        let dictpos = [dict.form, dict.pos].join(', ')
+        // let dict = dict.form // FIXME:
+        let dictpos = [form.dict, form.pos].join(', ')
         let oDP = sa(dictpos)
         let comma = cret('; ')
-        let oTrn = sa(dict.trn)
+        let oTrn = sa(form.trn)
         classes(oTrn).add('black')
         oMorph.appendChild(oDP)
         oMorph.appendChild(comma)
         oMorph.appendChild(oTrn)
         oMorphs.appendChild(oMorph)
     })
-}
-
-function drawCurrents(currents) {
-    currents.forEach(function(cur) {
-        let pos = cur.pos
-        switch(pos) {
-        case 'verb':
-            showVerb(cur)
-            break
-        case 'art':
-        case 'name':
-        case 'noun':
-        case 'adj':
-        case 'part':
-        case 'pron':
-            showName(cur)
-            break
-        case 'particle':
-        case 'conj':
-        case 'prep':
-        case 'adv':
-            showConj(cur)
-            break
-        default:
-            log('=POS=', pos)
-        }
-    })
-}
-
-// два names - если есть LS, то добавить в него dicts из остальных
-//  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
-// αἰνολέων, οντος, ὁ, dreadful lion
-// ἀπόδεξις, εως, ἡ, (ἀποδέχομαι) acceptance
-// XXX
-
-function showConj(cur) {
-    let oMorphs = q('#antrax-morphs')
-    // empty(oMorphs)
-    let oMorph = cre('div')
-    let dict = cur.form // FIXME:
-    let dictpos = [dict, cur.pos].join(' - ')
-    let odict = sa(dictpos)
-    oMorph.appendChild(odict)
-    oMorphs.appendChild(oMorph)
-    appendDicts(cur)
-}
-
-function dictData(cur) {
-    // log('DDicts', cur.pos, cur.dict)
-    let data = []
-    let dicts = (cur.dicts) ? cur.dicts : [{dtype: cur.dtype, trn: cur.trn}]
-    dicts.forEach(function(dict, idx) {
-        let dname = dict.dtype || 'dname'
-        let id = [dname, idx].join('_')
-        let strs = dict.trn.split(' | ')
-        let children = strs.map(function(str) { return {text: str}})
-        data.push({text: dname, id: id, children: children})
-    })
-    // log('DData', data)
-    return data
-}
-
-function appendDicts(cur) {
-    let data = dictData(cur)
-    let anchor = cre('div')
-    let parent = q('#antrax-dicts')
-    parent.appendChild(anchor)
-    let tree = new Tree(anchor)
-    tree.data(data)
 }
 
 // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
@@ -261,23 +224,6 @@ function compactVerbMorph(cur) {
     return JSON.stringify(result)
 }
 
-function showName(cur) {
-    let oMorphs = q('#antrax-morphs')
-    // empty(oMorphs)
-    let oMorph = cre('div')
-    let dict = [cur.dict, cur.pos].join(' - ')
-    let odict = sa(dict)
-    let comma = cret(', ')
-    let mstr = compactNameMorph(cur)
-    let morphs = sa(mstr)
-    oMorph.appendChild(odict)
-    oMorph.appendChild(comma)
-    oMorph.appendChild(morphs)
-    oMorphs.appendChild(oMorph)
-    // log('showName', cur)
-    appendDicts(cur)
-}
-
 function compactNameMorph(cur) {
     let result
     // log('MORPHS', cur.morphs)
@@ -304,6 +250,18 @@ function compactNameMorph(cur) {
     return morphs
 }
 
+
+// function showConj(cur) {
+//     let oMorphs = q('#antrax-morphs')
+//     // empty(oMorphs)
+//     let oMorph = cre('div')
+//     let dict = cur.form // FIXME:
+//     let dictpos = [dict, cur.pos].join(' - ')
+//     let odict = sa(dictpos)
+//     oMorph.appendChild(odict)
+//     oMorphs.appendChild(oMorph)
+//     appendDicts(cur)
+// }
 
 
 // эта хрень должна реагировать только на обращение:
@@ -332,14 +290,17 @@ function removeVoc(morphs) {
 //     text: 'end'
 // }]
 
+// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
+// λέγω
+// ἐπιβάλλουσι
+
 function drawHeader(clause, num) {
     // log('HEADER', clause, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     let idxs = _.keys(clause)
     idxs.forEach(function(idx, i) {
-        // если есть dict кроме empty, их оставить, empty откинуть, а если нет, то empty
-        let form = clause[idx][0].form
+        let form = clause[idx].key
         let span = sa(form)
         // let id = ['id_', idx].join('')
         span.idx = i
