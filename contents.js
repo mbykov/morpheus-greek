@@ -24,10 +24,8 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     log('MSG', obj)
     antrax.query(obj.sentence, obj.num, function(_clause) {
         clause = _clause
-        // log('clause:', clause)
-        // oRes.textContent = obj.sentence
-        // check(obj.sentence)
 
+        return
         let num = obj.num
         drawHeader(clause, num)
         drawMorphs(clause, num)
@@ -189,6 +187,7 @@ function drawCurrents(currents) {
     })
 }
 
+// два names - если есть LS, то добавить в него dicts из остальных
 //  καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 // αἰνολέων, οντος, ὁ, dreadful lion
 // ἀπόδεξις, εως, ἡ, (ἀποδέχομαι) acceptance
