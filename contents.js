@@ -40,19 +40,13 @@ function conform(clause, num) {
     // только полные current names:
     let name = current.name || current.term
     if (!name) return
-    log('---------------->>>>NAME', name)
-    log('---------------->>>>POS', name.pos)
     let type = (current.name) ? 'name' : 'term'
     // let type = name.type
 
     let cmorphs = name.morphs
     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
     cstrs = _.uniq(cstrs)
-    log('CSTRS', cstrs)
-    // let cnew = {idx: name.idx, form: name.form, dict: name.dict, pos: name.pos, type: name.type, trn: name.trn}
-    // let newcur = {key: current.key}
-    // newcur[name.type] = cnew
-    // log('NEWQ W M', newcur)
+    // log('CSTRS', cstrs)
 
     // chains - новые объекты
     // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
@@ -69,12 +63,12 @@ function conform(clause, num) {
         let oname = other.name || other.term
         let otype = (other.name) ? 'name' : 'term'
         if (!oname) continue
-        log('OTHER name', idx, other.key, oname)
+        // log('OTHER name', idx, other.key, oname)
         let omorphs = oname.morphs
         log('OTHER morphs', idx, other.key, omorphs)
         let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
         ostrs = _.uniq(ostrs)
-        log('OSTRS', ostrs)
+        // log('OSTRS', ostrs)
         let common = _.intersection(cstrs, ostrs)
         let newmorphs, onew
         if (!common.length) continue
@@ -87,7 +81,7 @@ function conform(clause, num) {
         chain[idx] = other
         // if (chain.length > 1) chains.push(chain)
     }
-    log('NEW CHAIN', chain)
+    // log('NEW CHAIN', chain)
     if (_.keys(chain).length == 1) return
     return chain
 
@@ -105,19 +99,14 @@ function conform(clause, num) {
 // кажется, можно без таблицы все, кроме leluka - не считая неправильных
 // terms залить заново, не form и dict
 // в seed_ls - выделить indecls
-// ff вешать в dicts
-// dict-morphs - создавать div и append
 
 function drawMorphs(clause, num) {
     // let anchor = document.getElementById('antrax-tree');
     // empty(anchor)
     let current = clause[num]
     log('DRAW MORPHS START ========', num, current)
-    // currents = _.select(currents, function(cur) { return !cur.empty})
-    // let simpleterms = _.select(currents, function(cur) { return !cur.morphs && cur.type == 'term'})
-    // currents = _.select(currents, function(cur) { return cur.morphs})
     let chain = conform(clause, num)
-    // log('CHAINS', chains)
+
     // 1- подчернуть chains и 2 - показать tree-current
 
     let uns = qs('.underlined')
@@ -183,7 +172,6 @@ function creDict() {
 function showVerb(cur) {
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
-    log('ODICT', oDict)
     let mstr = cur.morphs.map(function(m) { return JSON.stringify(m.numpers) })
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
