@@ -34,72 +34,70 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 // chains мне нужны ТОЛЬКО для подчеркивания - пока names
 // все красиво, но как искать связи в глаголах, etc?
 
-function conform(currents, clause, num) {
-    return
-    let chains = [];
+function conform(clause, num) {
+    let current = clause[num]
+    // let chains = [];
     // только полные current names:
-    let cnames = _.select(currents, function(cur) { return cur.pos == 'name'})
-    cnames = _.select(cnames, function(cur) { return cur.morphs})
-    if (!cnames.length) return
-    // XXX
+    let name = current.name || current.term
+    if (!name) return
+    log('---------------->>>>NAME', name)
+    log('---------------->>>>POS', name.pos)
+    let type = (current.name) ? 'name' : 'term'
+    // let type = name.type
 
-    let cverbs = _.select(currents, function(cur) { return cur.pos == 'verb' && cur.morphs})
-    let nomorphs = _.select(currents, function(cur) { return !cur.morphs})
-    log('CUR NAMES', cnames)
-    log('CUR VERBS', cverbs)
-    log('CUR NOMs', nomorphs)
-    nomorphs.forEach(function(cur) {
-        // cur.nomorph = true
-        // chains.push([cur]);
-    })
-
-    let cmorphs = _.flatten(cnames.map(function(n) { return n.morphs}))
+    let cmorphs = name.morphs
     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
     cstrs = _.uniq(cstrs)
     log('CSTRS', cstrs)
-    let c = cnames[0]
-    let cdicts = cnames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
-    let cnew = {idx: c.idx, form: c.form, pos: c.pos, dict: c.dict, morphs: cmorphs, dicts: cdicts}
+    // let cnew = {idx: name.idx, form: name.form, dict: name.dict, pos: name.pos, type: name.type, trn: name.trn}
+    // let newcur = {key: current.key}
+    // newcur[name.type] = cnew
+    // log('NEWQ W M', newcur)
 
     // chains - новые объекты
+    // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
     let dist = 3
-    let chain = [cnew]
+    let chain = {}
+    chain[num] = current
     for (let idx in clause) {
         if (idx == num) continue
         if (idx < num - dist) continue
         if (idx > num + dist) continue
-        let otherows = clause[idx]
+        let other = clause[idx]
         // только полные others:
-        let onames = _.select(otherows, function(cur) { return !cur.empty})
-        onames = _.select(onames, function(cur) { return cur.pos == 'name'})
-        onames = _.select(onames, function(cur) { return cur.morphs})
-        let omorphs = _.flatten(onames.map(function(n) { return n.morphs}))
+        let oname = other.name || other.term
+        let otype = (other.name) ? 'name' : 'term'
+        if (!oname) continue
+        log('OTHER name', idx, other.key, oname)
+        let omorphs = oname.morphs
+        log('OTHER morphs', idx, other.key, omorphs)
         let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
         ostrs = _.uniq(ostrs)
         log('OSTRS', ostrs)
         let common = _.intersection(cstrs, ostrs)
-        let newmorphs, o, onew, odicts
-        if (common.length) {
-            newmorphs = common.map(function(m) { return JSON.parse(m)})
-            cnew.morphs = newmorphs
-            o = onames[0]
-            odicts = onames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
-            onew = {idx: o.idx, form: o.form, pos: o.pos, dict: o.dict, morphs: newmorphs, dicts: odicts}
-            chain.push(onew)
-        }
-        if (chain.length > 1) chains.push(chain)
+        let newmorphs, onew
+        if (!common.length) continue
+        newmorphs = common.map(function(m) { return JSON.parse(m)})
+        // cnew.morphs = newmorphs
+        current[type].morphs = newmorphs
+        // onew = {idx: oname.idx, form: oname.form, pos: oname.pos, dict: oname.dict, morphs: newmorphs, type: oname.type, trn: oname.trn}
+        // let newother = {key: other.key, idx: idx}
+        other[otype].morphs = newmorphs
+        chain[idx] = other
+        // if (chain.length > 1) chains.push(chain)
     }
-    log('NEW CHAINS', chains)
+    log('NEW CHAIN', chain)
+    if (_.keys(chain).length == 1) return
+    return chain
 
-    if (!chains.length) return
-    let max = _.max(chains.map(function(ch) { return ch.length; }));
-    log('MAX', max);
-    if (max == 1) return
-    chains = _.select(chains, function(ch) { return ch.length == max; });
-    return chains;
+    // if (!chains.length) return
+    // let max = _.max(chains.map(function(ch) { return ch.length; }));
+    // log('MAX', max);
+    // if (max == 1) return
+    // chains = _.select(chains, function(ch) { return ch.length == max; });
+    // return chains;
 }
-
 
 // все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
 // <<=========================================
@@ -118,25 +116,30 @@ function drawMorphs(clause, num) {
     // currents = _.select(currents, function(cur) { return !cur.empty})
     // let simpleterms = _.select(currents, function(cur) { return !cur.morphs && cur.type == 'term'})
     // currents = _.select(currents, function(cur) { return cur.morphs})
-    let chains = conform(current, clause, num)
+    let chain = conform(clause, num)
     // log('CHAINS', chains)
     // 1- подчернуть chains и 2 - показать tree-current
-    if (chains) {
-        underline(chains)
-        // current = _.select(_.flatten(chains), function(ch) { return ch.idx  == num })
+
+    let uns = qs('.underlined')
+    uns.forEach(function(el) {
+        classes(el).remove('underlined')
+    })
+
+    if (chain) {
+        underline(chain)
+        current = chain[num]
+        log('NEW CUR', current)
     }
 
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
     // log('DRAW oMORPHS', oMorphs)
-
     let oDict = q('#antrax-dict')
     remove(oDict)
     oDict = cre('div')
     oDict.id = 'antrax-dict'
     let parent = q('#antrax-results')
     parent.appendChild(oDict)
-
     drawCurrent(current)
 }
 
@@ -144,7 +147,7 @@ function drawMorphs(clause, num) {
 // λέγω
 
 function drawCurrent(cur) {
-    log('CFO', cur.forms)
+    // log('FORMS', cur.forms)
     if (cur.forms) showForms(cur.forms)
     if (cur.term) showName(cur.term)
     if (cur.name) showName(cur.name)
@@ -176,7 +179,7 @@ function showName(cur) {
 
 function showForms(forms) {
     forms.forEach(function(form) {
-        log('DRAW FORM', form)
+        // log('DRAW FORM', form)
         let oMorphs = q('#antrax-morphs')
         let oMorph = cre('div')
         // let dict = dict.form // FIXME:
@@ -331,27 +334,18 @@ function bindEvents(el) {
 
 // или м.б разные words, кроме current? А если разные, то что делать?
 // и как будут еще сгруппированы chains? а если прибавится связей?
+// μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 // .πωνυμ
-function underline(chains) {
-    let uns = qs('.underlined')
-    uns.forEach(function(el) {
-        classes(el).remove('underlined')
-    })
-    // log('LINE CHAINS', chains)
-    // let chain = chains[0] // any chain - пока что простейший вариант, все chains из одинаковых words
-    // if (!chain || !chain.length) return // это уйдет, когда chain в terms будет массив FIXME:
-    // if (chain.length < 2) return
-    // log('underline chains', chains)
-    // μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
+function underline(chain) {
+    // let uns = qs('.underlined')
+    // uns.forEach(function(el) {
+    //     classes(el).remove('underlined')
+    // })
     let words = qs('#antrax-header span.antrax-form')
-    chains.forEach(function(chain) {
-        if (chain.length < 2) return
-        chain.forEach(function(word) {
-            // log('line word.idx')
-            let el = words[word.idx]
-            classes(el).add('underlined')
-        })
-    })
+    for (let idx in chain) {
+        let el = words[idx]
+        classes(el).add('underlined')
+    }
 }
 
 
@@ -448,3 +442,73 @@ x.onclick = function() {
 
 
 function log() { console.log.apply(console, arguments); }
+
+
+
+// function conform_(clause, num) {
+//     let currents = clause[num]
+
+//     return
+//     let chains = [];
+//     // только полные current names:
+//     let cnames = _.select(currents, function(cur) { return cur.pos == 'name'})
+//     cnames = _.select(cnames, function(cur) { return cur.morphs})
+//     if (!cnames.length) return
+//     // XXX
+
+//     let cverbs = _.select(currents, function(cur) { return cur.pos == 'verb' && cur.morphs})
+//     let nomorphs = _.select(currents, function(cur) { return !cur.morphs})
+//     log('CUR NAMES', cnames)
+//     log('CUR VERBS', cverbs)
+//     log('CUR NOMs', nomorphs)
+//     nomorphs.forEach(function(cur) {
+//         // cur.nomorph = true
+//         // chains.push([cur]);
+//     })
+
+//     let cmorphs = _.flatten(cnames.map(function(n) { return n.morphs}))
+//     let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
+//     cstrs = _.uniq(cstrs)
+//     log('CSTRS', cstrs)
+//     let c = cnames[0]
+//     let cdicts = cnames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
+//     let cnew = {idx: c.idx, form: c.form, pos: c.pos, dict: c.dict, morphs: cmorphs, dicts: cdicts}
+
+//     // chains - новые объекты
+
+//     let dist = 3
+//     let chain = [cnew]
+//     for (let idx in clause) {
+//         if (idx == num) continue
+//         if (idx < num - dist) continue
+//         if (idx > num + dist) continue
+//         let otherows = clause[idx]
+//         // только полные others:
+//         let onames = _.select(otherows, function(cur) { return !cur.empty})
+//         onames = _.select(onames, function(cur) { return cur.pos == 'name'})
+//         onames = _.select(onames, function(cur) { return cur.morphs})
+//         let omorphs = _.flatten(onames.map(function(n) { return n.morphs}))
+//         let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
+//         ostrs = _.uniq(ostrs)
+//         log('OSTRS', ostrs)
+//         let common = _.intersection(cstrs, ostrs)
+//         let newmorphs, o, onew, odicts
+//         if (common.length) {
+//             newmorphs = common.map(function(m) { return JSON.parse(m)})
+//             cnew.morphs = newmorphs
+//             o = onames[0]
+//             odicts = onames.map(function(n) { return {dtype: n.dtype, trn: n.trn}})
+//             onew = {idx: o.idx, form: o.form, pos: o.pos, dict: o.dict, morphs: newmorphs, dicts: odicts}
+//             chain.push(onew)
+//         }
+//         if (chain.length > 1) chains.push(chain)
+//     }
+//     log('NEW CHAINS', chains)
+
+//     if (!chains.length) return
+//     let max = _.max(chains.map(function(ch) { return ch.length; }));
+//     log('MAX', max);
+//     if (max == 1) return
+//     chains = _.select(chains, function(ch) { return ch.length == max; });
+//     return chains;
+// }
