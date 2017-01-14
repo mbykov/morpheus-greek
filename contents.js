@@ -134,12 +134,13 @@ function drawMorphs(clause, num) {
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
     // log('DRAW oMORPHS', oMorphs)
-    let oDict = q('#antrax-dict')
-    remove(oDict)
-    oDict = cre('div')
-    oDict.id = 'antrax-dict'
+    let odicts = q('#antrax-dicts')
+    remove(odicts)
+    let oDicts = cre('div')
+    oDicts.id = 'antrax-dicts'
     let parent = q('#antrax-results')
-    parent.appendChild(oDict)
+    parent.appendChild(oDicts)
+
     drawCurrent(current)
 }
 
@@ -148,33 +149,51 @@ function drawMorphs(clause, num) {
 
 function drawCurrent(cur) {
     // log('FORMS', cur.forms)
-    if (cur.forms) showForms(cur.forms)
     if (cur.term) showName(cur.term)
+    if (cur.forms) showForms(cur.forms)
+    if (cur.verb) showVerb(cur.verb)
     if (cur.name) showName(cur.name)
 }
 
 function showName(cur) {
     let oMorphs = q('#antrax-morphs')
-    let oDict = q('#antrax-dict')
+    let oDict = creDict()
 
-    let dictpos = [cur.dict, cur.pos].join(' - ')
-    // let odict = sa(dict)
-    // let comma = cret(', ')
     let mstr = compactNameMorph(cur)
-    // let morphs = sa(mstr)
+    let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
-    // oMorphs.appendChild(header)
-    // header.appendChild(odict)
-    // header.appendChild(comma)
-    // header.appendChild(morphs)
-    // header = 'kuku'
-
     let strs = cur.trn.split(' | ')
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
+
     let tree = new Tree(oDict)
     tree.data(data)
+}
 
+function creDict() {
+    let oDict = cre('div')
+    classes(oDict).add('antrax-dict')
+    let parent = q('#antrax-dicts')
+    parent.appendChild(oDict)
+    return oDict
+}
+
+// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
+// λέγω
+function showVerb(cur) {
+    let oMorphs = q('#antrax-morphs')
+    let oDict = creDict()
+    log('ODICT', oDict)
+    let mstr = cur.morphs.map(function(m) { return JSON.stringify(m.numpers) })
+
+    let dictpos = [cur.dict, cur.pos].join(' - ')
+    let head = [dictpos, mstr].join('; ')
+    let strs = cur.trn.split(' | ')
+    let children = strs.map(function(str) { return {text: str}})
+    let data = [{text: head, id: 'dictpos', children: children}]
+
+    let tree = new Tree(oDict)
+    tree.data(data)
 }
 
 function showForms(forms) {
@@ -193,28 +212,6 @@ function showForms(forms) {
         oMorph.appendChild(oTrn)
         oMorphs.appendChild(oMorph)
     })
-}
-
-// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-// λέγω
-function showVerb(cur) {
-    let oMorphs = q('#antrax-morphs')
-    // empty(oMorphs)
-    // let oDicts = q('#antrax-dicts')
-    // empty(oDicts)
-    let oMorph = cre('div')
-    let dict = [cur.dict, cur.pos].join(' - ')
-    let odict = sa(dict)
-    let comma = cret(', ')
-    // log('DRAW VERB', cur)
-
-    let mstr = compactVerbMorph(cur)
-    let morphs = sa(mstr)
-    oMorph.appendChild(odict)
-    oMorph.appendChild(comma)
-    oMorph.appendChild(morphs)
-    oMorphs.appendChild(oMorph)
-    appendDicts(cur)
 }
 
 function compactVerbMorph(cur) {
