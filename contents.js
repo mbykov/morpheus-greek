@@ -140,7 +140,7 @@ function drawCurrent(cur) {
     // log('FORMS', cur.forms)
     if (cur.term) showName(cur.term)
     if (cur.forms) showForms(cur.forms)
-    if (cur.verb) showVerb(cur.verb)
+    if (cur.verbs) showVerbs(cur.verbs)
     if (cur.name) showName(cur.name)
 }
 
@@ -169,10 +169,22 @@ function creDict() {
 
 // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 // λέγω
+function showVerbs(verbs) {
+    verbs.forEach(function(verb) {
+        showVerb(verb)
+    })
+}
+
 function showVerb(cur) {
+    log('VERB', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
-    let mstr = cur.morphs.map(function(m) { return JSON.stringify(m.numpers) })
+    let mstrs = []
+    for (let mod in cur.morphs) {
+        mstrs.push([mod, cur.morphs[mod]].join(': '))
+    }
+    let mstr = mstrs.join('; ')
+    // let mstr = cur.morphs.map(function(m) { return JSON.stringify(m.numpers) })
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
@@ -182,24 +194,6 @@ function showVerb(cur) {
 
     let tree = new Tree(oDict)
     tree.data(data)
-}
-
-function showForms(forms) {
-    forms.forEach(function(form) {
-        // log('DRAW FORM', form)
-        let oMorphs = q('#antrax-morphs')
-        let oMorph = cre('div')
-        // let dict = dict.form // FIXME:
-        let dictpos = [form.dict, form.pos].join(', ')
-        let oDP = sa(dictpos)
-        let comma = cret('; ')
-        let oTrn = sa(form.trn)
-        classes(oTrn).add('black')
-        oMorph.appendChild(oDP)
-        oMorph.appendChild(comma)
-        oMorph.appendChild(oTrn)
-        oMorphs.appendChild(oMorph)
-    })
 }
 
 function compactVerbMorph(cur) {
@@ -237,6 +231,25 @@ function compactNameMorph(cur) {
     // result = sa(str)
     return morphs
 }
+
+function showForms(forms) {
+    forms.forEach(function(form) {
+        // log('DRAW FORM', form)
+        let oMorphs = q('#antrax-morphs')
+        let oMorph = cre('div')
+        // let dict = dict.form // FIXME:
+        let dictpos = [form.dict, form.pos].join(', ')
+        let oDP = sa(dictpos)
+        let comma = cret('; ')
+        let oTrn = sa(form.trn)
+        classes(oTrn).add('black')
+        oMorph.appendChild(oDP)
+        oMorph.appendChild(comma)
+        oMorph.appendChild(oTrn)
+        oMorphs.appendChild(oMorph)
+    })
+}
+
 
 
 // function showConj(cur) {
