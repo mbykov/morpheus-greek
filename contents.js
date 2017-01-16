@@ -39,6 +39,7 @@ function conform(clause, num) {
     // let chains = [];
     // только полные current names:
     let name = current.name || current.term
+    if (name.pos == 'verb') return
     if (!name) return
     let type = (current.name) ? 'name' : 'term'
     // let type = name.type
@@ -137,26 +138,63 @@ function drawMorphs(clause, num) {
 // λέγω
 
 function drawCurrent(cur) {
-    // log('FORMS', cur.forms)
+    log('drCURRENT', cur)
+    if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
     if (cur.term) showName(cur.term)
     if (cur.forms) showForms(cur.forms)
     if (cur.verbs) showVerbs(cur.verbs)
-    if (cur.name) showName(cur.name)
+    if (cur.names) showNames(cur.names)
+}
+
+function showNames(names) {
+    names.forEach(function(name) {
+        showName(name)
+    })
 }
 
 function showName(cur) {
+    log('SHOW NAME', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
     let mstr = compactNameMorph(cur)
+    log('MSTR', mstr)
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
     let strs = cur.trn.split(' | ')
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
 
+    log('NAME DATA', data)
     let tree = new Tree(oDict)
     tree.data(data)
+}
+
+function compactNameMorph(cur) {
+    let result
+    // log('MORPHS', cur.morphs)
+    let gmorphs = _.groupBy(cur.morphs, 'numcase')
+    let ggends = _.groupBy(cur.morphs, 'gend')
+    log('gmorphs', gmorphs)
+    // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
+    let morphs
+    if (_.keys(gmorphs).length <= _.keys(ggends).length) {
+        for (let numcase in gmorphs) {
+            let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
+            gends = _.uniq(gends).sort()
+            morphs = [JSON.stringify(gends), numcase].join('.')
+        }
+    } else {
+        for (let gend in ggends) {
+            morphs = ggends[gend].map(function(gg) { return gg.numcase})
+            morphs = _.uniq(morphs).sort()
+            // morphs = removeVoc(morphs)
+            morphs = [gend, JSON.stringify(morphs)].join('.')
+        }
+    }
+    // let str = [cur.dict, morph].join(': ')
+    // result = sa(str)
+    return morphs
 }
 
 function creDict() {
@@ -204,32 +242,6 @@ function compactVerbMorph(cur) {
     })
     // log('VERB MORPH', result)
     return JSON.stringify(result)
-}
-
-function compactNameMorph(cur) {
-    let result
-    // log('MORPHS', cur.morphs)
-    let gmorphs = _.groupBy(cur.morphs, 'numcase')
-    let ggends = _.groupBy(cur.morphs, 'gend')
-    // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
-    let morphs
-    if (_.keys(gmorphs).length <= _.keys(ggends).length) {
-        for (let numcase in gmorphs) {
-            let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
-            gends = _.uniq(gends).sort()
-            morphs = [JSON.stringify(gends), numcase].join('.')
-        }
-    } else {
-        for (let gend in ggends) {
-            morphs = ggends[gend].map(function(gg) { return gg.numcase})
-            morphs = _.uniq(morphs).sort()
-            // morphs = removeVoc(morphs)
-            morphs = [gend, JSON.stringify(morphs)].join('.')
-        }
-    }
-    // let str = [cur.dict, morph].join(': ')
-    // result = sa(str)
-    return morphs
 }
 
 function showForms(forms) {
