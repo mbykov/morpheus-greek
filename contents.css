@@ -14,7 +14,7 @@ body {
     height: 600px;
     /* overflow: hidden; */
     /* http://stackoverflow.com/questions/18548465/prevent-scroll-bar-from-adding-up-to-the-width-of-page-on-chrome */
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 #header {
@@ -28,6 +28,7 @@ body {
 
 #container {
     height: 100%;
+    overflow-x: hidden;
     /* padding-right: 50px; */
     /* padding: 10px; */
     /* vertical-align:middle; */

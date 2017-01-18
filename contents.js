@@ -32,94 +32,85 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 
 // поиск chains для current num
 // chains мне нужны ТОЛЬКО для подчеркивания - пока names
-// все красиво, но как искать связи в глаголах, etc?
+// chain = {idx: num, idy: str-id}
 
-function conform(clause, num) {
-    let current = clause[num]
-    // let chains = [];
-    // только полные current names:
-    let name = current.name || current.term
-    if (name.pos == 'verb') return
-    if (!name) return
-    let type = (current.name) ? 'name' : 'term'
-    // let type = name.type
-
-    let cmorphs = name.morphs
-    let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
-    cstrs = _.uniq(cstrs)
-    // log('CSTRS', cstrs)
-
-    // chains - новые объекты
-    // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
-
-    let dist = 3
-    let chain = {}
-    chain[num] = current
-    for (let idx in clause) {
-        if (idx == num) continue
-        if (idx < num - dist) continue
-        if (idx > num + dist) continue
-        let other = clause[idx]
-        // только полные others:
-        let oname = other.name || other.term
-        let otype = (other.name) ? 'name' : 'term'
-        if (!oname) continue
-        // log('OTHER name', idx, other.key, oname)
-        let omorphs = oname.morphs
-        log('OTHER morphs', idx, other.key, omorphs)
-        let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
-        ostrs = _.uniq(ostrs)
-        // log('OSTRS', ostrs)
-        let common = _.intersection(cstrs, ostrs)
-        let newmorphs, onew
-        if (!common.length) continue
-        newmorphs = common.map(function(m) { return JSON.parse(m)})
-        // cnew.morphs = newmorphs
-        current[type].morphs = newmorphs
-        // onew = {idx: oname.idx, form: oname.form, pos: oname.pos, dict: oname.dict, morphs: newmorphs, type: oname.type, trn: oname.trn}
-        // let newother = {key: other.key, idx: idx}
-        other[otype].morphs = newmorphs
-        chain[idx] = other
-        // if (chain.length > 1) chains.push(chain)
-    }
-    // log('NEW CHAIN', chain)
-    if (_.keys(chain).length == 1) return
-    return chain
-
-    // if (!chains.length) return
-    // let max = _.max(chains.map(function(ch) { return ch.length; }));
-    // log('MAX', max);
-    // if (max == 1) return
-    // chains = _.select(chains, function(ch) { return ch.length == max; });
-    // return chains;
+function getNames(current) {
+    let names = []
+    if (current.names) names = (current.names)
+    if (current.term) names.push(current.term)
+    return (names.length) ? names: null
 }
 
-// все типы - сколько их? <<<<<<<<<<<<<<<<<<==========
-// <<=========================================
-// причастия начать - нужна таблица стемов глаголов?
-// кажется, можно без таблицы все, кроме leluka - не считая неправильных
-// terms залить заново, не form и dict
-// в seed_ls - выделить indecls
+function conformNames(clause, num) {
+    let current = clause[num]
+    let cnames = getNames(current)
+    if (!cnames) return
+    let dist = 3
+    cnames.forEach(function(cname, idy) {
+        log('CName', idy, cname)
+        let cmorphs = cname.morphs
+        let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
+        cstrs = _.uniq(cstrs)
+        cname.chains = []
+        for (let idx in clause) {
+            if (idx == num) continue
+            if (idx < num - dist) continue
+            if (idx > num + dist) continue
+            let other = clause[idx]
+            let onames = getNames(other)
+            // cname.linked = 0
+            // cname.changes = []
+            let chain = []
+            onames.forEach(function(oname, idz) {
+                let omorphs = oname.morphs
+                let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
+                ostrs = _.uniq(ostrs)
+                let common = _.intersection(cstrs, ostrs)
+                if (!common.length) return
+                // log('ZZZ', idx, idy, idz, common)
+                // let nms = common.map(function(m) { return JSON.parse(m)})
+                let cmn = {idx: idx, idz: idz, common: common}
+                chain.push(cmn)
+            })
+            if (!chain.length) return
+            cname.chains.push(chain)
+        }
+        log('CO=CHs', idy, cname.chains)
+        let sizes = cname.chains.map(function(ch) { return ch.length })
+        // log('SIZES', sizes)
+        let max = _.max(cname.chains.map(function(ch) { return ch.length }))
+        // log('cMAX', max);
+        cname.chain = _.find(cname.chains, function(ch) { return ch.length == max })
+        log('new chain', cname.chain)
+    })
+    // max from several current names:
+    let max = _.max(cnames.map(function(cname) { return cname.chains.length }))
+    // log('MAX', max);
+    let newc = _.find(cnames, function(cname) { return cname.chains.length == max })
+    if (!newc) return
+    log('NEW CHAIN TWO', newc)
+    log('NMS', newc.chain)
+    let nms = []
+    newc.chain.forEach(function(chain) {
+        chain.common.forEach(function(m) {
+            log('M', m)
+            nms.push(JSON.parse(m))
+        })
+    })
+    // log('NMS2', nms)
+    newc.omorphs = newc.morphs
+    newc.morphs = nms
+    // log('NEWC', newc)
+    return newc
+}
+
+// τῶν παλαιῶν
+// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
 function drawMorphs(clause, num) {
     // let anchor = document.getElementById('antrax-tree');
     // empty(anchor)
     let current = clause[num]
-    log('DRAW MORPHS START ========', num, current)
-    let chain = conform(clause, num)
-
-    // 1- подчернуть chains и 2 - показать tree-current
-
-    let uns = qs('.underlined')
-    uns.forEach(function(el) {
-        classes(el).remove('underlined')
-    })
-
-    if (chain) {
-        underline(chain)
-        current = chain[num]
-        log('NEW CUR', current)
-    }
 
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
@@ -131,6 +122,23 @@ function drawMorphs(clause, num) {
     let parent = q('#antrax-results')
     parent.appendChild(oDicts)
 
+    log('DRAW MORPHS START ========', num, current)
+    if (current.empty) return
+    let newc = conformNames(clause, num)
+
+    // 1- подчернуть chains и 2 - показать tree-current
+
+    let uns = qs('.underlined')
+    uns.forEach(function(el) {
+        classes(el).remove('underlined')
+    })
+
+    if (newc) {
+        // underline(chain)
+        if (newc.pos == 'name') current.names = [newc]
+        if (newc.type == 'term') current.term = newc
+        // log('NEW CUR', newc)
+    }
     drawCurrent(current)
 }
 
@@ -138,9 +146,10 @@ function drawMorphs(clause, num) {
 // λέγω
 
 function drawCurrent(cur) {
-    log('drCURRENT', cur)
+    log('draw CURRENT', cur)
+    // FIXME: отдельная строчка
     if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
-    if (cur.term) showName(cur.term)
+    if (cur.term && cur.term.pos != 'verb') showName(cur.term)
     if (cur.forms) showForms(cur.forms)
     if (cur.verbs) showVerbs(cur.verbs)
     if (cur.names) showNames(cur.names)
@@ -153,19 +162,19 @@ function showNames(names) {
 }
 
 function showName(cur) {
-    log('SHOW NAME', cur)
+    // log('SHOW NAME', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
     let mstr = compactNameMorph(cur)
-    log('MSTR', mstr)
+    // log('MSTR', mstr)
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
     let strs = cur.trn.split(' | ')
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
 
-    log('NAME DATA', data)
+    // log('NAME DATA', data)
     let tree = new Tree(oDict)
     tree.data(data)
 }
@@ -175,7 +184,7 @@ function compactNameMorph(cur) {
     // log('MORPHS', cur.morphs)
     let gmorphs = _.groupBy(cur.morphs, 'numcase')
     let ggends = _.groupBy(cur.morphs, 'gend')
-    log('gmorphs', gmorphs)
+    // log('gmorphs', gmorphs)
     // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
     let morphs
     if (_.keys(gmorphs).length <= _.keys(ggends).length) {
