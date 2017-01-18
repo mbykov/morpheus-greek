@@ -46,6 +46,7 @@ function getNames(current) {
   оставить пока только артикли? А в реальности - постепенно - сначала артикли, отбросить лишнее. Потом смотреть местоимения
   потому что артикли главнее, а местоимения могут бить дальше
   то есть делать два цикла?
+  сейчас работает, но код - жуть
 
  */
 
@@ -157,6 +158,7 @@ function drawCurrent(cur) {
     // FIXME: отдельная строчка
     if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
     if (cur.term && cur.term.pos != 'verb') showName(cur.term)
+    if (cur.plain) showForms([cur.plain]) // FIXME:
     if (cur.forms) showForms(cur.forms)
     if (cur.verbs) showVerbs(cur.verbs)
     if (cur.names) showNames(cur.names)
