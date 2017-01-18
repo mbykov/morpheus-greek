@@ -37,9 +37,17 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 function getNames(current) {
     let names = []
     if (current.names) names = (current.names)
-    if (current.term) names.push(current.term)
+    if (current.term && current.term.pos == 'art') names.push(current.term)
+    // if (current.term) names.push(current.term)
     return (names.length) ? names: null
 }
+
+/* пока что полная жопа. tode - neut.sg.acc, neut.sg.nom - выбирает причастие palaion, что не верно
+  оставить пока только артикли? А в реальности - постепенно - сначала артикли, отбросить лишнее. Потом смотреть местоимения
+  потому что артикли главнее, а местоимения могут бить дальше
+  то есть делать два цикла?
+
+ */
 
 function conformNames(clause, num) {
     let current = clause[num]
@@ -47,7 +55,7 @@ function conformNames(clause, num) {
     if (!cnames) return
     let dist = 3
     cnames.forEach(function(cname, idy) {
-        log('CName', idy, cname)
+        log('CONFName', idy, cname)
         let cmorphs = cname.morphs
         let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
         cstrs = _.uniq(cstrs)
@@ -58,8 +66,7 @@ function conformNames(clause, num) {
             if (idx > num + dist) continue
             let other = clause[idx]
             let onames = getNames(other)
-            // cname.linked = 0
-            // cname.changes = []
+            if (!onames) continue
             let chain = []
             onames.forEach(function(oname, idz) {
                 let omorphs = oname.morphs
@@ -67,33 +74,35 @@ function conformNames(clause, num) {
                 ostrs = _.uniq(ostrs)
                 let common = _.intersection(cstrs, ostrs)
                 if (!common.length) return
-                // log('ZZZ', idx, idy, idz, common)
-                // let nms = common.map(function(m) { return JSON.parse(m)})
                 let cmn = {idx: idx, idz: idz, common: common}
                 chain.push(cmn)
             })
-            if (!chain.length) return
+            if (!chain.length) continue
             cname.chains.push(chain)
         }
+        if (!cname.chains.length) return
         log('CO=CHs', idy, cname.chains)
         let sizes = cname.chains.map(function(ch) { return ch.length })
         // log('SIZES', sizes)
         let max = _.max(cname.chains.map(function(ch) { return ch.length }))
         // log('cMAX', max);
-        cname.chain = _.find(cname.chains, function(ch) { return ch.length == max })
+        let chain = _.find(cname.chains, function(ch) { return ch.length == max })
+        if (!chain) return
+        cname.chain = chain
         log('new chain', cname.chain)
     })
     // max from several current names:
     let max = _.max(cnames.map(function(cname) { return cname.chains.length }))
     // log('MAX', max);
+    if (!max) return
     let newc = _.find(cnames, function(cname) { return cname.chains.length == max })
-    if (!newc) return
-    log('NEW CHAIN TWO', newc)
-    log('NMS', newc.chain)
+    if (!newc || !newc.chain || !newc.chain.length) return
+    log('NMS', newc)
+    // log('NMSc', newc.chain)
     let nms = []
     newc.chain.forEach(function(chain) {
         chain.common.forEach(function(m) {
-            log('M', m)
+            // log('M', m)
             nms.push(JSON.parse(m))
         })
     })
@@ -103,7 +112,6 @@ function conformNames(clause, num) {
     // log('NEWC', newc)
     return newc
 }
-
 // τῶν παλαιῶν
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
@@ -124,17 +132,16 @@ function drawMorphs(clause, num) {
 
     log('DRAW MORPHS START ========', num, current)
     if (current.empty) return
-    let newc = conformNames(clause, num)
-
-    // 1- подчернуть chains и 2 - показать tree-current
-
     let uns = qs('.underlined')
     uns.forEach(function(el) {
         classes(el).remove('underlined')
     })
 
+    // 1- подчернуть chains и 2 - показать tree-current
+    let newc = conformNames(clause, num)
     if (newc) {
-        // underline(chain)
+        log('NEWC START')
+        underline(newc)
         if (newc.pos == 'name') current.names = [newc]
         if (newc.type == 'term') current.term = newc
         // log('NEW CUR', newc)
@@ -146,7 +153,7 @@ function drawMorphs(clause, num) {
 // λέγω
 
 function drawCurrent(cur) {
-    log('draw CURRENT', cur)
+    // log('draw CURRENT', cur)
     // FIXME: отдельная строчка
     if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
     if (cur.term && cur.term.pos != 'verb') showName(cur.term)
@@ -355,16 +362,19 @@ function bindEvents(el) {
 // и как будут еще сгруппированы chains? а если прибавится связей?
 // μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 // .πωνυμ
-function underline(chain) {
-    // let uns = qs('.underlined')
-    // uns.forEach(function(el) {
-    //     classes(el).remove('underlined')
-    // })
+function underline(cur) {
+    let idxs = cur.chain.map(function(m) { return m.idx })
+    log('UNDERLINE', cur)
+    log('IDXS', idxs)
+    // let unds  = idxs.push(cur.idx.toString())
+    idxs.push(cur.idx)
+    log('UNDS', idxs)
+
     let words = qs('#antrax-header span.antrax-form')
-    for (let idx in chain) {
-        let el = words[idx]
-        classes(el).add('underlined')
-    }
+    idxs.forEach(function(idx) {
+            let el = words[idx]
+            classes(el).add('underlined')
+    })
 }
 
 
