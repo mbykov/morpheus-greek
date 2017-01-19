@@ -15,6 +15,7 @@ ICT KEYS ["παλαιᾶ", "παλαιά", "παλαια", "παλαιας", "
 ὠχρός
 πηχυς ιχθυς
 λυω -
+σκηνη
 */
 let clause;
 
@@ -55,12 +56,15 @@ function conformNames(clause, num) {
     let cnames = getNames(current)
     if (!cnames) return
     let dist = 3
+    let chains = []
     cnames.forEach(function(cname, idy) {
         log('CONFName', idy, cname)
         let cmorphs = cname.morphs
         let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
         cstrs = _.uniq(cstrs)
-        cname.chains = []
+        // cname.chains = []
+        let chain = [cname]
+        let common
         for (let idx in clause) {
             if (idx == num) continue
             if (idx < num - dist) continue
@@ -68,50 +72,45 @@ function conformNames(clause, num) {
             let other = clause[idx]
             let onames = getNames(other)
             if (!onames) continue
-            let chain = []
+            // log('ONAMES', onames)
+            // похоже, чушь. Common должн быть одинаковый в chain
             onames.forEach(function(oname, idz) {
                 let omorphs = oname.morphs
                 let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
                 ostrs = _.uniq(ostrs)
                 let common = _.intersection(cstrs, ostrs)
                 if (!common.length) return
+                // if (!common) common = newcommon
+                // else if (common != newcommon) return
                 let cmn = {idx: idx, idz: idz, common: common}
                 chain.push(cmn)
             })
-            if (!chain.length) continue
-            cname.chains.push(chain)
         }
-        if (!cname.chains.length) return
-        log('CO=CHs', idy, cname.chains)
-        let sizes = cname.chains.map(function(ch) { return ch.length })
-        // log('SIZES', sizes)
-        let max = _.max(cname.chains.map(function(ch) { return ch.length }))
-        // log('cMAX', max);
-        let chain = _.find(cname.chains, function(ch) { return ch.length == max })
-        if (!chain) return
-        cname.chain = chain
-        log('new chain', cname.chain)
+        if (chain.length < 2) return
+        chains.push(chain)
+        log('CMS', common)
+        // let nmorphs = commons.map(function(m) { return JSON.parse(m)})
+        // cname.omorphs = cname.morphs
+        // cname.morphs = nmorphs
+        // log('new chain', chain)
     })
-    // max from several current names:
-    let max = _.max(cnames.map(function(cname) { return cname.chains.length }))
+    if (!chains.length) return
+    let max = _.max(chains.map(function(chain) { return chain.length }))
     // log('MAX', max);
     if (!max) return
-    let newc = _.find(cnames, function(cname) { return cname.chains.length == max })
-    if (!newc || !newc.chain || !newc.chain.length) return
-    log('NMS', newc)
-    // log('NMSc', newc.chain)
-    let nms = []
-    newc.chain.forEach(function(chain) {
-        chain.common.forEach(function(m) {
-            // log('M', m)
-            nms.push(JSON.parse(m))
-        })
-    })
-    // log('NMS2', nms)
-    newc.omorphs = newc.morphs
-    newc.morphs = nms
-    // log('NEWC', newc)
-    return newc
+    let mchain = _.find(chains, function(chain) { return chain.length == max })
+    if (!mchain) return
+    log('MCHS', mchain);
+    let newc = mchain[0]
+    let idxs = mchain.slice(1).map(function(m) { return m.idx})
+    let cms = mchain.slice(1).map(function(m) { return m.common})
+    let min = _.min(cms.map(function(common) { return common.length }))
+    cms = _.find(cms, function(common) { return common.length == min })
+    let nmorphs = cms.map(function(m) { return JSON.parse(m)})
+    newc.omorphs = newc.morphs // memory
+    newc.morphs = nmorphs
+    log('IDXSXX', idxs, newc)
+    return [newc, idxs]
 }
 // τῶν παλαιῶν
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
@@ -139,17 +138,18 @@ function drawMorphs(clause, num) {
     })
 
     // 1- подчернуть chains и 2 - показать tree-current
-    let newc = conformNames(clause, num)
-    if (newc) {
-        log('NEWC START')
-        underline(newc)
-        if (newc.pos == 'name') current.names = [newc]
-        if (newc.type == 'term') current.term = newc
-        // log('NEW CUR', newc)
-    }
+    let [newc, idxs] = conformNames(clause, num)
+    // if (chains) {
+    //     log('NEWC START')
+    //     let newc = chains[0]
+    //     // underline(newc)
+    //     if (newc.pos == 'name') current.names = [newc]
+    //     if (newc.type == 'term') current.term = newc
+    //     // log('NEW CUR', newc)
+    // }
     drawCurrent(current)
 }
-
+// καλῆς τῆς σκηνῆς
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
 // λέγω
 
@@ -366,11 +366,11 @@ function bindEvents(el) {
 // .πωνυμ
 function underline(cur) {
     let idxs = cur.chain.map(function(m) { return m.idx })
-    log('UNDERLINE', cur)
+    // log('UNDERLINE', cur)
     log('IDXS', idxs)
     // let unds  = idxs.push(cur.idx.toString())
     idxs.push(cur.idx)
-    log('UNDS', idxs)
+    // log('UNDS', idxs)
 
     let words = qs('#antrax-header span.antrax-form')
     idxs.forEach(function(idx) {
