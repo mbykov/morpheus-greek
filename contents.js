@@ -142,7 +142,7 @@ function drawMorphs(clause, num) {
     let res =  conformNames(clause, num)
     if (res) {
             let newc = res.newc
-            // underline(res.idxs)
+            underline(res.idxs)
             if (newc.pos == 'name') current.names = [newc]
             if (newc.type == 'term') current.term = newc
             // log('NEW CUR', newc)
@@ -364,12 +364,12 @@ function bindEvents(el) {
 // и как будут еще сгруппированы chains? а если прибавится связей?
 // μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 // .πωνυμ
-function underline(cur) {
-    let idxs = cur.chain.map(function(m) { return m.idx })
+function underline(idxs) {
+    // let idxs = cur.chain.map(function(m) { return m.idx })
     // log('UNDERLINE', cur)
     log('IDXS', idxs)
     // let unds  = idxs.push(cur.idx.toString())
-    idxs.push(cur.idx)
+    // idxs.push(cur.idx)
     // log('UNDS', idxs)
 
     let words = qs('#antrax-header span.antrax-form')
