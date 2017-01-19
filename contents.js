@@ -64,7 +64,7 @@ function conformNames(clause, num) {
         cstrs = _.uniq(cstrs)
         // cname.chains = []
         let chain = [cname]
-        let common
+        // let common
         for (let idx in clause) {
             if (idx == num) continue
             if (idx < num - dist) continue
@@ -88,7 +88,7 @@ function conformNames(clause, num) {
         }
         if (chain.length < 2) return
         chains.push(chain)
-        log('CMS', common)
+        // log('CMS', common)
         // let nmorphs = commons.map(function(m) { return JSON.parse(m)})
         // cname.omorphs = cname.morphs
         // cname.morphs = nmorphs
@@ -110,7 +110,8 @@ function conformNames(clause, num) {
     newc.omorphs = newc.morphs // memory
     newc.morphs = nmorphs
     log('IDXSXX', idxs, newc)
-    return [newc, idxs]
+    let result = {newc: newc, idxs: idxs}
+    return result
 }
 // τῶν παλαιῶν
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
@@ -138,15 +139,14 @@ function drawMorphs(clause, num) {
     })
 
     // 1- подчернуть chains и 2 - показать tree-current
-    let [newc, idxs] = conformNames(clause, num)
-    // if (chains) {
-    //     log('NEWC START')
-    //     let newc = chains[0]
-    //     // underline(newc)
-    //     if (newc.pos == 'name') current.names = [newc]
-    //     if (newc.type == 'term') current.term = newc
-    //     // log('NEW CUR', newc)
-    // }
+    let res =  conformNames(clause, num)
+    if (res) {
+            let newc = res.newc
+            // underline(res.idxs)
+            if (newc.pos == 'name') current.names = [newc]
+            if (newc.type == 'term') current.term = newc
+            // log('NEW CUR', newc)
+    }
     drawCurrent(current)
 }
 // καλῆς τῆς σκηνῆς
