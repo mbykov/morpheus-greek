@@ -62,9 +62,7 @@ function conformNames(clause, num) {
         let cmorphs = cname.morphs
         let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
         cstrs = _.uniq(cstrs)
-        // cname.chains = []
         let chain = [cname]
-        // let common
         for (let idx in clause) {
             if (idx == num) continue
             if (idx < num - dist) continue
@@ -79,79 +77,83 @@ function conformNames(clause, num) {
                 let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
                 ostrs = _.uniq(ostrs)
                 let common = _.intersection(cstrs, ostrs)
+                // log('STRS', cstrs, ostrs)
+                // log('COMM', common)
                 if (!common.length) return
-                // if (!common) common = newcommon
-                // else if (common != newcommon) return
                 let cmn = {idx: idx, idz: idz, common: common}
                 chain.push(cmn)
             })
         }
         if (chain.length < 2) return
         chains.push(chain)
-        // log('CMS', common)
-        // let nmorphs = commons.map(function(m) { return JSON.parse(m)})
-        // cname.omorphs = cname.morphs
-        // cname.morphs = nmorphs
-        // log('new chain', chain)
+        // log('CHAIN', chain)
     })
     if (!chains.length) return
     let max = _.max(chains.map(function(chain) { return chain.length }))
     // log('MAX', max);
     if (!max) return
-    let mchain = _.find(chains, function(chain) { return chain.length == max })
-    if (!mchain) return
-    log('MCHS', mchain);
-    let newc = mchain[0]
-    let idxs = mchain.slice(1).map(function(m) { return m.idx})
-    let cms = mchain.slice(1).map(function(m) { return m.common})
-    let min = _.min(cms.map(function(common) { return common.length }))
-    cms = _.find(cms, function(common) { return common.length == min })
-    let nmorphs = cms.map(function(m) { return JSON.parse(m)})
-    newc.omorphs = newc.morphs // memory
-    newc.morphs = nmorphs
-    log('IDXSXX', idxs, newc)
-    let result = {newc: newc, idxs: idxs}
+    let mchains = _.select(chains, function(chain) { return chain.length == max })
+    if (!mchains.length) return
+    // log('MCHS', mchains);
+    // let newc = mchain[0]
+    let res = []
+    mchains.forEach(function(chain) {
+        let newc = chain[0]
+        let idxs = chain.slice(1).map(function(m) { return m.idx})
+        idxs = _.uniq(idxs)
+        let cms = chain.slice(1).map(function(m) { return m.common })[0]
+        let nmorphs = cms.map(function(common) { return JSON.parse(common)})
+        // log('CMS', cms)
+        newc.omorphs = newc.morphs
+        newc.morphs = nmorphs
+        let r = {newc: newc, idxs: idxs, cms: cms}
+        res.push(r)
+    })
+    // log('RRRRR', res)
+    let idxs = res[0].idxs
+    let newcs = res.map(function(r) {return r.newc })
+
+    let cur = {names: [], terms: []}
+    newcs.forEach(function(newc) {
+        if (newc.pos == 'name') cur.names.push(newc)
+        else if (newc.type == 'term') cur.term = newc
+    })
+    let result = {cur: cur, idxs: idxs}
     return result
 }
 // τῶν παλαιῶν
 // δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
 function drawMorphs(clause, num) {
-    // let anchor = document.getElementById('antrax-tree');
-    // empty(anchor)
+    emptyDict()
     let current = clause[num]
+    log('DRAW MORPHS START ========', num, current)
+    if (current.empty) return
+    // 1- подчернуть chains и 2 - показать tree-current
+    let res =  conformNames(clause, num)
+    if (res) {
+            current = res.cur
+            underline(res.idxs)
+    }
+    drawCurrent(current)
+}
+// καλῆς τῆς σκηνῆς
+// λέγω
 
+function emptyDict() {
+    let uns = qs('.underlined')
+    uns.forEach(function(el) {
+        classes(el).remove('underlined')
+    })
     let oMorphs = q('#antrax-morphs')
     empty(oMorphs)
-    // log('DRAW oMORPHS', oMorphs)
     let odicts = q('#antrax-dicts')
     remove(odicts)
     let oDicts = cre('div')
     oDicts.id = 'antrax-dicts'
     let parent = q('#antrax-results')
     parent.appendChild(oDicts)
-
-    log('DRAW MORPHS START ========', num, current)
-    if (current.empty) return
-    let uns = qs('.underlined')
-    uns.forEach(function(el) {
-        classes(el).remove('underlined')
-    })
-
-    // 1- подчернуть chains и 2 - показать tree-current
-    let res =  conformNames(clause, num)
-    if (res) {
-            let newc = res.newc
-            underline(res.idxs)
-            if (newc.pos == 'name') current.names = [newc]
-            if (newc.type == 'term') current.term = newc
-            // log('NEW CUR', newc)
-    }
-    drawCurrent(current)
 }
-// καλῆς τῆς σκηνῆς
-// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
-// λέγω
 
 function drawCurrent(cur) {
     // log('draw CURRENT', cur)
@@ -175,8 +177,9 @@ function showName(cur) {
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
-    let mstr = compactNameMorph(cur)
-    // log('MSTR', mstr)
+    let mstrs = compactNameMorph(cur)
+    // log('MSTR', mstrs)
+    let mstr = mstrs.join(', ')
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
     let strs = cur.trn.split(' | ')
@@ -195,21 +198,30 @@ function compactNameMorph(cur) {
     let ggends = _.groupBy(cur.morphs, 'gend')
     // log('gmorphs', gmorphs)
     // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
-    let morphs
+    let morphs = []
     if (_.keys(gmorphs).length <= _.keys(ggends).length) {
         for (let numcase in gmorphs) {
             let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
             gends = _.uniq(gends).sort()
-            morphs = [JSON.stringify(gends), numcase].join('.')
+            // log('GENDS', gends)
+            let str = gends.join('-')
+            // let morph = [JSON.stringify(gends), numcase].join('.')
+            let morph = [str, numcase].join(': ')
+            // log('MORPH', morph)
+            morphs.push(morph)
         }
     } else {
         for (let gend in ggends) {
-            morphs = ggends[gend].map(function(gg) { return gg.numcase})
-            morphs = _.uniq(morphs).sort()
+            let numcases = ggends[gend].map(function(gg) { return gg.numcase})
+            numcases = _.uniq(numcases).sort()
             // morphs = removeVoc(morphs)
-            morphs = [gend, JSON.stringify(morphs)].join('.')
+            let str = numcases.join('-')
+            // let morph = [gend, JSON.stringify(numcases)].join('.')
+            let morph = [gend, str].join(': ')
+            morphs.push(morph)
         }
     }
+
     // let str = [cur.dict, morph].join(': ')
     // result = sa(str)
     return morphs
