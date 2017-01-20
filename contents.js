@@ -214,7 +214,8 @@ function compactNameMorph(cur) {
         for (let gend in ggends) {
             let numcases = ggends[gend].map(function(gg) { return gg.numcase})
             numcases = _.uniq(numcases).sort()
-            // morphs = removeVoc(morphs)
+            numcases = removeVoc(numcases)
+            log('NUMCASES', numcases)
             let str = numcases.join('-')
             // let morph = [gend, JSON.stringify(numcases)].join('.')
             let morph = [gend, str].join(': ')
@@ -314,8 +315,11 @@ function removeVoc(morphs) {
     morphs.forEach(function(morph) {
         if (morph.split('.')[1] == 'nom') hasNom = true
     })
+    if (!hasNom) return morphs
     morphs.forEach(function(morph) {
-        if (hasNom && morph.split('.')[1] != 'voc') cleans.push(morph)
+        if (morph.split('.')[1] == 'voc') return
+        if (morph.split('.')[0] == 'du') return
+        cleans.push(morph)
     })
     return cleans
 }
