@@ -70,15 +70,15 @@ function conformNames(clause, num) {
             let other = clause[idx]
             let onames = getNames(other)
             if (!onames) continue
-            // log('ONAMES', onames)
+            log('ONAMES', onames)
             // похоже, чушь. Common должн быть одинаковый в chain
             onames.forEach(function(oname, idz) {
                 let omorphs = oname.morphs
                 let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
                 ostrs = _.uniq(ostrs)
                 let common = _.intersection(cstrs, ostrs)
-                // log('STRS', cstrs, ostrs)
-                // log('COMM', common)
+                log('STRS', cstrs, ostrs)
+                log('COMM', common)
                 if (!common.length) return
                 let cmn = {idx: idx, idz: idz, common: common}
                 chain.push(cmn)
@@ -86,7 +86,7 @@ function conformNames(clause, num) {
         }
         if (chain.length < 2) return
         chains.push(chain)
-        // log('CHAIN', chain)
+        log('CHAIN', chain)
     })
     if (!chains.length) return
     let max = _.max(chains.map(function(chain) { return chain.length }))
@@ -94,7 +94,7 @@ function conformNames(clause, num) {
     if (!max) return
     let mchains = _.select(chains, function(chain) { return chain.length == max })
     if (!mchains.length) return
-    // log('MCHS', mchains);
+    log('MCHS', mchains);
     // let newc = mchain[0]
     let res = []
     mchains.forEach(function(chain) {
@@ -132,8 +132,9 @@ function drawMorphs(clause, num) {
     // 1- подчернуть chains и 2 - показать tree-current
     let res =  conformNames(clause, num)
     if (res) {
-            current = res.cur
-            underline(res.idxs)
+        log('LINE===', res.idxs)
+        current = res.cur
+        underline(res.idxs)
     }
     drawCurrent(current)
 }
@@ -313,7 +314,7 @@ function removeVoc(morphs) {
     let cleans = []
     let hasNom = false
     morphs.forEach(function(morph) {
-        if (morph.split('.')[1] == 'nom') hasNom = true
+        if (morph == 'sg.nom') hasNom = true
     })
     if (!hasNom) return morphs
     morphs.forEach(function(morph) {
