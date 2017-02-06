@@ -11,10 +11,15 @@
 body {
     /* border: 1px solid red; */
     font-family: 'DejaVu Sans';
-    height: 600px;
+    height-max: 600px;
+    /* height: 600px; */
     /* overflow: hidden; */
     /* http://stackoverflow.com/questions/18548465/prevent-scroll-bar-from-adding-up-to-the-width-of-page-on-chrome */
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
+}
+
+html {
+    overflow-y: scroll;
 }
 
 #header {
@@ -22,13 +27,14 @@ body {
     color: #fff;
     background-color: #8aba87;
     text-align: center;
-    font-size: 40px;
+    font-size: 36px;
     padding: 5px;
+    /* margin-right: 15px; */
 }
 
 #container {
-    height: 100%;
-    overflow-x: hidden;
+    /* height: 100%; */
+    /* overflow-x: hidden; */
     /* padding-right: 50px; */
     /* padding: 10px; */
     /* vertical-align:middle; */
