@@ -61,10 +61,12 @@ function drawMorphs(words, num) {
 function drawCurrent(cur) {
     log('draw CURRENT', cur)
     let morphs = []
-    cur.dicts.forEach(function(dict) {
-        log('D', dict.type, dict.pos)
-        log('M', dict.morphs)
+    let dicts = cur.dicts.sort().reverse()
+    dicts.forEach(function(dict) {
+        // log('D', dict.type, dict.pos)
+        // log('M', dict.morphs)
         // XXX
+        if (dict.pos == 'verb') return
         showName(dict)
     })
     // if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
@@ -75,11 +77,11 @@ function drawCurrent(cur) {
     // if (cur.names) showNames(cur.names)
 }
 
-function showNames(names) {
-    names.forEach(function(name) {
-        showName(name)
-    })
-}
+// function showNames(names) {
+//     names.forEach(function(name) {
+//         showName(name)
+//     })
+// }
 
 function showName(cur) {
     // log('SHOW NAME', cur)
@@ -90,9 +92,10 @@ function showName(cur) {
     // log('MSTR', mstrs)
     let mstr = mstrs.join(', ')
     let dictpos = [cur.dict, cur.pos].join(' - ')
-    dictpos = [cur.type, dictpos].join(': ')
+    if (cur.type) dictpos = [cur.type, dictpos].join(': ')
     let head = [dictpos, mstr].join('; ')
-    cur.trn = cur.trn.toString()
+    if (!cur.trn) return // FIXME: th-part ἀγῶσι
+    cur.trn = cur.trn.toString() // FIXME: true
     let strs = cur.trn.split(/\||\n/)
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
@@ -212,11 +215,13 @@ function removeVoc(morphs) {
     let hasNom = false
     morphs.forEach(function(morph) {
         if (morph == 'sg.nom') hasNom = true
+        if (morph == 'pl.nom') hasNom = true
+        if (morph == 'du.nom') hasNom = true
     })
     if (!hasNom) return morphs
     morphs.forEach(function(morph) {
         if (morph.split('.')[1] == 'voc') return
-        if (morph.split('.')[0] == 'du') return
+        // if (morph.split('.')[0] == 'du') return
         cleans.push(morph)
     })
     return cleans
@@ -242,7 +247,7 @@ function removeVoc(morphs) {
 // τοιαύτη, τοιοῦτο, τοιοῦτον ;;; ὀνόματι
 
 function drawHeader(words, num) {
-    log('HEADER', words, num)
+    // log('HEADER', words, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     words.forEach(function(word, i) {
