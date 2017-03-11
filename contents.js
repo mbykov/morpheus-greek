@@ -63,11 +63,9 @@ function drawCurrent(cur) {
     let morphs = []
     let dicts = cur.dicts.sort().reverse()
     dicts.forEach(function(dict) {
-        // log('D', dict.type, dict.pos)
-        // log('M', dict.morphs)
-        // XXX
-        if (dict.pos == 'verb') return
-        showName(dict)
+        log('DICT BEFORE SHOW', dict)
+        if (dict.pos == 'verb') showVerb(dict)
+        else showName(dict)
     })
     // if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
     // if (cur.term && cur.term.pos != 'verb') showName(cur.term)
@@ -129,7 +127,7 @@ function compactNameMorph(cur) {
             let numcases = ggends[gend].map(function(gg) { return gg.numcase})
             numcases = _.uniq(numcases).sort()
             numcases = removeVoc(numcases)
-            log('NUMCASES', numcases)
+            // log('NUMCASES', numcases)
             let str = numcases.join('-')
             // let morph = [gend, JSON.stringify(numcases)].join('.')
             let morph = [gend, str].join(': ')
@@ -159,7 +157,7 @@ function showVerbs(verbs) {
 }
 
 function showVerb(cur) {
-    log('VERB', cur)
+    log('SHOW VERB', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
