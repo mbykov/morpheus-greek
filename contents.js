@@ -64,6 +64,7 @@ function drawCurrent(cur) {
     let dicts = cur.dicts.sort().reverse()
     dicts.forEach(function(dict) {
         log('DICT BEFORE SHOW', dict)
+        if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else showName(dict)
     })
@@ -92,8 +93,7 @@ function showName(cur) {
     let dictpos = [cur.dict, cur.pos].join(' - ')
     if (cur.type) dictpos = [cur.type, dictpos].join(': ')
     let head = [dictpos, mstr].join('; ')
-    if (!cur.trn) return // FIXME: th-part ἀγῶσι
-    cur.trn = cur.trn.toString() // FIXME: true
+    // if (!cur.trn) cur.trn = '!!! no trn !!!' // FIXME:
     let strs = cur.trn.split(/\||\n/)
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
