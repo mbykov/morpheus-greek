@@ -63,7 +63,7 @@ function drawCurrent(cur) {
     let morphs = []
     let dicts = cur.dicts.sort().reverse()
     dicts.forEach(function(dict) {
-        log('DICT BEFORE SHOW', dict)
+        // log('DICT BEFORE SHOW', dict)
         if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else showName(dict)
@@ -157,7 +157,7 @@ function showVerbs(verbs) {
 }
 
 function showVerb(cur) {
-    log('SHOW VERB', cur)
+    // log('SHOW VERB', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
