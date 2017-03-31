@@ -63,9 +63,10 @@ function drawCurrent(cur) {
     let morphs = []
     let dicts = cur.dicts.sort().reverse()
     dicts.forEach(function(dict) {
-        // log('DICT BEFORE SHOW', dict)
+        log('DICT BEFORE SHOW', dict)
         if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
+        else if (dict.pos == 'inf') showInf(dict)
         else showName(dict)
     })
     // if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
@@ -203,6 +204,21 @@ function showForms(forms) {
         oMorph.appendChild(oTrn)
         oMorphs.appendChild(oMorph)
     })
+}
+
+function showInf(cur) {
+    log('SHOW INF', cur)
+    let oMorphs = q('#antrax-morphs')
+    let oDict = creDict()
+
+    let dictpos = [cur.dict, cur.pos].join(' - ')
+    let head = [dictpos, cur.var].join('; ')
+    let strs = cur.trn.split(/\||\n/)
+    let children = strs.map(function(str) { return {text: str}})
+    let data = [{text: head, id: 'dictpos', children: children}]
+
+    let tree = new Tree(oDict)
+    tree.data(data)
 }
 
 
@@ -397,16 +413,18 @@ x.onclick = function() {
 
 
 function log() { console.log.apply(console, arguments); }
+// function log() { }
 
 /// ================================================== OLD
 
-function getNames(current) {
-    let names = []
-    if (current.names) names = (current.names)
-    if (current.term && current.term.pos == 'art') names.push(current.term)
-    // if (current.term) names.push(current.term)
-    return (names.length) ? names: null
-}
+// function getNames(current) {
+//     let names = []
+//     if (current.names) names = (current.names)
+//     if (current.term && current.term.pos == 'art') names.push(current.term)
+//     // if (current.term) names.push(current.term)
+//     return (names.length) ? names: null
+// }
+
 
 /* пока что полная жопа. tode - neut.sg.acc, neut.sg.nom - выбирает причастие palaion, что не верно
    оставить пока только артикли? А в реальности - постепенно - сначала артикли, отбросить лишнее. Потом смотреть местоимения
@@ -415,76 +433,3 @@ function getNames(current) {
    сейчас работает, но код - жуть
 
 */
-
-
-
-// function conformNames_(words, num) {
-//     let current = words[num]
-//     let cnames = getNames(current)
-//     if (!cnames) return
-//     let dist = 4
-//     let chains = []
-//     cnames.forEach(function(cname, idy) {
-//         log('CONFName', idy, cname)
-//         let cmorphs = cname.morphs
-//         let cstrs = cmorphs.map(function(m) { return JSON.stringify(m)})
-//         cstrs = _.uniq(cstrs)
-//         let chain = [cname]
-//         for (let idx in words) {
-//             if (idx == num) continue
-//             if (idx < num - dist) continue
-//             if (idx > num + dist) continue
-//             let other = words[idx]
-//             let onames = getNames(other)
-//             if (!onames) continue
-//             log('ONAMES', onames)
-//             // похоже, чушь. Common должн быть одинаковый в chain
-//             onames.forEach(function(oname, idz) {
-//                 let omorphs = oname.morphs
-//                 let ostrs = omorphs.map(function(m) { return JSON.stringify(m)})
-//                 ostrs = _.uniq(ostrs)
-//                 let common = _.intersection(cstrs, ostrs)
-//                 log('STRS', cstrs, ostrs)
-//                 log('COMM', common)
-//                 if (!common.length) return
-//                 let cmn = {idx: idx, idz: idz, common: common}
-//                 chain.push(cmn)
-//             })
-//         }
-//         if (chain.length < 2) return
-//         chains.push(chain)
-//         log('CHAIN', chain)
-//     })
-//     if (!chains.length) return
-//     let max = _.max(chains.map(function(chain) { return chain.length }))
-//     // log('MAX', max);
-//     if (!max) return
-//     let mchains = _.select(chains, function(chain) { return chain.length == max })
-//     if (!mchains.length) return
-//     log('MCHS', mchains);
-//     // let newc = mchain[0]
-//     let res = []
-//     mchains.forEach(function(chain) {
-//         let newc = chain[0]
-//         let idxs = chain.slice(1).map(function(m) { return m.idx})
-//         idxs = _.uniq(idxs)
-//         let cms = chain.slice(1).map(function(m) { return m.common })[0]
-//         let nmorphs = cms.map(function(common) { return JSON.parse(common)})
-//         // log('CMS', cms)
-//         newc.omorphs = newc.morphs
-//         newc.morphs = nmorphs
-//         let r = {newc: newc, idxs: idxs, cms: cms}
-//         res.push(r)
-//     })
-//     // log('RRRRR', res)
-//     let idxs = res[0].idxs
-//     let newcs = res.map(function(r) {return r.newc })
-
-//     let cur = {names: [], terms: []}
-//     newcs.forEach(function(newc) {
-//         if (newc.pos == 'name') cur.names.push(newc)
-//         else if (newc.type == 'term') cur.term = newc
-//     })
-//     let result = {cur: cur, idxs: idxs}
-//     return result
-// }
