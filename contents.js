@@ -412,8 +412,8 @@ x.onclick = function() {
 }
 
 
-function log() { console.log.apply(console, arguments); }
-// function log() { }
+// function log() { console.log.apply(console, arguments); }
+function log() { }
 
 /// ================================================== OLD
 
