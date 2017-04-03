@@ -34,7 +34,9 @@ function listenSelection(win) {
         let num
         if (!num) num = 0 // FIXME: найти длиннейшее слово
         if (!str) str = 'KUKUKU'
-        let sent = punctuation(str)
+        // в punctuation, похоже, бред
+        // let sent = punctuation(str)
+        let sent = {sentence: str, punct: "!"}
         sent.num = num
         let msg = JSON.stringify(sent)
 
