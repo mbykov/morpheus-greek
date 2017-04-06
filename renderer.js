@@ -11,6 +11,9 @@ const ses = session.fromPartition('persist:name')
 const BaseURL = 'http://localhost'
 const orthos = require('../../greek/orthos');
 
+// это проверить, зачем второй раз
+// const {ipcRenderer} = require('electron')
+
 // const newWindowBtn = document.getElementById('new-window')
 // newWindowBtn.addEventListener('click', function (event) {})
 
@@ -62,6 +65,10 @@ function listenSelection(win) {
             win.on('closed', function () {
                 win = null
             })
+            // win.on('window-all-closed', function () {
+            //     ipcRenderer.sendSync('synchronous-message', 'window-all-closed')
+            //     win = null
+            // })
             win.loadURL(winPath)
 
             let name = 'position'

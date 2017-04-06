@@ -8,6 +8,7 @@ const _ = require('underscore')
 const Events = require('component-events')
 const classes = require('component-classes')
 const Tree = require('./tree')
+const {ipcRenderer} = require('electron')
 
 /* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
 δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο  ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ
@@ -381,7 +382,12 @@ function closeAll() {
 
 
 document.onkeyup = function(e) {
-    if (e.which === 27) { //Esc
+    if (e.shiftKey && e.which === 27) { // Esc + Shift
+        log('================ CLOSE')
+        ipcRenderer.sendSync('synchronous-message', 'window-all-closed') // не работает, виснет
+        // closeAll()
+        // window = null
+    } else if (e.which === 27) { //Esc
         closeAll()
     } else if ([37, 39].includes(e.which)) {
         moveCurrent(e)
