@@ -61,8 +61,11 @@ function drawMorphs(words, num) {
 
 function drawCurrent(cur) {
     log('draw CURRENT', cur)
-    let morphs = []
-    let dicts = cur.dicts.sort().reverse()
+    cur.dicts.forEach(function(d) {
+        if (!d.weight) d.weight = 0
+    })
+    // let dicts = cur.dicts.sort().reverse()
+    let dicts = _.sortBy(cur.dicts, 'weight')
     dicts.forEach(function(dict) {
         log('DICT BEFORE SHOW', dict)
         if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
@@ -70,32 +73,19 @@ function drawCurrent(cur) {
         else if (dict.pos == 'inf') showInf(dict)
         else showName(dict)
     })
-    // if (cur.term && cur.term.pos == 'verb') showVerb(cur.term)
-    // if (cur.term && cur.term.pos != 'verb') showName(cur.term)
-    // if (cur.plain) showForms([cur.plain]) // FIXME:
-    // if (cur.forms) showForms(cur.forms)
-    // if (cur.verbs) showVerbs(cur.verbs)
-    // if (cur.names) showNames(cur.names)
 }
 
-// function showNames(names) {
-//     names.forEach(function(name) {
-//         showName(name)
-//     })
-// }
 
 function showName(cur) {
     // log('SHOW NAME', cur)
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
-    let mstrs = compactNameMorph(cur)
-    // log('MSTR', mstrs)
-    let mstr = mstrs.join(', ')
+    let mstr = compactNameMorph(cur)
+    // log('NAME MSTR', mstr)
     let dictpos = [cur.dict, cur.pos].join(' - ')
     if (cur.type) dictpos = [cur.type, dictpos].join(': ')
     let head = [dictpos, mstr].join('; ')
-    // if (!cur.trn) cur.trn = '!!! no trn !!!' // FIXME:
     let strs = cur.trn.split(/\||\n/)
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
@@ -106,8 +96,12 @@ function showName(cur) {
 }
 
 function compactNameMorph(cur) {
-    let result
-    // log('MORPHS', cur.morphs)
+    let mstr
+    // if (cur.indecl) {
+    //     let morph = [cur.gend, cur.numcase].join('.')
+    //     mstr = [cur.var, morph].join(' - ')
+    //     return mstr
+    // }
     let gmorphs = _.groupBy(cur.morphs, 'numcase')
     let ggends = _.groupBy(cur.morphs, 'gend')
     // log('gmorphs', gmorphs)
@@ -137,9 +131,8 @@ function compactNameMorph(cur) {
         }
     }
 
-    // let str = [cur.dict, morph].join(': ')
-    // result = sa(str)
-    return morphs
+    mstr = morphs.join(', ')
+    return mstr
 }
 
 function creDict() {
@@ -418,8 +411,8 @@ x.onclick = function() {
 }
 
 
-// function log() { console.log.apply(console, arguments); }
-function log() { }
+function log() { console.log.apply(console, arguments); }
+// function log() { }
 
 /// ================================================== OLD
 
