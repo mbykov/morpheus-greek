@@ -26,7 +26,7 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     log('MSG', obj)
     antrax.query(obj.sentence, obj.num, function(_words) {
         words = _words
-        log('WORDS', words)
+        log('ELECT. WORDS:', words)
 
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
