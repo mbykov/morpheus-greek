@@ -80,7 +80,9 @@ html {
 
 .tree-leaf {
     /* text-indent: 1.5em; */
-    padding-left: 2em;
+    /* padding-left: 2em; */
+    text-indent: 2em;
+    padding-top: 10px;
 }
 
 /* .oMorph { */

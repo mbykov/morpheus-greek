@@ -157,11 +157,14 @@ function showVerb(cur) {
     let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
+    console.log('=====', cur.morphs)
     for (let mod in cur.morphs) {
         mstrs.push([mod, cur.morphs[mod]].join(': '))
     }
+    // let mdiv = cre('div')
+    // mstrs = _.sortBy(mstrs, '')
     let mstr = mstrs.join('; ')
-    // let mstr = cur.morphs.map(function(m) { return JSON.stringify(m.numpers) })
+    // mdiv.textContent = mstr
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
