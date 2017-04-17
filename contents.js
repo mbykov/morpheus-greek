@@ -9,6 +9,7 @@ const Events = require('component-events')
 const classes = require('component-classes')
 const Tree = require('./tree')
 const {ipcRenderer} = require('electron')
+const shell = require('electron').shell
 
 /* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
 δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο  ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ
@@ -255,7 +256,7 @@ function removeVoc(morphs) {
 // τοιαύτη, τοιοῦτο, τοιοῦτον ;;; ὀνόματι
 
 function drawHeader(words, num) {
-    // log('HEADER', words, num)
+    // console.log('HEADER', words, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     words.forEach(function(word, i) {
@@ -275,15 +276,16 @@ function drawHeader(words, num) {
 }
 
 function bindEvents(el) {
+    let ve = window.event
     let events = Events(el, {
         current: function(e){
             let el = e.target
-            // log('CLICK', e.target.textContent)
+            console.log('CLICK', e.target.textContent)
             let old = q('#antrax-header span.antrax-current')
             classes(old).remove('antrax-current')
             classes(el).add('antrax-current')
         }
-    });
+    })
     events.bind('click .antrax-form', 'current')
 }
 
@@ -380,6 +382,13 @@ document.onkeyup = function(e) {
         ipcRenderer.sendSync('synchronous-message', 'window-all-closed') // не работает, виснет
         // closeAll()
         // window = null
+    } else if (e.shiftKey && e.which === 80) {
+        console.log('KEY', e.which)
+        let el = q('.antrax-current')
+        if (!el) return
+        let text = el.textContent
+        let url = ['http://www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
+        shell.openExternal(url)
     } else if (e.which === 27) { //Esc
         closeAll()
     } else if ([37, 39].includes(e.which)) {
@@ -413,22 +422,3 @@ x.onclick = function() {
 
 // function log() { console.log.apply(console, arguments); }
 function log() { }
-
-/// ================================================== OLD
-
-// function getNames(current) {
-//     let names = []
-//     if (current.names) names = (current.names)
-//     if (current.term && current.term.pos == 'art') names.push(current.term)
-//     // if (current.term) names.push(current.term)
-//     return (names.length) ? names: null
-// }
-
-
-/* пока что полная жопа. tode - neut.sg.acc, neut.sg.nom - выбирает причастие palaion, что не верно
-   оставить пока только артикли? А в реальности - постепенно - сначала артикли, отбросить лишнее. Потом смотреть местоимения
-   потому что артикли главнее, а местоимения могут бить дальше
-   то есть делать два цикла?
-   сейчас работает, но код - жуть
-
-*/
