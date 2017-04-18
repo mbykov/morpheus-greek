@@ -10,6 +10,7 @@ const classes = require('component-classes')
 const Tree = require('./tree')
 const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
+const util = require('util');
 
 /* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
 δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο  ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ
@@ -44,15 +45,12 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
 function drawMorphs(words, num) {
     emptyDict()
     let current = words[num]
-    // log('DRAW CURRENT ========', num, current)
-    if (current.empty) return
-    // 1- подчернуть chains и 2 - показать tree-current
-    // let res =  conformNames(words, num)
-    // if (res) {
-    //     // log('LINE===', res.idxs) // rec.cur - ограничение morphs
-    //     current = res.cur
-    //     // underline(res.idxs)
-    // }
+    if (!current.dicts.length) {
+        showNo()
+        return
+    }
+    let idxs = conformNames(words, num)
+    if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
 }
 // καλῆς τῆς σκηνῆς
@@ -60,16 +58,43 @@ function drawMorphs(words, num) {
 // καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται· // TXT
 // εἰρήνη - peace
 
+function conformNames(words, num){
+    // console.log('WS',words)
+    let current = words[num]
+    if (!current.dicts) return
+    let targets = _.select(current.dicts, function(dict) { return ['art', 'name'].includes(dict.pos)})
+    // console.log('T', targets.length)
+    if (!targets.length) return
+    let target = targets[0]
+    // console.log('Ta', target)
+    if (!target.morphs || !target.morphs.length) return
+    let idxs = []
+    // console.log('T', target)
+    words.forEach(function(word, idx) {
+        if (!word.dicts) return
+        if (word.idx == num) return
+        word.dicts.forEach(function(dict) {
+            // console.log('WD', idx)
+            target.morphs.forEach(function(tm) {
+                let cnfmd = _.select(dict.morphs, function(dm) { return tm.gend == dm.gend && tm.numcase == dm.numcase})
+                if (cnfmd.length) idxs.push(idx)
+            })
+        })
+    })
+    let res = (idxs.length) ? idxs : null
+    return res
+}
+
 function drawCurrent(cur) {
     log('draw CURRENT', cur)
     cur.dicts.forEach(function(d) {
         if (!d.weight) d.weight = 0
     })
-    // let dicts = cur.dicts.sort().reverse()
+
     let dicts = _.sortBy(cur.dicts, 'weight')
     dicts.forEach(function(dict) {
-        log('DICT BEFORE SHOW', dict)
-        if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
+        // log('DICT BEFORE SHOW', dict)
+        // if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else if (dict.pos == 'inf') showInf(dict)
         else showName(dict)
@@ -77,9 +102,18 @@ function drawCurrent(cur) {
 }
 
 
+function showNo() {
+    let oDict = creDict()
+    let head = 'no result. Try Shift-P'
+    let children = []
+    let data = [{text: head, id: 'no-result', children: children}]
+    let tree = new Tree(oDict)
+    tree.data(data)
+}
+
 function showName(cur) {
     // log('SHOW NAME', cur)
-    let oMorphs = q('#antrax-morphs')
+    // let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
     let mstr = compactNameMorph(cur)
@@ -154,10 +188,10 @@ function showVerbs(verbs) {
 
 function showVerb(cur) {
     // log('SHOW VERB', cur)
-    let oMorphs = q('#antrax-morphs')
+    // let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
-    console.log('=====', cur.morphs)
+    // console.log('=====', cur.morphs)
     for (let mod in cur.morphs) {
         mstrs.push([mod, cur.morphs[mod]].join(': '))
     }
@@ -206,7 +240,7 @@ function showForms(forms) {
 
 function showInf(cur) {
     log('SHOW INF', cur)
-    let oMorphs = q('#antrax-morphs')
+    // let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
@@ -425,3 +459,4 @@ x.onclick = function() {
 
 // function log() { console.log.apply(console, arguments); }
 function log() { }
+function p() { console.log(util.inspect(arguments, false, null)) }

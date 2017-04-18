@@ -6,20 +6,17 @@
     color: black;
 }
 
-/* ▾ | DejaVu Serif */
 
 body {
-    /* border: 1px solid red; */
     font-family: 'DejaVu Sans';
-    height-max: 600px;
-    /* height: 600px; */
-    /* overflow: hidden; */
-    /* http://stackoverflow.com/questions/18548465/prevent-scroll-bar-from-adding-up-to-the-width-of-page-on-chrome */
-    /* overflow-y: hidden; */
+    box-shadow: inset 0 2px 0px #dcffa6, 0 2px 5px #000;
+    margin: 2px;
+    margin-bottom: 5px;
+    margin-top: 0
 }
 
 html {
-    overflow-y: scroll;
+    margin: 0
 }
 
 #header {
@@ -33,14 +30,6 @@ html {
 }
 
 #container {
-    /* height: 100%; */
-    /* overflow-x: hidden; */
-    /* padding-right: 50px; */
-    /* padding: 10px; */
-    /* vertical-align:middle; */
-    /* line-height: 38px; */
-    /* float: left; */
-    /* padding: 10px; */
 }
 
 #antrax-close {
@@ -79,14 +68,10 @@ html {
 }
 
 .tree-leaf {
-    /* text-indent: 1.5em; */
-    /* padding-left: 2em; */
     text-indent: 2em;
     padding-top: 10px;
 }
 
-/* .oMorph { */
-/* } */
 
 .dict-pos {
     font-size: 22px;
