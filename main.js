@@ -12,19 +12,32 @@ const BrowserWindow = electron.BrowserWindow
 
 let tray = null
 app.on('ready', () => {
-    tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
+    // tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
+    tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'Item1', type: 'radio'},
-        {label: 'Item2', type: 'radio'},
-        {label: 'Item3', type: 'radio', checked: true},
-        {label: 'Item4', type: 'radio'}
+        {label: 'about', type: 'radio', click() { console.log('item 1 clicked') } },
+        {label: 'help', type: 'radio'},
+        {label: '-------', type: 'radio', checked: true},
+        {label: 'quit', type: 'radio', click() { win = null, app.quit() } },
+        {label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function() {force_quit=true; app.quit();}}
     ])
     tray.setToolTip('This is my application.')
     tray.setContextMenu(contextMenu)
+
+    tray.on('click', function handleClicked () { // работает, но не нужно
+        console.log('Tray clicked');
+    })
+    // contextMenu.items[1].on('click', () => {
+    //     // win.isVisible() ? win.hide() : win.show()
+    //     console.log('===============')
+    // })
+
     let win = new BrowserWindow({width: 800, height: 600, show: false})
     let url = path.join('file:\/\/', __dirname, '/main.html')
     win.loadURL(url)
     console.log('LOAD URL', url)
+
+
 })
 
 

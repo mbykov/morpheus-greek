@@ -61,13 +61,11 @@ function listenSelection(win) {
                 // })
                 setCookie(value, 'position')
             })
+
             win.on('closed', function () {
                 win = null
             })
-            // win.on('window-all-closed', function () {
-            //     ipcRenderer.sendSync('synchronous-message', 'window-all-closed')
-            //     win = null
-            // })
+
             win.loadURL(winPath)
 
             let name = 'position'
