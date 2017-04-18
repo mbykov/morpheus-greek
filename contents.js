@@ -58,6 +58,8 @@ function drawMorphs(words, num) {
 // καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται· // TXT
 // εἰρήνη - peace
 
+// надо бы target-ом считать art, независимо, кто current:
+// второе - pronouns
 function conformNames(words, num){
     // console.log('WS',words)
     let current = words[num]
@@ -77,7 +79,9 @@ function conformNames(words, num){
             // console.log('WD', idx)
             target.morphs.forEach(function(tm) {
                 let cnfmd = _.select(dict.morphs, function(dm) { return tm.gend == dm.gend && tm.numcase == dm.numcase})
-                if (cnfmd.length) idxs.push(idx)
+                if (!cnfmd.length) return
+                idxs.push(idx)
+                if (dict.pos == 'name') dict.morphs = target.morphs
             })
         })
     })
