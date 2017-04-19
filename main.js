@@ -49,34 +49,34 @@ function createWindow(msg) {
         mainWindow.webContents.send('ping', msg)
     })
 
-    // const ses = mainWindow.webContents.session
+    const ses = mainWindow.webContents.session
 
-    // let xypos, size
-    // mainWindow.on('move', getPosAndSize)
-    // mainWindow.on('resize', getPosAndSize)
+    let cvalue = { name: 'position' }
+    let x = 1206
+    let y = 10
+    ses.cookies.get(cvalue, function(error, cookies) {
+        if (!cookies.length) return
+        try {
+            let pos = cookies[0].value
+            let position = JSON.parse(pos)
+            // console.log('P', position)
+            x = position[0]
+            y = position[1]
+            // console.log('GET C', x, y)
+            mainWindow.setPosition(x, y)
+        }
+        catch(e) {
+        }
+    })
 
-    // function getPosAndSize() {
-    //     xypos = mainWindow.getPosition()
-    //     size = mainWindow.getSize()
-    // }
+    let xypos, size
+    mainWindow.on('move', getPosAndSize)
+    mainWindow.on('resize', getPosAndSize)
 
-    // let cvalue = { name: 'position' }
-    // let x = 1206
-    // let y = 10
-    // ses.cookies.get(cvalue, function(error, cookies) {
-    //     if (!cookies.length) return
-    //     try {
-    //         let pos = cookies[0].value
-    //         let position = JSON.parse(pos)
-    //         // console.log('P', position)
-    //         x = position[0]
-    //         y = position[1]
-    //         // console.log('GET C', x, y)
-    //         mainWindow.setPosition(x, y)
-    //     }
-    //     catch(e) {
-    //     }
-    // })
+    function getPosAndSize() {
+        xypos = mainWindow.getPosition()
+        size = mainWindow.getSize()
+    }
 
     mainWindow.on('close', function () {
         let value = JSON.stringify(xypos.concat(size))
