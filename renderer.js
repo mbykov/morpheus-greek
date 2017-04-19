@@ -53,12 +53,7 @@ function listenSelection(win) {
                 size = win.getSize()
             }
             win.on('close', function (win) {
-                // let position = win.getPosition()
-                // let size = win.getSize()
                 let value = JSON.stringify(xypos.concat(size))
-                // new Notification('set cookie', {
-                    // body: value
-                // })
                 setCookie(value, 'position')
             })
 
@@ -82,12 +77,9 @@ function listenSelection(win) {
                 win.setPosition(x, y)
             });
 
-            // οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
             win.webContents.openDevTools()
             win.show()
             win.focus()
-            // . οὐ μὴν οὐδὲ βαρβάρους εἴρηκε
-            //
 
             win.setAlwaysOnTop(true)
             win.webContents.on('did-finish-load', function() {
@@ -138,6 +130,7 @@ function getCookie(name, cb) {
 // diactitic 0300-036F
 function cleanGreek(str) {
     let greek = str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0027\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
+    greek = greek.trim().replace(/^\d+/, '').replace(/^\./, '').trim()
     if (!/[\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/.test(greek[0])) return
     return greek
     // FIXME: добавить скобки, и в скобках abcde по кр.мере

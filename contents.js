@@ -12,15 +12,12 @@ const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
 const util = require('util');
 
-/* αὐτοῦ μοι μὲν αὐτοὺς οἵπερ Δαναοὺς μηδὲ ἐμοὶ ὅσοι οὐδὲν
-δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα. πρὸ γὰρ τῶν Τρωικῶν οὐδὲν φαίνεται πρότερον κοινῇ ἐργασαμένη ἡ Ἑλλάς. δοκεῖ δέ μοι, οὐδὲ τοὄνομα τοῦτο  ξύμπασά πω εἶχεν, ἀλλὰ τὰ μὲν πρὸ Ἕλληνος τοῦ Δευκαλίωνος καὶ πάνυ οὐδὲ εἶναι ἡ ἐπίκλησις αὕτη. κατὰ ἔθνη δὲ ἄλλα τε καὶ τὸ Πελασγικὸν ἐπὶ πλεῖστον ἀφ' ἑαυτῶν τὴν ἐπωνυμίαν παρέχεσθαι. Ἕλληνος δὲ καὶ τῶν παίδων αὐτοῦ
 
+function log() { }
+// function log() { console.log.apply(console, arguments); }
+// function p() { console.log(util.inspect(arguments, false, null)) }
 
-  Ἐν ἐκείνῃ τῇ ὥρᾳ προσῆλθον οἱ μαθηταὶ τῷ Ἰησοῦ λέγοντες· Τίς ἄρα μείζων ἐστὶν ἐν τῇ βασιλείᾳ τῶν οὐρανῶν; 2καὶ προσκαλεσάμενος ὁ Ἰησοῦς παιδίον ἔστησεν αὐτὸ ἐν μέσῳ αὐτῶν καὶ εἶπεν· 3Ἀμὴν λέγω ὑμῖν, ἐὰν μὴ στραφῆτε καὶ γένησθε ὡς τὰ παιδία, οὐ μὴ εἰσέλθητε εἰς τὴν βασιλείαν τῶν οὐρανῶν. 4ὅστις οὖν ταπεινώσει ἑαυτὸν ὡς τὸ παιδίον τοῦτο, οὗτός ἐστιν ὁ μείζων ἐν τῇ βασιλείᾳ τῶν οὐρανῶν. καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται·
-
-*/
-
-let words;
+let words
 
 require('electron').ipcRenderer.on('ping', (event, json) => {
     let oRes = document.getElementById('antrax-result')
@@ -35,12 +32,40 @@ require('electron').ipcRenderer.on('ping', (event, json) => {
     })
 })
 
-// поиск chains для current num
-// chains мне нужны ТОЛЬКО для подчеркивания - пока names
-// chain = {idx: num, idy: str-id}
+function drawHeader(words, num) {
+    log('HEADER', words, num)
+    let oHeader = q('#antrax-header')
+    empty(oHeader)
+    words.forEach(function(word, i) {
+        let form = word.raw
+        let span = sa(form)
+        // let id = ['id_', idx].join('')
+        span.idx = i
+        // span.setAttribute('idx') = idx
+        let space = cret(' ')
+        oHeader.appendChild(span)
+        oHeader.appendChild(space)
+        classes(span).add('antrax-form')
+        if (i == num) classes(span).add('antrax-current')
+    })
+    bindHeaderEvents(oHeader)
+}
 
-// τῶν παλαιῶν
-// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
+function bindHeaderEvents(el) {
+    let ve = window.event
+    let events = Events(el, {
+        current: function(e){
+            let el = e.target
+            log('CLICK', e.target.textContent)
+            let old = q('#antrax-header span.antrax-current')
+            classes(old).remove('antrax-current')
+            classes(el).add('antrax-current')
+        }
+    })
+    events.bind('click .antrax-form', 'current')
+}
+
+
 
 function drawMorphs(words, num) {
     emptyDict()
@@ -53,30 +78,26 @@ function drawMorphs(words, num) {
     if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
 }
-// καλῆς τῆς σκηνῆς
-// λέγω
-// καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται· // TXT
-// εἰρήνη - peace
 
 // надо бы target-ом считать art, независимо, кто current:
 // второе - pronouns
 function conformNames(words, num){
-    // console.log('WS',words)
+    // log('WS',words)
     let current = words[num]
     if (!current.dicts) return
     let targets = _.select(current.dicts, function(dict) { return ['art', 'name'].includes(dict.pos)})
-    // console.log('T', targets.length)
+    // log('T', targets.length)
     if (!targets.length) return
     let target = targets[0]
-    // console.log('Ta', target)
+    // log('Ta', target)
     if (!target.morphs || !target.morphs.length) return
     let idxs = []
-    // console.log('T', target)
+    // log('T', target)
     words.forEach(function(word, idx) {
         if (!word.dicts) return
         if (word.idx == num) return
         word.dicts.forEach(function(dict) {
-            // console.log('WD', idx)
+            // log('WD', idx)
             target.morphs.forEach(function(tm) {
                 let cnfmd = _.select(dict.morphs, function(dm) { return tm.gend == dm.gend && tm.numcase == dm.numcase})
                 if (!cnfmd.length) return
@@ -195,7 +216,7 @@ function showVerb(cur) {
     // let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
-    // console.log('=====', cur.morphs)
+    // log('=====', cur.morphs)
     for (let mod in cur.morphs) {
         mstrs.push([mod, cur.morphs[mod]].join(': '))
     }
@@ -296,39 +317,6 @@ function removeVoc(morphs) {
 //  καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται· // TXT
 // τοιαύτη, τοιοῦτο, τοιοῦτον ;;; ὀνόματι
 
-function drawHeader(words, num) {
-    // console.log('HEADER', words, num)
-    let oHeader = q('#antrax-header')
-    empty(oHeader)
-    words.forEach(function(word, i) {
-        let form = word.raw
-        let span = sa(form)
-        // let id = ['id_', idx].join('')
-        span.idx = i
-        // span.setAttribute('idx') = idx
-        let space = cret(' ')
-        oHeader.appendChild(span)
-        oHeader.appendChild(space)
-        classes(span).add('antrax-form')
-        if (i == num) classes(span).add('antrax-current')
-        // καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-    })
-    bindEvents(oHeader)
-}
-
-function bindEvents(el) {
-    let ve = window.event
-    let events = Events(el, {
-        current: function(e){
-            let el = e.target
-            console.log('CLICK', e.target.textContent)
-            let old = q('#antrax-header span.antrax-current')
-            classes(old).remove('antrax-current')
-            classes(el).add('antrax-current')
-        }
-    })
-    events.bind('click .antrax-form', 'current')
-}
 
 function emptyDict() {
     let uns = qs('.underlined')
@@ -357,19 +345,13 @@ function underline(idxs) {
 }
 
 
-function check(sentence) {
-    let err = q('#xxx')
-    err.textContent = '=='
-    let str = q('#antrax-header').textContent
-    if (sentence.trim() == str.trim()) return
-    err.textContent = 'ERR'
-}
-
-
-function xxx() {
-
-}
-
+// function check(sentence) {
+//     let err = q('#xxx')
+//     err.textContent = '=='
+//     let str = q('#antrax-header').textContent
+//     if (sentence.trim() == str.trim()) return
+//     err.textContent = 'ERR'
+// }
 
 
 function q(sel) {
@@ -390,7 +372,6 @@ function cret(str) {
 
 function sa(str) {
     var oSa = cre('span');
-    // classes(oSa).add('xxx');
     oSa.textContent = str;
     return oSa;
 }
@@ -406,29 +387,24 @@ function remove(el) {
 }
 
 function closeAll() {
-    window.close()
-    // var popups = qs('.morph-popup');
-    // var arr = [].slice.call(popups);
-    // arr.forEach(function(popup) {
-    //     popup.parentElement.removeChild(popup);
-    // });
-    // var oTip = q('#tip');
-    // if (oTip) oTip.parentElement.removeChild(oTip);
+    words = null
+    // window.close()
+    ipcRenderer.send('sync', 'window-hide');
 }
-
 
 document.onkeyup = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
-        log('================ CLOSE')
-        ipcRenderer.sendSync('synchronous-message', 'window-all-closed') // не работает, виснет
+        console.log('================ HIDE')
+        // ipcRenderer.sendSync('synchronous-message', 'window-hide')
+        ipcRenderer.send('sync', 'window-hide');
         // closeAll()
         // window = null
     } else if (e.shiftKey && e.which === 80) {
-        console.log('KEY', e.which)
+        // log('KEY', e.which)
         let el = q('.antrax-current')
         if (!el) return
         let text = el.textContent
-        let url = ['http://www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
+        let url = ['http:\/\/www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
         shell.openExternal(url)
     } else if (e.which === 27) { //Esc
         closeAll()
@@ -436,8 +412,6 @@ document.onkeyup = function(e) {
         moveCurrent(e)
     }
 }
-
-// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα
 
 function moveCurrent(e) {
     let el = q('.antrax-current')
@@ -459,8 +433,3 @@ let x = q('#antrax-close')
 x.onclick = function() {
     closeAll()
 }
-
-
-// function log() { console.log.apply(console, arguments); }
-function log() { }
-function p() { console.log(util.inspect(arguments, false, null)) }
