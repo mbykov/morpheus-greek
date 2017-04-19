@@ -5,10 +5,9 @@ const {app, Menu, Tray} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
-// const session = electron.session
-// const ses = session.fromPartition('persist:name')
 
 const orthos = require('../../greek/orthos');
+const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
 
@@ -21,7 +20,7 @@ app.on('ready', () => {
     // tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
     tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'about', type: 'radio', click() { console.log('item 1 clicked') } },
+        // {label: 'about', type: 'radio', click() { console.log('item 1 clicked') } },
         {label: 'help', type: 'radio'},
         {label: '-------', type: 'radio', checked: true},
         {label: 'quit', type: 'radio', click() { win = null, app.quit() } },
@@ -30,16 +29,7 @@ app.on('ready', () => {
     tray.setToolTip('This is my application.')
     tray.setContextMenu(contextMenu)
 
-    // tray.on('click', function handleClicked () { // работает, но не нужно
-    //     console.log('Tray clicked');
-    // })
-
-    // let win = new BrowserWindow({width: 800, height: 600, show: false})
-    // let url = path.join('file:\/\/', __dirname, '/main.html')
-    // win.loadURL(url)
-    // console.log('LOAD URL', url)
-
-    listenSelection()
+    // listenSelection()
 })
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -49,23 +39,51 @@ let mainWindow
 function createWindow(msg) {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600})
-
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
-
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
-
     mainWindow.setAlwaysOnTop(true)
 
     mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.webContents.send('ping', msg)
     })
 
+    // const ses = mainWindow.webContents.session
+
+    // let xypos, size
+    // mainWindow.on('move', getPosAndSize)
+    // mainWindow.on('resize', getPosAndSize)
+
+    // function getPosAndSize() {
+    //     xypos = mainWindow.getPosition()
+    //     size = mainWindow.getSize()
+    // }
+
+    // let cvalue = { name: 'position' }
+    // let x = 1206
+    // let y = 10
+    // ses.cookies.get(cvalue, function(error, cookies) {
+    //     if (!cookies.length) return
+    //     try {
+    //         let pos = cookies[0].value
+    //         let position = JSON.parse(pos)
+    //         // console.log('P', position)
+    //         x = position[0]
+    //         y = position[1]
+    //         // console.log('GET C', x, y)
+    //         mainWindow.setPosition(x, y)
+    //     }
+    //     catch(e) {
+    //     }
+    // })
+
     mainWindow.on('close', function () {
-        // let value = JSON.stringify(xypos.concat(size))
-        // setCookie(value, 'position')
+        let value = JSON.stringify(xypos.concat(size))
+        // console.log('V', value)
+        setCookie(ses, value, 'position')
     })
+
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -100,9 +118,10 @@ app.on('activate', function () {
 })
 
 ipcMain.on('sync', (event, arg) => {
-    console.log('HIDE!', arg);
+    // console.log('HIDE!', arg);
     mainWindow.hide()
-});
+})
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -110,6 +129,7 @@ function listenSelection() {
     let oldstr = '';
     setInterval(function(){
         let str = clipboard.readText()
+        if (!str) return
         str = cleanGreek(str.trim())
         if (!str || str == oldstr) return
         oldstr = str
@@ -125,9 +145,6 @@ function listenSelection() {
         sent.num = num
         let msg = JSON.stringify(sent)
 
-        // let url = path.join('file:\/\/', __dirname, '/main.html')
-        // win.loadURL(url)
-        // console.log('LOAD URL', url)
         if (!mainWindow) {
             createWindow(msg)
         }
@@ -136,71 +153,10 @@ function listenSelection() {
             mainWindow.focus()
             mainWindow.webContents.send('ping', msg)
         }
-
-        // if (!win) {
-        //     win = new BrowserWindow({ width: 700, height: 500, frame: false})
-        //     let xypos = 0;
-        //     let size = 0;
-        //     win.on('move', getPosAndSize)
-        //     win.on('resize', getPosAndSize)
-        //     function getPosAndSize() {
-        //         xypos = win.getPosition()
-        //         size = win.getSize()
-        //     }
-        //     win.on('close', function (win) {
-        //         let value = JSON.stringify(xypos.concat(size))
-        //         setCookie(value, 'position')
-        //     })
-
-        //     win.on('closed', function () {
-        //         win = null
-        //     })
-
-        //     win.loadURL(winPath)
-
-        //     let name = 'position'
-        //     let cvalue = {
-        //         name: name // the request must have this format to search the cookie.
-        //     }
-        //     let x = 1206;
-        //     let y = 10;
-        //     ses.cookies.get(cvalue, function(error, cookies) {
-        //         let pos = cookies[0].value
-        //         let position = JSON.parse(pos)
-        //         x = position[0]
-        //         y = position[1]
-        //         win.setPosition(x, y)
-        //     });
-
-        //     win.webContents.openDevTools()
-        //     win.show()
-        //     win.focus()
-
-        //     win.setAlwaysOnTop(true)
-        //     win.webContents.on('did-finish-load', function() {
-        //         win.webContents.send('ping', msg)
-        //     })
-        // } else {
-        //     win.webContents.send('ping', msg)
-        //     win.focus()
-        // }
     }, 100);
 }
 
-// function setPosition() {
-//     let xypos, size
-//     mainWindow.on('move', xypos = mainWindow.getPosition())
-//     mainWindow.on('resize', size = mainWindow.getSize())
-// }
-
-// function getPosAndSize() {
-//     let xypos = mainWindow.getPosition()
-//     let size = mainWindow.getSize()
-//     return {xypos: xypos, size: size}
-// }
-
-
-function setCookie(data, name) {
+function setCookie(ses, data, name) {
     let expiration = new Date();
     let hour = expiration.getHours();
     hour = hour + 6;

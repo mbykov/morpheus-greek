@@ -394,7 +394,7 @@ function closeAll() {
 
 document.onkeyup = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
-        console.log('================ HIDE')
+        // log('================ HIDE')
         // ipcRenderer.sendSync('synchronous-message', 'window-hide')
         ipcRenderer.send('sync', 'window-hide');
         // closeAll()
