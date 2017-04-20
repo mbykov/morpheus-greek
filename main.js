@@ -1,7 +1,7 @@
 'use strict'
 
 const electron = require('electron')
-const {app, Menu, Tray} = require('electron')
+const {app, Menu, Tray, globalShortcut} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
@@ -21,12 +21,15 @@ app.on('ready', () => {
     tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
         // {label: 'about', type: 'radio', click() { console.log('item 1 clicked') } },
-        {label: 'help', type: 'radio'},
-        {label: '-------', type: 'radio', checked: true},
-        {label: 'quit', type: 'radio', click() { win = null, app.quit() } },
-        {label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+        // {label: 'help', type: 'radio'},
+        // {label: '-------', type: 'radio', checked: true},
+        // {label: 'quit', type: 'radio', click() { win = null, app.quit() } },
+        {label: 'about', click: function() { selectWindow('about') }},
+        {label: 'help', click: function() { selectWindow('help') }},
+        {label: '--------'},
+        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
-    tray.setToolTip('This is my application.')
+    tray.setToolTip('Morpheus Greekv.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
 
     // listenSelection()
@@ -38,7 +41,7 @@ let mainWindow
 
 function createWindow(msg) {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600})
+    mainWindow = new BrowserWindow({width: 800, height: 600, frame: false})
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
@@ -62,7 +65,7 @@ function createWindow(msg) {
             // console.log('P', position)
             x = position[0]
             y = position[1]
-            // console.log('GET C', x, y)
+            // console.log('GET CO', x, y)
             mainWindow.setPosition(x, y)
         }
         catch(e) {
@@ -109,6 +112,16 @@ app.on('window-all-closed', function () {
   }
 })
 
+app.on('ready', () => {
+    // Register a 'CommandOrControl+Y' shortcut listener.
+    globalShortcut.register('CommandOrControl+H', () => {
+        selectWindow('help')
+    })
+    globalShortcut.register('CommandOrControl+A', () => {
+        selectWindow('about')
+    })
+})
+
 app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -126,7 +139,7 @@ ipcMain.on('sync', (event, arg) => {
 // code. You can also put them in separate files and require them here.
 
 function listenSelection() {
-    let oldstr = '';
+    let oldstr;
     setInterval(function(){
         let str = clipboard.readText()
         if (!str) return
@@ -145,15 +158,27 @@ function listenSelection() {
         sent.num = num
         let msg = JSON.stringify(sent)
 
-        if (!mainWindow) {
-            createWindow(msg)
-        }
-        else {
-            mainWindow.show()
-            mainWindow.focus()
-            mainWindow.webContents.send('ping', msg)
-        }
+        selectWindow(msg)
+        // if (!mainWindow) {
+        //     createWindow(msg)
+        // }
+        // else {
+        //     mainWindow.show()
+        //     mainWindow.focus()
+        //     mainWindow.webContents.send('ping', msg)
+        // }
     }, 100);
+}
+
+function selectWindow(msg) {
+    if (!mainWindow) {
+        createWindow(msg)
+    }
+    else {
+        mainWindow.show()
+        mainWindow.focus()
+        mainWindow.webContents.send('ping', msg)
+    }
 }
 
 function setCookie(ses, data, name) {
@@ -167,7 +192,7 @@ function setCookie(ses, data, name) {
         value: data, // the value that you want to save
         expirationDate: expiration.getTime()
     }, function(error) {
-        /*console.log(error);*/
+        // console.log(error);
     });
 }
 

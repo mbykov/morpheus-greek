@@ -1,5 +1,4 @@
 //
-
 // console.log('INSIDE HTML')
 
 // let antrax = document.getElementById('antrax-result')
@@ -11,6 +10,7 @@ const Tree = require('./tree')
 const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
 const util = require('util');
+const fs = require('fs');
 
 
 function log() { }
@@ -21,11 +21,21 @@ let words
 
 require('electron').ipcRenderer.on('ping', (event, json) => {
     let oRes = document.getElementById('antrax-result')
+    // console.log('MSG', json)
+    // console.log('T', typeof(json))
+    if (['help', 'about'].includes(json)) {
+        let fpath = './lib/help.html'
+        if (json == 'about') fpath = './lib/about.html'
+        let html = fs.readFileSync(fpath,'utf8').trim();
+        let parent = q('#antrax-dicts')
+        parent.innerHTML = html
+        return
+    }
+
     let obj = JSON.parse(json)
-    log('MSG', obj)
     antrax.query(obj.sentence, obj.num, function(_words) {
         words = _words
-        log('ELECT. WORDS:', words)
+        // log('ELECT. WORDS:', words)
 
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
@@ -245,23 +255,23 @@ function compactVerbMorph(cur) {
     return JSON.stringify(result)
 }
 
-function showForms(forms) {
-    forms.forEach(function(form) {
-        // log('DRAW FORM', form)
-        let oMorphs = q('#antrax-morphs')
-        let oMorph = cre('div')
-        // let dict = dict.form // FIXME:
-        let dictpos = [form.dict, form.pos].join(', ')
-        let oDP = sa(dictpos)
-        let comma = cret('; ')
-        let oTrn = sa(form.trn)
-        classes(oTrn).add('black')
-        oMorph.appendChild(oDP)
-        oMorph.appendChild(comma)
-        oMorph.appendChild(oTrn)
-        oMorphs.appendChild(oMorph)
-    })
-}
+// function showForms(forms) {
+//     forms.forEach(function(form) {
+//         // log('DRAW FORM', form)
+//         let oMorphs = q('#antrax-morphs')
+//         let oMorph = cre('div')
+//         // let dict = dict.form // FIXME:
+//         let dictpos = [form.dict, form.pos].join(', ')
+//         let oDP = sa(dictpos)
+//         let comma = cret('; ')
+//         let oTrn = sa(form.trn)
+//         classes(oTrn).add('black')
+//         oMorph.appendChild(oDP)
+//         oMorph.appendChild(comma)
+//         oMorph.appendChild(oTrn)
+//         oMorphs.appendChild(oMorph)
+//     })
+// }
 
 function showInf(cur) {
     log('SHOW INF', cur)
@@ -298,33 +308,14 @@ function removeVoc(morphs) {
     return cleans
 }
 
-// let data = [{
-//     text: 'o-text'
-// }, {
-//     text: 'first title',
-//     id: 'first',
-//     children:[
-//         {text: '2-text'},
-//         {text: '3-text'}
-//     ]
-// }, {
-//     text: 'end'
-// }]
-
-// δηλοῖ δέ μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ ἤκιστα.
-// λέγω
-// ἐπιβάλλουσι
-//  καὶ ὃς ἐὰν δέξηται παιδίον τοιοῦτον ἓν ἐπὶ τῷ ὀνόματί μου, ἐμὲ δέχεται· // TXT
-// τοιαύτη, τοιοῦτο, τοιοῦτον ;;; ὀνόματι
-
 
 function emptyDict() {
     let uns = qs('.underlined')
     uns.forEach(function(el) {
         classes(el).remove('underlined')
     })
-    let oMorphs = q('#antrax-morphs')
-    empty(oMorphs)
+    // let oMorphs = q('#antrax-morphs')
+    // empty(oMorphs)
     let odicts = q('#antrax-dicts')
     remove(odicts)
     let oDicts = cre('div')
@@ -344,14 +335,6 @@ function underline(idxs) {
     })
 }
 
-
-// function check(sentence) {
-//     let err = q('#xxx')
-//     err.textContent = '=='
-//     let str = q('#antrax-header').textContent
-//     if (sentence.trim() == str.trim()) return
-//     err.textContent = 'ERR'
-// }
 
 
 function q(sel) {
@@ -399,11 +382,13 @@ document.onkeyup = function(e) {
         ipcRenderer.send('sync', 'window-hide');
         // closeAll()
         // window = null
-    } else if (e.shiftKey && e.which === 80) {
+    // } else if (e.shiftKey && e.which === 80) {
+    } else if (e.ctrlKey && e.which === 80) {
         // log('KEY', e.which)
         let el = q('.antrax-current')
         if (!el) return
         let text = el.textContent
+        text = text.replace(/[\u002E\u002C\u0021\u003B\u00B7\u0020\u0027]/, '')
         let url = ['http:\/\/www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
         shell.openExternal(url)
     } else if (e.which === 27) { //Esc
