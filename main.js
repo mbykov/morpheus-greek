@@ -112,15 +112,16 @@ app.on('window-all-closed', function () {
   }
 })
 
-app.on('ready', () => {
-    // Register a 'CommandOrControl+Y' shortcut listener.
-    globalShortcut.register('CommandOrControl+H', () => {
-        selectWindow('help')
-    })
-    globalShortcut.register('CommandOrControl+A', () => {
-        selectWindow('about')
-    })
-})
+// app.on('ready', () => {
+//     // Register a 'CommandOrControl+Y' shortcut listener.
+//     // if (!mainWindow || !mainWindow.isFocused()) return
+//     globalShortcut.register('CommandOrControl+H', () => {
+//         selectWindow('help')
+//     })
+//     globalShortcut.register('CommandOrControl+A', () => {
+//         selectWindow('about')
+//     })
+// })
 
 app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
@@ -132,6 +133,7 @@ app.on('activate', function () {
 
 ipcMain.on('sync', (event, arg) => {
     // console.log('HIDE!', arg);
+    event.preventDefault()
     mainWindow.hide()
 })
 
@@ -159,6 +161,15 @@ function listenSelection() {
         let msg = JSON.stringify(sent)
 
         selectWindow(msg)
+
+        globalShortcut.register('CommandOrControl+H', () => {
+            selectWindow('help')
+        })
+        globalShortcut.register('CommandOrControl+A', () => {
+            selectWindow('about')
+        })
+
+
         // if (!mainWindow) {
         //     createWindow(msg)
         // }
