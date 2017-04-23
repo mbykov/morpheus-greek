@@ -20,10 +20,6 @@ app.on('ready', () => {
     // tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
     tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
-        // {label: 'about', type: 'radio', click() { console.log('item 1 clicked') } },
-        // {label: 'help', type: 'radio'},
-        // {label: '-------', type: 'radio', checked: true},
-        // {label: 'quit', type: 'radio', click() { win = null, app.quit() } },
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'help', click: function() { selectWindow('help') }},
         {label: '--------'},
@@ -31,13 +27,11 @@ app.on('ready', () => {
     ])
     tray.setToolTip('Morpheus Greekv.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
-
-    // listenSelection()
 })
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow = null
 
 function createWindow(msg) {
     // Create the browser window.
@@ -81,6 +75,7 @@ function createWindow(msg) {
         size = mainWindow.getSize()
     }
 
+
     mainWindow.on('close', function () {
         let value = JSON.stringify(xypos.concat(size))
         // console.log('V', value)
@@ -95,6 +90,22 @@ function createWindow(msg) {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    // mainWindow.on('focus', function(event) {
+    //     // event.preventDefault()
+    //     globalShortcut.register('CommandOrControl+H', () => {
+    //         selectWindow('help')
+    //     })
+    //     globalShortcut.register('CommandOrControl+A', () => {
+    //         selectWindow('about')
+    //     })
+    // })
+
+    // mainWindow.on('blur', function(event) {
+    //     globalShortcut.unregister('CommandOrControl+H')
+    //     globalShortcut.unregister('CommandOrControl+A')
+    // })
+
 }
 
 // This method will be called when Electron has finished
@@ -103,25 +114,30 @@ function createWindow(msg) {
 // app.on('ready', createWindow)
 app.on('ready', listenSelection)
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-      app.quit()
-  }
-})
 
-// app.on('ready', () => {
-//     // Register a 'CommandOrControl+Y' shortcut listener.
-//     // if (!mainWindow || !mainWindow.isFocused()) return
-//     globalShortcut.register('CommandOrControl+H', () => {
-//         selectWindow('help')
-//     })
-//     globalShortcut.register('CommandOrControl+A', () => {
-//         selectWindow('about')
-//     })
+// Quit when all windows are closed.
+// app.on('window-all-closed', function () {
+//     // On OS X it is common for applications and their menu bar
+//     // to stay active until the user quits explicitly with Cmd + Q
+//   if (process.platform !== 'darwin') {
+//       app.quit()
+//   }
 // })
+
+app.on('ready', () => {
+    globalShortcut.register('CommandOrControl+H', () => {
+        if (!mainWindow.isFocused()) return
+        mainWindow.webContents.send('ping', 'help')
+    })
+    // globalShortcut.register('CommandOrControl+A', () => {
+    //     event.preventDefault()
+    //     if (!mainWindow.isFocused()) return
+    //     mainWindow.webContents.send('ping', 'about')
+    // })
+    globalShortcut.register('CommandOrControl+Shift+Q', () => {
+        app.exit(0)
+    })
+})
 
 app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
@@ -133,7 +149,7 @@ app.on('activate', function () {
 
 ipcMain.on('sync', (event, arg) => {
     // console.log('HIDE!', arg);
-    event.preventDefault()
+    // event.preventDefault()
     mainWindow.hide()
 })
 
@@ -141,20 +157,20 @@ ipcMain.on('sync', (event, arg) => {
 // code. You can also put them in separate files and require them here.
 
 function listenSelection() {
-    let oldstr;
+    let oldstr
     setInterval(function(){
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
         if (!str || str == oldstr) return
         oldstr = str
+
         // num:
         // let num = str.split('|')[1]
         // str = str.split('|')[0]
         str = orthos.toComb(str);
         let num
         if (!num) num = 0 // FIXME: найти длиннейшее слово
-        if (!str) str = 'KUKUKU'
         // let sent = punctuation(str)
         let sent = {sentence: str, punct: "!"}
         sent.num = num
@@ -162,27 +178,11 @@ function listenSelection() {
 
         selectWindow(msg)
 
-        globalShortcut.register('CommandOrControl+H', () => {
-            selectWindow('help')
-        })
-        globalShortcut.register('CommandOrControl+A', () => {
-            selectWindow('about')
-        })
-
-
-        // if (!mainWindow) {
-        //     createWindow(msg)
-        // }
-        // else {
-        //     mainWindow.show()
-        //     mainWindow.focus()
-        //     mainWindow.webContents.send('ping', msg)
-        // }
     }, 100);
 }
 
 function selectWindow(msg) {
-    if (!mainWindow) {
+    if (mainWindow === null) {
         createWindow(msg)
     }
     else {
@@ -231,6 +231,7 @@ function cleanGreek(str) {
     greek = greek.trim().replace(/^\d+/, '').replace(/^\./, '').trim()
     if (!/[\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/.test(greek[0])) return
     return greek
-    // FIXME: добавить скобки, и в скобках abcde по кр.мере
-    // return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
 }
+
+// FIXME: добавить скобки, и в скобках abcde по кр.мере
+// return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')

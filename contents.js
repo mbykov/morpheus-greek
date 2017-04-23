@@ -128,7 +128,7 @@ function drawCurrent(cur) {
 
     let dicts = _.sortBy(cur.dicts, 'weight')
     dicts.forEach(function(dict) {
-        // log('DICT BEFORE SHOW', dict)
+        console.log('DICT BEFORE SHOW', dict)
         // if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else if (dict.pos == 'inf') showInf(dict)

@@ -19,6 +19,10 @@ html {
     margin: 0
 }
 
+b {
+    color: maroon;
+}
+
 #header {
     font-family: 'DejaVu Sans';
     color: #fff;
@@ -69,7 +73,7 @@ html {
 
 .tree-leaf {
     text-indent: 2em;
-    padding-top: 10px;
+    padding-top: 3px;
 }
 
 
