@@ -378,14 +378,16 @@ function closeAll() {
 document.onkeydown = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
         ipcRenderer.send('sync', 'window-hide');
-    } else if (e.ctrlKey && e.which === 72) {
+    // } else if (e.ctrlKey) {
+        // console.log('CK', e.which)
+    } else if (e.ctrlKey && e.which === 72) { // help
         e.preventDefault()
         e.stopPropagation()
         let fpath = './lib/help.html'
         let html = fs.readFileSync(fpath,'utf8').trim();
         let parent = q('#antrax-dicts')
         parent.innerHTML = html
-    } else if (e.ctrlKey && e.which === 65) {
+    } else if (e.ctrlKey && e.which === 65) { // about
         e.preventDefault()
         // e.stopPropagation()
         let fpath = './lib/about.html'

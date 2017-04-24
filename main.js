@@ -33,6 +33,7 @@ app.on('ready', () => {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
+let timerId = null
 
 function createWindow(msg) {
     // Create the browser window.
@@ -94,6 +95,8 @@ function createWindow(msg) {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
+        clearInterval(timerId)
+        timerId = null
         mainWindow = null
     })
 }
@@ -115,26 +118,41 @@ function createWindow(msg) {
 // })
 
 app.on('ready', () => {
-    globalShortcut.register('CommandOrControl+]', () => {
+    // listenSelection()
+    let oldstr
+    timerId = setInterval(function(){
         let str = clipboard.readText()
-        // console.log('=========', str)
-        str = cleanGreek(str.trim())
         if (!str) return
-        let sent = {sentence: str, punct: "!", num: 0}
-        let msg = JSON.stringify(sent)
-        // console.log('=========', msg)
-        selectWindow(msg)
-    })
+        str = cleanGreek(str.trim())
+        if (!str || str == oldstr) return
+        oldstr = str
 
-    // globalShortcut.register('CommandOrControl+H', () => {
-    //     if (!mainWindow.isFocused()) return
-    //     mainWindow.webContents.send('ping', 'help')
+        // num:
+        // let num = str.split('|')[1]
+        // str = str.split('|')[0]
+        str = orthos.toComb(str);
+        let num
+        if (!num) num = 0 // FIXME: найти длиннейшее слово
+        // let sent = punctuation(str)
+        let sent = {sentence: str, punct: "!"}
+        sent.num = num
+        let msg = JSON.stringify(sent)
+
+        selectWindow(msg)
+
+    }, 100);
+
+    // globalShortcut.register('CommandOrControl+]', () => {
+    //     let str = clipboard.readText()
+    //     // console.log('=========', str)
+    //     str = cleanGreek(str.trim())
+    //     if (!str) return
+    //     let sent = {sentence: str, punct: "!", num: 0}
+    //     let msg = JSON.stringify(sent)
+    //     // console.log('=========', msg)
+    //     selectWindow(msg)
     // })
-    // globalShortcut.register('CommandOrControl+A', () => {
-    //     event.preventDefault()
-    //     if (!mainWindow.isFocused()) return
-    //     mainWindow.webContents.send('ping', 'about')
-    // })
+
     globalShortcut.register('CommandOrControl+Shift+Q', () => {
         app.exit(0)
     })
@@ -157,9 +175,10 @@ ipcMain.on('sync', (event, arg) => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+
 function listenSelection() {
     let oldstr
-    setInterval(function(){
+    timerId = setInterval(function(){
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
