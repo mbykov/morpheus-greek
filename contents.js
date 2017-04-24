@@ -375,16 +375,25 @@ function closeAll() {
     ipcRenderer.send('sync', 'window-hide');
 }
 
-document.onkeyup = function(e) {
+document.onkeydown = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
-        // log('================ HIDE')
-        // ipcRenderer.sendSync('synchronous-message', 'window-hide')
         ipcRenderer.send('sync', 'window-hide');
-        // closeAll()
-        // window = null
-    // } else if (e.shiftKey && e.which === 80) {
+    } else if (e.ctrlKey && e.which === 72) {
+        e.preventDefault()
+        e.stopPropagation()
+        let fpath = './lib/help.html'
+        let html = fs.readFileSync(fpath,'utf8').trim();
+        let parent = q('#antrax-dicts')
+        parent.innerHTML = html
+    } else if (e.ctrlKey && e.which === 65) {
+        e.preventDefault()
+        // e.stopPropagation()
+        let fpath = './lib/about.html'
+        let html = fs.readFileSync(fpath,'utf8').trim();
+        let parent = q('#antrax-dicts')
+        parent.innerHTML = html
+        bindHelpEvents(parent)
     } else if (e.ctrlKey && e.which === 80) {
-        // log('KEY', e.which)
         let el = q('.antrax-current')
         if (!el) return
         let text = el.textContent
@@ -397,6 +406,23 @@ document.onkeyup = function(e) {
         moveCurrent(e)
     }
 }
+
+function bindHelpEvents(el) {
+    // let ve = window.event
+    let events = Events(el, {
+        diglossa: function(e){
+            // let el = e.target
+            console.log('CLICK', e.target.textContent)
+            let url = e.target.textContent
+            shell.openExternal(url)
+            // let old = q('#antrax-header span.antrax-current')
+            // classes(old).remove('antrax-current')
+            // classes(el).add('antrax-current')
+        }
+    })
+    events.bind('click .link', 'diglossa')
+}
+
 
 function moveCurrent(e) {
     let el = q('.antrax-current')

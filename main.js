@@ -20,8 +20,9 @@ app.on('ready', () => {
     // tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
     tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'about', click: function() { selectWindow('about') }},
-        {label: 'help', click: function() { selectWindow('help') }},
+        {label: 'about', accelerator: 'CmdOrCtrl+A', click: function() { selectWindow('about') }},
+        {label: 'todo', accelerator: 'CmdOrCtrl+T', click: function() { console.log('todo') }},
+        {label: 'help', accelerator: 'CmdOrCtrl+H', click: function() { selectWindow('help') }},
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
@@ -82,6 +83,11 @@ function createWindow(msg) {
         setCookie(ses, value, 'position')
     })
 
+    // mainWindow.on('blur', function () {
+    //     console.log('LOOSE STR', greekstr)
+    //     greekstr = null
+    // })
+
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -90,29 +96,13 @@ function createWindow(msg) {
         // when you should delete the corresponding element.
         mainWindow = null
     })
-
-    // mainWindow.on('focus', function(event) {
-    //     // event.preventDefault()
-    //     globalShortcut.register('CommandOrControl+H', () => {
-    //         selectWindow('help')
-    //     })
-    //     globalShortcut.register('CommandOrControl+A', () => {
-    //         selectWindow('about')
-    //     })
-    // })
-
-    // mainWindow.on('blur', function(event) {
-    //     globalShortcut.unregister('CommandOrControl+H')
-    //     globalShortcut.unregister('CommandOrControl+A')
-    // })
-
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 // app.on('ready', createWindow)
-app.on('ready', listenSelection)
+// app.on('ready', listenSelection)
 
 
 // Quit when all windows are closed.
@@ -125,10 +115,21 @@ app.on('ready', listenSelection)
 // })
 
 app.on('ready', () => {
-    globalShortcut.register('CommandOrControl+H', () => {
-        if (!mainWindow.isFocused()) return
-        mainWindow.webContents.send('ping', 'help')
+    globalShortcut.register('CommandOrControl+]', () => {
+        let str = clipboard.readText()
+        // console.log('=========', str)
+        str = cleanGreek(str.trim())
+        if (!str) return
+        let sent = {sentence: str, punct: "!", num: 0}
+        let msg = JSON.stringify(sent)
+        // console.log('=========', msg)
+        selectWindow(msg)
     })
+
+    // globalShortcut.register('CommandOrControl+H', () => {
+    //     if (!mainWindow.isFocused()) return
+    //     mainWindow.webContents.send('ping', 'help')
+    // })
     // globalShortcut.register('CommandOrControl+A', () => {
     //     event.preventDefault()
     //     if (!mainWindow.isFocused()) return

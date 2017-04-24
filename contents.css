@@ -91,3 +91,8 @@ b {
 .tree {
     margin-top: 1em;
 }
+
+.link {
+    color: maroon;
+    cursor: pointer;
+}
