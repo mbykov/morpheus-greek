@@ -19,24 +19,12 @@ function log() { }
 
 let words
 
-require('electron').ipcRenderer.on('ping', (event, json) => {
+require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
-    // console.log('MSG', json)
-    // console.log('T', typeof(json))
-    if (['help', 'about'].includes(json)) {
-        let fpath = './lib/help.html'
-        if (json == 'about') fpath = './lib/about.html'
-        let html = fs.readFileSync(fpath,'utf8').trim();
-        let parent = q('#antrax-dicts')
-        parent.innerHTML = html
-        return
-    }
 
-    let obj = JSON.parse(json)
+    // let obj = JSON.parse(json)
     antrax.query(obj.sentence, obj.num, function(_words) {
         words = _words
-        // log('ELECT. WORDS:', words)
-
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
     })
@@ -74,8 +62,6 @@ function bindHeaderEvents(el) {
     })
     events.bind('click .antrax-form', 'current')
 }
-
-
 
 function drawMorphs(words, num) {
     emptyDict()
@@ -132,46 +118,56 @@ function drawCurrent(cur) {
         // if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else if (dict.pos == 'inf') showInf(dict)
+        else if (dict.pos == 'part') showPart(dict)
         else showName(dict)
     })
 }
 
-
 function showNo() {
     let oDict = creDict()
-    let head = 'no result. Try Shift-P'
+    let head = 'no result. Try Ctrl-P'
     let children = []
     let data = [{text: head, id: 'no-result', children: children}]
     let tree = new Tree(oDict)
     tree.data(data)
 }
 
-function showName(cur) {
-    // log('SHOW NAME', cur)
-    // let oMorphs = q('#antrax-morphs')
+function showPart(cur) {
+    log('PART:', cur)
     let oDict = creDict()
 
     let mstr = compactNameMorph(cur)
     // log('NAME MSTR', mstr)
-    let dictpos = [cur.dict, cur.pos].join(' - ')
+    let dictpos = [cur.dict, cur.pos, cur.var].join(' - ')
     if (cur.type) dictpos = [cur.type, dictpos].join(': ')
     let head = [dictpos, mstr].join('; ')
     let strs = cur.trn.split(/\||\n/)
     let children = strs.map(function(str) { return {text: str}})
     let data = [{text: head, id: 'dictpos', children: children}]
 
-    // log('NAME DATA', data)
+    let tree = new Tree(oDict)
+    tree.data(data)
+}
+
+function showName(cur) {
+    // log('SHOW NAME', cur)
+    let oDict = creDict()
+
+    let dictpos = [cur.dict, cur.pos].join(' - ')
+    if (cur.type) dictpos = [cur.type, dictpos].join(': ')
+    let mstr = (cur.morphs) ? compactNameMorph(cur) : null
+    let head = (mstr) ? [dictpos, mstr].join('; ') : dictpos
+
+    let strs = cur.trn.split(/\||\n/)
+    let children = strs.map(function(str) { return {text: str}})
+    let data = [{text: head, id: 'dictpos', children: children}]
+
     let tree = new Tree(oDict)
     tree.data(data)
 }
 
 function compactNameMorph(cur) {
     let mstr
-    // if (cur.indecl) {
-    //     let morph = [cur.gend, cur.numcase].join('.')
-    //     mstr = [cur.var, morph].join(' - ')
-    //     return mstr
-    // }
     let gmorphs = _.groupBy(cur.morphs, 'numcase')
     let ggends = _.groupBy(cur.morphs, 'gend')
     // log('gmorphs', gmorphs)
@@ -200,7 +196,6 @@ function compactNameMorph(cur) {
             morphs.push(morph)
         }
     }
-
     mstr = morphs.join(', ')
     return mstr
 }
@@ -223,17 +218,12 @@ function showVerbs(verbs) {
 
 function showVerb(cur) {
     // log('SHOW VERB', cur)
-    // let oMorphs = q('#antrax-morphs')
     let oDict = creDict()
     let mstrs = []
-    // log('=====', cur.morphs)
     for (let mod in cur.morphs) {
         mstrs.push([mod, cur.morphs[mod]].join(': '))
     }
-    // let mdiv = cre('div')
-    // mstrs = _.sortBy(mstrs, '')
     let mstr = mstrs.join('; ')
-    // mdiv.textContent = mstr
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
     let head = [dictpos, mstr].join('; ')
@@ -248,34 +238,13 @@ function showVerb(cur) {
 function compactVerbMorph(cur) {
     if (!cur.morphs.length) return ''
     let result = cur.morphs.map(function(morph) {
-        // log('M', morph, morph.numpers)
         return morph.numpers
     })
-    // log('VERB MORPH', result)
     return JSON.stringify(result)
 }
 
-// function showForms(forms) {
-//     forms.forEach(function(form) {
-//         // log('DRAW FORM', form)
-//         let oMorphs = q('#antrax-morphs')
-//         let oMorph = cre('div')
-//         // let dict = dict.form // FIXME:
-//         let dictpos = [form.dict, form.pos].join(', ')
-//         let oDP = sa(dictpos)
-//         let comma = cret('; ')
-//         let oTrn = sa(form.trn)
-//         classes(oTrn).add('black')
-//         oMorph.appendChild(oDP)
-//         oMorph.appendChild(comma)
-//         oMorph.appendChild(oTrn)
-//         oMorphs.appendChild(oMorph)
-//     })
-// }
-
 function showInf(cur) {
-    log('SHOW INF', cur)
-    // let oMorphs = q('#antrax-morphs')
+    // log('SHOW INF', cur)
     let oDict = creDict()
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
@@ -314,8 +283,6 @@ function emptyDict() {
     uns.forEach(function(el) {
         classes(el).remove('underlined')
     })
-    // let oMorphs = q('#antrax-morphs')
-    // empty(oMorphs)
     let odicts = q('#antrax-dicts')
     remove(odicts)
     let oDicts = cre('div')
@@ -325,8 +292,6 @@ function emptyDict() {
 }
 
 
-
-// μοι καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
 function underline(idxs) {
     let oWords = qs('#antrax-header span.antrax-form')
     idxs.forEach(function(idx) {

@@ -138,7 +138,7 @@ app.on('ready', () => {
         sent.num = num
         let msg = JSON.stringify(sent)
 
-        selectWindow(msg)
+        selectWindow(sent)
 
     }, 100);
 
