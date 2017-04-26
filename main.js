@@ -5,6 +5,7 @@ const {app, Menu, Tray, globalShortcut} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
+const windowStateKeeper = require('electron-window-state');
 
 const orthos = require('../../greek/orthos');
 const BaseURL = 'http://localhost'
@@ -17,12 +18,11 @@ const BrowserWindow = electron.BrowserWindow
 
 let tray = null
 app.on('ready', () => {
-    // tray = new Tray('../Examples/electron-api-demos/assets/img/about.png')
     tray = new Tray('./lib/book.png')
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'about', accelerator: 'CmdOrCtrl+A', click: function() { selectWindow('about') }},
-        {label: 'todo', accelerator: 'CmdOrCtrl+T', click: function() { console.log('todo') }},
-        {label: 'help', accelerator: 'CmdOrCtrl+H', click: function() { selectWindow('help') }},
+        {label: 'about', click: function() { selectWindow('about') }},
+        {label: 'todo', click: function() { console.log('todo') }},
+        {label: 'help', click: function() { selectWindow('help') }},
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
@@ -37,7 +37,18 @@ let timerId = null
 
 function createWindow(msg) {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600, frame: false})
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: 800,
+        defaultHeight: 600
+    })
+
+    mainWindow = new BrowserWindow({  //width: 800, height: 600, frame: false})
+    'x': mainWindowState.x,
+    'y': mainWindowState.y,
+    'width': mainWindowState.width,
+    'height': mainWindowState.height,
+    frame: false})
+
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
@@ -48,47 +59,7 @@ function createWindow(msg) {
         mainWindow.webContents.send('ping', msg)
     })
 
-    const ses = mainWindow.webContents.session
-
-    let cvalue = { name: 'position' }
-    let x = 1206
-    let y = 10
-    ses.cookies.get(cvalue, function(error, cookies) {
-        if (!cookies.length) return
-        try {
-            let pos = cookies[0].value
-            let position = JSON.parse(pos)
-            // console.log('P', position)
-            x = position[0]
-            y = position[1]
-            // console.log('GET CO', x, y)
-            mainWindow.setPosition(x, y)
-        }
-        catch(e) {
-        }
-    })
-
-    let xypos, size
-    mainWindow.on('move', getPosAndSize)
-    mainWindow.on('resize', getPosAndSize)
-
-    function getPosAndSize() {
-        xypos = mainWindow.getPosition()
-        size = mainWindow.getSize()
-    }
-
-
-    mainWindow.on('close', function () {
-        let value = JSON.stringify(xypos.concat(size))
-        // console.log('V', value)
-        setCookie(ses, value, 'position')
-    })
-
-    // mainWindow.on('blur', function () {
-    //     console.log('LOOSE STR', greekstr)
-    //     greekstr = null
-    // })
-
+    mainWindowState.manage(mainWindow)
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -101,12 +72,6 @@ function createWindow(msg) {
     })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-// app.on('ready', createWindow)
-// app.on('ready', listenSelection)
-
 
 // Quit when all windows are closed.
 // app.on('window-all-closed', function () {
@@ -118,7 +83,7 @@ function createWindow(msg) {
 // })
 
 app.on('ready', () => {
-    // listenSelection()
+
     let oldstr
     timerId = setInterval(function(){
         let str = clipboard.readText()
@@ -127,31 +92,13 @@ app.on('ready', () => {
         if (!str || str == oldstr) return
         oldstr = str
 
-        // num:
-        // let num = str.split('|')[1]
-        // str = str.split('|')[0]
         str = orthos.toComb(str);
-        let num
-        if (!num) num = 0 // FIXME: найти длиннейшее слово
-        // let sent = punctuation(str)
-        let sent = {sentence: str, punct: "!"}
-        sent.num = num
+        let sent = {sentence: str, punct: "!", num: 0}
         let msg = JSON.stringify(sent)
 
         selectWindow(sent)
 
     }, 100);
-
-    // globalShortcut.register('CommandOrControl+]', () => {
-    //     let str = clipboard.readText()
-    //     // console.log('=========', str)
-    //     str = cleanGreek(str.trim())
-    //     if (!str) return
-    //     let sent = {sentence: str, punct: "!", num: 0}
-    //     let msg = JSON.stringify(sent)
-    //     // console.log('=========', msg)
-    //     selectWindow(msg)
-    // })
 
     globalShortcut.register('CommandOrControl+Shift+Q', () => {
         app.exit(0)
@@ -175,32 +122,6 @@ ipcMain.on('sync', (event, arg) => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-
-function listenSelection() {
-    let oldstr
-    timerId = setInterval(function(){
-        let str = clipboard.readText()
-        if (!str) return
-        str = cleanGreek(str.trim())
-        if (!str || str == oldstr) return
-        oldstr = str
-
-        // num:
-        // let num = str.split('|')[1]
-        // str = str.split('|')[0]
-        str = orthos.toComb(str);
-        let num
-        if (!num) num = 0 // FIXME: найти длиннейшее слово
-        // let sent = punctuation(str)
-        let sent = {sentence: str, punct: "!"}
-        sent.num = num
-        let msg = JSON.stringify(sent)
-
-        selectWindow(msg)
-
-    }, 100);
-}
-
 function selectWindow(msg) {
     if (mainWindow === null) {
         createWindow(msg)
@@ -211,35 +132,6 @@ function selectWindow(msg) {
         mainWindow.webContents.send('ping', msg)
     }
 }
-
-function setCookie(ses, data, name) {
-    let expiration = new Date();
-    let hour = expiration.getHours();
-    hour = hour + 6;
-    expiration.setHours(hour);
-    ses.cookies.set({
-        url: BaseURL, //the url of the cookie.
-        name: name, // a name to identify it.
-        value: data, // the value that you want to save
-        expirationDate: expiration.getTime()
-    }, function(error) {
-        // console.log(error);
-    });
-}
-
-// function getCookie(name, cb) {
-//     let value = {
-//         name: name // the request must have this format to search the cookie.
-//     };
-//     ses.cookies.get(value, function(error, cookies) {
-//         let position = cookies[0].value
-//         cb(position)
-//         // console.console.log(cookies[0].value); // the value saved on the cookie
-//         // let myNotification = new Notification('get cookie', {
-//             // body: cb(cookies[0].value)
-//         // })
-//     });
-// }
 
 // punctuation \u002E\u002C\u0021\u003B\u00B7\u0020\u0027 - ... middle dot, space, apostrophe
 // parens ()[]{-/

@@ -30,6 +30,7 @@ b {
     text-align: center;
     font-size: 36px;
     padding: 5px;
+    margin-top: 5px;
     /* margin-right: 15px; */
 }
 
@@ -39,7 +40,8 @@ b {
 #antrax-close {
     float: right;
     cursor: pointer;
-    margin-top: -5px;
+    margin-top: -3px;
+    margin-right: 3px;
     font-size: 20px;
 }
 

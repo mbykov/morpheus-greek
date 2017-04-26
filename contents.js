@@ -12,7 +12,6 @@ const shell = require('electron').shell
 const util = require('util');
 const fs = require('fs');
 
-
 function log() { }
 // function log() { console.log.apply(console, arguments); }
 // function p() { console.log(util.inspect(arguments, false, null)) }
