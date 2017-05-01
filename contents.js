@@ -69,8 +69,8 @@ function drawMorphs(words, num) {
         showNo()
         return
     }
-    // let idxs = conformNames(words, num)
-    // if (idxs && idxs.length) underline(idxs)
+    let idxs = conformNames(words, num)
+    if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
 }
 
