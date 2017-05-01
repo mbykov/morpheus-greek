@@ -69,30 +69,24 @@ function drawMorphs(words, num) {
         showNo()
         return
     }
-    let idxs = conformNames(words, num)
-    if (idxs && idxs.length) underline(idxs)
+    // let idxs = conformNames(words, num)
+    // if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
 }
 
-// надо бы target-ом считать art, независимо, кто current:
-// второе - pronouns
+// надо бы target-ом считать art, независимо, кто current: // второе - pronouns
 function conformNames(words, num){
-    // log('WS',words)
     let current = words[num]
     if (!current.dicts) return
     let targets = _.select(current.dicts, function(dict) { return ['art', 'name'].includes(dict.pos)})
-    // log('T', targets.length)
     if (!targets.length) return
     let target = targets[0]
-    // log('Ta', target)
     if (!target.morphs || !target.morphs.length) return
     let idxs = []
-    // log('T', target)
     words.forEach(function(word, idx) {
         if (!word.dicts) return
         if (word.idx == num) return
         word.dicts.forEach(function(dict) {
-            // log('WD', idx)
             target.morphs.forEach(function(tm) {
                 let cnfmd = _.select(dict.morphs, function(dm) { return tm.gend == dm.gend && tm.numcase == dm.numcase})
                 if (!cnfmd.length) return
@@ -345,12 +339,7 @@ document.onkeydown = function(e) {
     // } else if (e.ctrlKey) {
         // console.log('CK', e.which)
     } else if (e.ctrlKey && e.which === 72) { // help
-        e.preventDefault()
-        e.stopPropagation()
-        let fpath = './lib/help.html'
-        let html = fs.readFileSync(fpath,'utf8').trim();
-        let parent = q('#antrax-dicts')
-        parent.innerHTML = html
+        showHelp(e)
     } else if (e.ctrlKey && e.which === 65) { // about
         e.preventDefault()
         // e.stopPropagation()
@@ -360,17 +349,36 @@ document.onkeydown = function(e) {
         parent.innerHTML = html
         bindHelpEvents(parent)
     } else if (e.ctrlKey && e.which === 80) {
-        let el = q('.antrax-current')
-        if (!el) return
-        let text = el.textContent
-        text = text.replace(/[\u002E\u002C\u0021\u003B\u00B7\u0020\u0027]/, '')
-        let url = ['http:\/\/www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
-        shell.openExternal(url)
+        openExternal(80)
+    } else if (e.ctrlKey && e.which === 76) {
+        openExternal(76)
     } else if (e.which === 27) { //Esc
         closeAll()
     } else if ([37, 39].includes(e.which)) {
         moveCurrent(e)
     }
+}
+
+function openExternal(key){
+    log('OPEN')
+    let el = q('.antrax-current')
+    if (!el) return
+    let text = el.textContent
+    text = text.replace(/[\u002E\u002C\u0021\u003B\u00B7\u0020\u0027]/, '')
+    let url
+    if (key == 80) url = ['http:\/\/www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
+    else if (key == 76) url = ['http://www.lexigram.gr/lex/arch/', text, '&selR=1#Hist1'].join('')
+    log('OPEN URL', url)
+    shell.openExternal(url)
+}
+
+function showHelp(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    let fpath = './lib/help.html'
+    let html = fs.readFileSync(fpath,'utf8').trim();
+    let parent = q('#antrax-dicts')
+    parent.innerHTML = html
 }
 
 function bindHelpEvents(el) {
@@ -409,4 +417,10 @@ function moveCurrent(e) {
 let x = q('#antrax-close')
 x.onclick = function() {
     closeAll()
+}
+
+let quest = q('#antrax-help')
+quest.onclick = function(e) {
+    log('show quest')
+    showHelp(e)
 }

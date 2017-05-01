@@ -37,7 +37,7 @@ b {
 #container {
 }
 
-#antrax-close {
+.antrax-close {
     float: right;
     cursor: pointer;
     margin-top: -3px;
