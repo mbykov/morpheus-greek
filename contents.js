@@ -74,6 +74,9 @@ function drawMorphs(words, num) {
     drawCurrent(current)
 }
 
+// , Ion. and Ep. -ίη, ἡ, - , ἡ, Ion. and Ep. -ίη,
+// , Ion. -ίη [ῑ], ἡ, - , ἡ, Ion. -ίη [ῑ],
+
 // надо бы target-ом считать art, независимо, кто current: // второе - pronouns
 function conformNames(words, num){
     let current = words[num]
