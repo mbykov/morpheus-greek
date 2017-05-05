@@ -105,13 +105,12 @@ function conformNames(words, num){
 function drawCurrent(cur) {
     log('draw CURRENT', cur)
     cur.dicts.forEach(function(d) {
-        if (!d.weight) d.weight = 0
+        if (!d.weight) d.weight = 1
     })
 
     let dicts = _.sortBy(cur.dicts, 'weight')
     dicts.forEach(function(dict) {
         console.log('DICT BEFORE SHOW', dict)
-        // if (!dict.trn) dict.trn = '!!! no trn !!!' // FIXME:
         if (dict.pos == 'verb') showVerb(dict)
         else if (dict.pos == 'inf') showInf(dict)
         else if (dict.pos == 'part') showPart(dict)
