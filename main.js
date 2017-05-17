@@ -102,19 +102,19 @@ function createWindow(msg) {
 }
 
 autoUpdater.on('checking-for-update', () => {
-    log('Checking for update...');
+    log.info('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
-    log('Update available.');
+    log.info('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-    log('Update not available.');
+    log.info('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
-    log('Error in auto-updater.');
+    log.info('Error in auto-updater.');
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
-    log('Update downloaded; will install in 5 seconds');
+    log.info('Update downloaded; will install in 5 seconds');
 });
 
 // Quit when all windows are closed.
