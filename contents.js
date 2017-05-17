@@ -16,6 +16,7 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
 
     antrax.query(obj.sentence, obj.num, function(_words) {
+        log('W', words)
         words = _words
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
@@ -384,5 +385,5 @@ quest.onclick = function(e) {
     showHelp(e)
 }
 
-function log() { }
-// function log() { console.log.apply(console, arguments); }
+// function log() { }
+function log() { console.log.apply(console, arguments); }

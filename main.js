@@ -47,7 +47,7 @@ function createWindow(msg) {
     'y': mainWindowState.y,
     'width': mainWindowState.width,
     'height': mainWindowState.height,
-    frame: false})
+    frame: true})
 
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
