@@ -29,7 +29,7 @@ app.on('ready', () => {
         ipath = 'build/128x128.png';
     }
     let nimage = nativeImage.createFromPath(ipath)
-    let tray = new Tray(nimage) // './lib/book.png'
+    let tray = new Tray('build/32x32.png') // './lib/book.png'
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
