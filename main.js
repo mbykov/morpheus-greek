@@ -22,21 +22,23 @@ log.info('App starting...');
 // const app = electron.app
 // Module to create native browser window.
 
-// let tray = null
 app.on('ready', () => {
-    let platform = require('os').platform()
-    let ipath
-    if (platform == 'darwin') {
-        ipath = path.join(__dirname, 'build/icon.icns')
-    }
-    else if (platform == 'win32') {
-        ipath = 'build/icon.ico';
-    } else {
-        ipath = 'build/icons/256x256.png';
-    }
+    const iconPath = path.join(__dirname, 'icons/icon.png');
+    let appIcon = null;
+
+    // let platform = require('os').platform()
+    // let ipath
+    // if (platform == 'darwin') {
+    //     ipath = path.join(__dirname, 'build/icon.icns')
+    // }
+    // else if (platform == 'win32') {
+    //     ipath = 'build/icon.ico';
+    // } else {
+    //     ipath = 'build/icons/256x256.png';
+    // }
     // let nimage = nativeImage.createFromPath(ipath)
 
-    let tray = new Tray(ipath)
+    appIcon = new Tray(iconPath)
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
@@ -45,11 +47,8 @@ app.on('ready', () => {
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
-    tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
-    tray.setContextMenu(contextMenu)
-    // if (platform == "darwin") {
-    //     tray.setPressedImage(nimage)
-    // }
+    appIcon.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
+    appIcon.setContextMenu(contextMenu)
 })
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -95,7 +94,6 @@ function createWindow(msg) {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         clearInterval(timerId)
-        // tray = null
         timerId = null
         mainWindow = null
     })
