@@ -9,7 +9,7 @@
         "dev": "electron . --debug",
         "lint": "standard | snazzy"
     },
-    "repository": "https://github.com/mbykov/morpheus-gr",
+    "repository": "https://github.com/mbykov/electron",
     "keywords": [
         "ancient",
         "greek",
