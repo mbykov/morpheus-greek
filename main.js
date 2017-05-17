@@ -22,34 +22,34 @@ log.info('App starting...');
 // const app = electron.app
 // Module to create native browser window.
 
-app.on('ready', () => {
-    const iconPath = path.join(__dirname, 'icons/icon.png');
-    let appIcon = null;
+// app.on('ready', () => {
+//     const iconPath = path.join(__dirname, 'icons/icon.png');
+//     let appIcon = null;
 
-    // let platform = require('os').platform()
-    // let ipath
-    // if (platform == 'darwin') {
-    //     ipath = path.join(__dirname, 'build/icon.icns')
-    // }
-    // else if (platform == 'win32') {
-    //     ipath = 'build/icon.ico';
-    // } else {
-    //     ipath = 'build/icons/256x256.png';
-    // }
-    // let nimage = nativeImage.createFromPath(ipath)
+//     // let platform = require('os').platform()
+//     // let ipath
+//     // if (platform == 'darwin') {
+//     //     ipath = path.join(__dirname, 'build/icon.icns')
+//     // }
+//     // else if (platform == 'win32') {
+//     //     ipath = 'build/icon.ico';
+//     // } else {
+//     //     ipath = 'build/icons/256x256.png';
+//     // }
+//     // let nimage = nativeImage.createFromPath(ipath)
 
-    appIcon = new Tray(iconPath)
-    const contextMenu = Menu.buildFromTemplate([
-        {label: 'about', click: function() { selectWindow('about') }},
-        {label: 'todo', click: function() { console.log('todo') }},
-        {label: 'help', click: function() { selectWindow('help') }},
-        {label: 'volunteers', click: function() { selectWindow('vol') }},
-        {label: '--------'},
-        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
-    ])
-    appIcon.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
-    appIcon.setContextMenu(contextMenu)
-})
+//     appIcon = new Tray(iconPath)
+//     const contextMenu = Menu.buildFromTemplate([
+//         {label: 'about', click: function() { selectWindow('about') }},
+//         {label: 'todo', click: function() { console.log('todo') }},
+//         {label: 'help', click: function() { selectWindow('help') }},
+//         {label: 'volunteers', click: function() { selectWindow('vol') }},
+//         {label: '--------'},
+//         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+//     ])
+//     appIcon.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
+//     appIcon.setContextMenu(contextMenu)
+// })
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
