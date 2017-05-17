@@ -21,7 +21,7 @@ app.on('ready', () => {
     let platform = require('os').platform()
     let ipath
     if (platform == 'darwin') {
-        let ipath = path.join(__dirname, 'build/icns.icns')
+        ipath = path.join(__dirname, 'build/icns.icns')
     }
     else if (platform == 'win32') {
         ipath = 'build/icon.ico';
