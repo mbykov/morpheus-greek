@@ -1,7 +1,5 @@
-//
-// console.log('INSIDE HTML')
+// Morpheus for ancient greek based on electron.js
 
-// let antrax = document.getElementById('antrax-result')
 const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
@@ -12,16 +10,11 @@ const shell = require('electron').shell
 const util = require('util');
 const fs = require('fs');
 
-function log() { }
-// function log() { console.log.apply(console, arguments); }
-// function p() { console.log(util.inspect(arguments, false, null)) }
-
 let words
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
 
-    // let obj = JSON.parse(json)
     antrax.query(obj.sentence, obj.num, function(_words) {
         words = _words
         drawHeader(words, obj.num)
@@ -30,15 +23,12 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
 })
 
 function drawHeader(words, num) {
-    log('HEADER', words, num)
     let oHeader = q('#antrax-header')
     empty(oHeader)
     words.forEach(function(word, i) {
         let form = word.raw
         let span = sa(form)
-        // let id = ['id_', idx].join('')
         span.idx = i
-        // span.setAttribute('idx') = idx
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
@@ -53,7 +43,6 @@ function bindHeaderEvents(el) {
     let events = Events(el, {
         current: function(e){
             let el = e.target
-            log('CLICK', e.target.textContent)
             let old = q('#antrax-header span.antrax-current')
             classes(old).remove('antrax-current')
             classes(el).add('antrax-current')
@@ -74,10 +63,7 @@ function drawMorphs(words, num) {
     drawCurrent(current)
 }
 
-// , Ion. and Ep. -ίη, ἡ, - , ἡ, Ion. and Ep. -ίη,
-// , Ion. -ίη [ῑ], ἡ, - , ἡ, Ion. -ίη [ῑ],
-
-// надо бы target-ом считать art, независимо, кто current: // второе - pronouns
+// TODO: second cycle: pronouns
 function conformNames(words, num){
     let current = words[num]
     if (!current.dicts) return
@@ -103,14 +89,13 @@ function conformNames(words, num){
 }
 
 function drawCurrent(cur) {
-    log('draw CURRENT', cur)
+    // log('draw CURRENT', cur)
     cur.dicts.forEach(function(d) {
         if (!d.weight) d.weight = 1
     })
 
     let dicts = _.sortBy(cur.dicts, 'weight')
     dicts.forEach(function(dict) {
-        // console.log('DICT BEFORE SHOW', dict)
         if (dict.pos == 'verb') showVerb(dict)
         else if (dict.pos == 'inf') showInf(dict)
         else if (dict.pos == 'part') showPart(dict)
@@ -128,11 +113,9 @@ function showNo() {
 }
 
 function showPart(cur) {
-    log('PART:', cur)
     let oDict = creDict()
 
     let mstr = compactNameMorph(cur)
-    // log('NAME MSTR', mstr)
     let dictpos = [cur.dict, cur.pos, cur.var].join(' - ')
     if (cur.type) dictpos = [cur.type, dictpos].join(': ')
     let head = [dictpos, mstr].join('; ')
@@ -145,7 +128,6 @@ function showPart(cur) {
 }
 
 function showName(cur) {
-    // log('SHOW NAME', cur)
     let oDict = creDict()
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
@@ -165,18 +147,14 @@ function compactNameMorph(cur) {
     let mstr
     let gmorphs = _.groupBy(cur.morphs, 'numcase')
     let ggends = _.groupBy(cur.morphs, 'gend')
-    // log('gmorphs', gmorphs)
-    // log('SIZE m', _.keys(gmorphs), 'g', _.keys(ggends))
+
     let morphs = []
     if (_.keys(gmorphs).length <= _.keys(ggends).length) {
         for (let numcase in gmorphs) {
             let gends = gmorphs[numcase].map(function(gm) { return gm.gend})
             gends = _.uniq(gends).sort()
-            // log('GENDS', gends)
             let str = gends.join('-')
-            // let morph = [JSON.stringify(gends), numcase].join('.')
             let morph = [str, numcase].join(': ')
-            // log('MORPH', morph)
             morphs.push(morph)
         }
     } else {
@@ -184,9 +162,7 @@ function compactNameMorph(cur) {
             let numcases = ggends[gend].map(function(gg) { return gg.numcase})
             numcases = _.uniq(numcases).sort()
             numcases = removeVoc(numcases)
-            // log('NUMCASES', numcases)
             let str = numcases.join('-')
-            // let morph = [gend, JSON.stringify(numcases)].join('.')
             let morph = [gend, str].join(': ')
             morphs.push(morph)
         }
@@ -203,8 +179,6 @@ function creDict() {
     return oDict
 }
 
-// καὶ τόδε τῶν παλαιῶν ἀσθένειαν οὐχ
-// λέγω
 function showVerbs(verbs) {
     verbs.forEach(function(verb) {
         showVerb(verb)
@@ -212,7 +186,6 @@ function showVerbs(verbs) {
 }
 
 function showVerb(cur) {
-    // log('SHOW VERB', cur)
     let oDict = creDict()
     let mstrs = []
     for (let mod in cur.morphs) {
@@ -239,7 +212,6 @@ function compactVerbMorph(cur) {
 }
 
 function showInf(cur) {
-    // log('SHOW INF', cur)
     let oDict = creDict()
 
     let dictpos = [cur.dict, cur.pos].join(' - ')
@@ -251,8 +223,6 @@ function showInf(cur) {
     let tree = new Tree(oDict)
     tree.data(data)
 }
-
-
 
 // эта хрень должна реагировать только на обращение:
 function removeVoc(morphs) {
@@ -266,12 +236,10 @@ function removeVoc(morphs) {
     if (!hasNom) return morphs
     morphs.forEach(function(morph) {
         if (morph.split('.')[1] == 'voc') return
-        // if (morph.split('.')[0] == 'du') return
         cleans.push(morph)
     })
     return cleans
 }
-
 
 function emptyDict() {
     let uns = qs('.underlined')
@@ -285,7 +253,6 @@ function emptyDict() {
     let parent = q('#antrax-results')
     parent.appendChild(oDicts)
 }
-
 
 function underline(idxs) {
     let oWords = qs('#antrax-header span.antrax-form')
@@ -338,8 +305,6 @@ function closeAll() {
 document.onkeydown = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
         ipcRenderer.send('sync', 'window-hide');
-    // } else if (e.ctrlKey) {
-        // console.log('CK', e.which)
     } else if (e.ctrlKey && e.which === 72) { // help
         showHelp(e)
     } else if (e.ctrlKey && e.which === 65) { // about
@@ -362,7 +327,6 @@ document.onkeydown = function(e) {
 }
 
 function openExternal(key){
-    log('OPEN')
     let el = q('.antrax-current')
     if (!el) return
     let text = el.textContent
@@ -370,7 +334,6 @@ function openExternal(key){
     let url
     if (key == 80) url = ['http:\/\/www.perseus.tufts.edu/hopper/morph?l=', text, '&la=greek#Perseus:text:1999.04.0058:entry=nohto/s-contents'].join('')
     else if (key == 76) url = ['http://www.lexigram.gr/lex/arch/', text, '&selR=1#Hist1'].join('')
-    log('OPEN URL', url)
     shell.openExternal(url)
 }
 
@@ -387,13 +350,8 @@ function bindHelpEvents(el) {
     // let ve = window.event
     let events = Events(el, {
         diglossa: function(e){
-            // let el = e.target
-            console.log('CLICK', e.target.textContent)
             let url = e.target.textContent
             shell.openExternal(url)
-            // let old = q('#antrax-header span.antrax-current')
-            // classes(old).remove('antrax-current')
-            // classes(el).add('antrax-current')
         }
     })
     events.bind('click .link', 'diglossa')
@@ -423,6 +381,8 @@ x.onclick = function() {
 
 let quest = q('#antrax-help')
 quest.onclick = function(e) {
-    log('show quest')
     showHelp(e)
 }
+
+function log() { }
+// function log() { console.log.apply(console, arguments); }

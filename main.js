@@ -7,7 +7,7 @@ const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 
-const orthos = require('../../greek/orthos');
+const orthos = require('orthos');
 const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
@@ -73,15 +73,14 @@ function createWindow(msg) {
     })
 }
 
-
 // Quit when all windows are closed.
-// app.on('window-all-closed', function () {
-//     // On OS X it is common for applications and their menu bar
-//     // to stay active until the user quits explicitly with Cmd + Q
-//   if (process.platform !== 'darwin') {
-//       app.quit()
-//   }
-// })
+app.on('window-all-closed', function () {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+      app.quit()
+  }
+})
 
 app.on('ready', () => {
 
@@ -115,7 +114,6 @@ app.on('activate', function () {
 })
 
 ipcMain.on('sync', (event, arg) => {
-    // console.log('HIDE!', arg);
     // event.preventDefault()
     mainWindow.hide()
 })
