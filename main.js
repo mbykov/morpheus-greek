@@ -21,15 +21,15 @@ app.on('ready', () => {
     let platform = require('os').platform()
     let ipath
     if (platform == 'darwin') {
-        ipath = path.join(__dirname, 'build/icns.icns')
+        ipath = path.join(__dirname, 'build/128x128.png')
     }
     else if (platform == 'win32') {
         ipath = 'build/icon.ico';
     } else {
         ipath = 'build/128x128.png';
     }
-    let nimage = nativeImage.createFromPath(ipath)
-    let tray = new Tray(nimage) // './lib/book.png'
+    // let nimage = nativeImage.createFromPath(ipath)
+    let tray = new Tray(ipath) // './lib/book.png'
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
@@ -40,9 +40,9 @@ app.on('ready', () => {
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
-    if (platform == "darwin") {
-        tray.setPressedImage(nimage)
-    }
+    // if (platform == "darwin") {
+    //     tray.setPressedImage(nimage)
+    // }
 })
 
 // Keep a global reference of the window object, if you don't, the window will
