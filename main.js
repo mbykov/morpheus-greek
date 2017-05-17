@@ -24,19 +24,19 @@ log.info('App starting...');
 
 // let tray = null
 app.on('ready', () => {
-    // let platform = require('os').platform()
-    // let ipath
-    // if (platform == 'darwin') {
-    //     ipath = path.join(__dirname, 'build/icon.png')
-    // }
-    // else if (platform == 'win32') {
-    //     ipath = 'build/icon.ico';
-    // } else {
-    //     ipath = 'build/icons/128x128.png';
-    // }
+    let platform = require('os').platform()
+    let ipath
+    if (platform == 'darwin') {
+        ipath = path.join(__dirname, 'build/icon.icns')
+    }
+    else if (platform == 'win32') {
+        ipath = 'build/icon.ico';
+    } else {
+        ipath = 'build/icons/256x256.png';
+    }
     // let nimage = nativeImage.createFromPath(ipath)
 
-    let tray = new Tray('build/icons/128x128.png')
+    let tray = new Tray(ipath)
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
