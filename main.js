@@ -40,6 +40,9 @@ app.on('ready', () => {
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
+    if (platform == "darwin") {
+        tray.setPressedImage(nimage)
+    }
 })
 
 // Keep a global reference of the window object, if you don't, the window will
