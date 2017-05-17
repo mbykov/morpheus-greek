@@ -59,11 +59,12 @@ function createWindow(msg) {
     })
 
     mainWindow = new BrowserWindow({  //width: 800, height: 600, frame: false})
-    'x': mainWindowState.x,
-    'y': mainWindowState.y,
-    'width': mainWindowState.width,
-    'height': mainWindowState.height,
-    frame: false})
+        'x': mainWindowState.x,
+        'y': mainWindowState.y,
+        'width': mainWindowState.width,
+        'height': mainWindowState.height,
+        icon: 'build/icon.png',
+        frame: false})
 
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
