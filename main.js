@@ -7,15 +7,15 @@ const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
-const {autoUpdater} = require("electron-updater");
+// const {autoUpdater} = require("electron-updater");
 
 const orthos = require('orthos');
 const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
 
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
+// autoUpdater.logger = log;
+// autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
 // Module to control application life.
