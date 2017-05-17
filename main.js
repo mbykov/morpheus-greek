@@ -21,7 +21,7 @@ app.on('ready', () => {
     let platform = require('os').platform()
     let ipath
     if (platform == 'darwin') {
-        ipath = path.join(__dirname, 'build/icon.png')
+        ipath = path.join(__dirname, 'build/32x32.png')
     }
     else if (platform == 'win32') {
         ipath = 'build/icon.ico';
@@ -29,7 +29,8 @@ app.on('ready', () => {
         ipath = 'build/128x128.png';
     }
     let nimage = nativeImage.createFromPath(ipath)
-    let tray = new Tray('build/32x32.png') // './lib/book.png'
+
+    let tray = new Tray(ipath)
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
