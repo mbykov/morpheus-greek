@@ -21,7 +21,7 @@ app.on('ready', () => {
     let platform = require('os').platform()
     let trayImage
     if (platform == 'darwin') {
-        trayImage = 'build/book.icns'
+        trayImage = './build/icns.icns'
     }
     else if (platform == 'win32') {
         trayImage = 'build/icon.ico';
