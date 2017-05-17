@@ -6,11 +6,17 @@ const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
+const log = require('electron-log');
+const {autoUpdater} = require("electron-updater");
 
 const orthos = require('orthos');
 const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 // Module to control application life.
 // const app = electron.app
@@ -51,6 +57,11 @@ app.on('ready', () => {
 let mainWindow = null
 let timerId = null
 
+function sendStatusToWindow(text) {
+    log.info(text);
+    mainWindow.webContents.send('message', text);
+}
+
 function createWindow(msg) {
     // Create the browser window.
     let mainWindowState = windowStateKeeper({
@@ -89,6 +100,22 @@ function createWindow(msg) {
         mainWindow = null
     })
 }
+
+autoUpdater.on('checking-for-update', () => {
+    log('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+    log('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+    log('Update not available.');
+})
+autoUpdater.on('error', (ev, err) => {
+    log('Error in auto-updater.');
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+    log('Update downloaded; will install in 5 seconds');
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -163,3 +190,38 @@ function cleanGreek(str) {
 
 // FIXME: добавить скобки, и в скобках abcde по кр.мере
 // return str.replace(/[^\u002E\u002C\u0021\u003B\u00B7\u0020\u0028\u0029\u005B\u005D\u007B\u007D\u002D\u002F\u1F00-\u1FFF\u0370-\u03FF\u0300-\u036F]/gi, '')
+
+
+//-------------------------------------------------------------------
+// Auto updates
+//
+// For details about these events, see the Wiki:
+// https://github.com/electron-userland/electron-builder/wiki/Auto-Update#events
+//
+// The app doesn't need to listen to any events except `update-downloaded`
+//
+// Uncomment any of the below events to listen for them.  Also,
+// look in the previous section to see them being used.
+//-------------------------------------------------------------------
+// autoUpdater.on('checking-for-update', () => {
+// })
+// autoUpdater.on('update-available', (ev, info) => {
+// })
+// autoUpdater.on('update-not-available', (ev, info) => {
+// })
+// autoUpdater.on('error', (ev, err) => {
+// })
+// autoUpdater.on('download-progress', (ev, progressObj) => {
+// })
+autoUpdater.on('update-downloaded', (ev, info) => {
+  // Wait 5 seconds, then quit and install
+  // In your application, you don't need to wait 5 seconds.
+  // You could call autoUpdater.quitAndInstall(); immediately
+  setTimeout(function() {
+    autoUpdater.quitAndInstall();
+  }, 5000)
+})
+
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
