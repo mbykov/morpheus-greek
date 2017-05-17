@@ -1,7 +1,7 @@
 'use strict'
 
 const electron = require('electron')
-const {app, Menu, Tray, globalShortcut} = require('electron')
+const {app, Menu, Tray, globalShortcut, nativeImage} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
@@ -19,16 +19,17 @@ const BrowserWindow = electron.BrowserWindow
 // let tray = null
 app.on('ready', () => {
     let platform = require('os').platform()
-    let trayImage
+    let ipath
     if (platform == 'darwin') {
-        trayImage = path.join(__dirname, './build/icns.icns')
+        let ipath = path.join(__dirname, './build/icns.icns')
     }
     else if (platform == 'win32') {
-        trayImage = 'build/icon.ico';
+        ipath = 'build/icon.ico';
     } else {
-        trayImage = 'build/128x128.png';
+        ipath = 'build/128x128.png';
     }
-    let tray = new Tray(trayImage) // './lib/book.png'
+    let nimage = nativeImage.createFromPath(ipath)
+    let tray = new Tray(nimage) // './lib/book.png'
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
