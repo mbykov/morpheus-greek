@@ -7,15 +7,15 @@ const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
-// const {autoUpdater} = require("electron-updater");
+const {autoUpdater} = require("electron-updater");
 
 const orthos = require('orthos');
 const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
 
-// autoUpdater.logger = log;
-// autoUpdater.logger.transports.file.level = 'info';
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
 // Module to control application life.
@@ -101,21 +101,21 @@ function createWindow(msg) {
     })
 }
 
-// autoUpdater.on('checking-for-update', () => {
-//     log.info('Checking for update...');
-// })
-// autoUpdater.on('update-available', (ev, info) => {
-//     log.info('Update available.');
-// })
-// autoUpdater.on('update-not-available', (ev, info) => {
-//     log.info('Update not available.');
-// })
-// autoUpdater.on('error', (ev, err) => {
-//     log.info('Error in auto-updater.');
-// })
-// autoUpdater.on('update-downloaded', (ev, info) => {
-//     log.info('Update downloaded; will install in 5 seconds');
-// });
+autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+    log.info('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+    log.info('Update not available.');
+})
+autoUpdater.on('error', (ev, err) => {
+    log.info('Error in auto-updater.');
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+    log.info('Update downloaded; will install in 5 seconds');
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -214,15 +214,15 @@ function cleanGreek(str) {
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
 
-// autoUpdater.on('update-downloaded', (ev, info) => {
-//   // Wait 5 seconds, then quit and install
-//   // In your application, you don't need to wait 5 seconds.
-//   // You could call autoUpdater.quitAndInstall(); immediately
-//   setTimeout(function() {
-//     autoUpdater.quitAndInstall();
-//   }, 5000)
-// })
+autoUpdater.on('update-downloaded', (ev, info) => {
+  // Wait 5 seconds, then quit and install
+  // In your application, you don't need to wait 5 seconds.
+  // You could call autoUpdater.quitAndInstall(); immediately
+  setTimeout(function() {
+    autoUpdater.quitAndInstall();
+  }, 5000)
+})
 
-// app.on('ready', function()  {
-//   autoUpdater.checkForUpdates();
-// });
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
