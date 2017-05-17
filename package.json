@@ -1,5 +1,5 @@
 {
-    "name": "morpheus-gr",
+    "name": "electron",
     "version": "0.2.9",
     "description": "Morpheus for ancient greek based on electron.js",
     "main": "main.js",
