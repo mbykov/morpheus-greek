@@ -32,6 +32,7 @@ b {
     font-size: 36px;
     padding: 5px;
     margin-top: 5px;
+    -webkit-app-region: drag;
     /* margin-right: 15px; */
 }
 
