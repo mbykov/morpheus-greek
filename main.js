@@ -27,9 +27,8 @@ app.on('ready', () => {
         trayImage = 'build/icon.ico';
     } else {
         trayImage = 'build/128x128.png';
-
     }
-    let tray = new Tray('./lib/book.png')
+    let tray = new Tray(trayImage) // './lib/book.png'
     const contextMenu = Menu.buildFromTemplate([
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},

@@ -348,7 +348,6 @@ function showHelp(e) {
 }
 
 function bindHelpEvents(el) {
-    // let ve = window.event
     let events = Events(el, {
         diglossa: function(e){
             let url = e.target.textContent
@@ -382,6 +381,7 @@ x.onclick = function() {
 
 let quest = q('#antrax-help')
 quest.onclick = function(e) {
+    log('here help')
     showHelp(e)
 }
 
