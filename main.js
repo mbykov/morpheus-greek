@@ -213,15 +213,16 @@ function cleanGreek(str) {
 // })
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
-autoUpdater.on('update-downloaded', (ev, info) => {
-  // Wait 5 seconds, then quit and install
-  // In your application, you don't need to wait 5 seconds.
-  // You could call autoUpdater.quitAndInstall(); immediately
-  setTimeout(function() {
-    autoUpdater.quitAndInstall();
-  }, 5000)
-})
 
-app.on('ready', function()  {
-  autoUpdater.checkForUpdates();
-});
+// autoUpdater.on('update-downloaded', (ev, info) => {
+//   // Wait 5 seconds, then quit and install
+//   // In your application, you don't need to wait 5 seconds.
+//   // You could call autoUpdater.quitAndInstall(); immediately
+//   setTimeout(function() {
+//     autoUpdater.quitAndInstall();
+//   }, 5000)
+// })
+
+// app.on('ready', function()  {
+//   autoUpdater.checkForUpdates();
+// });
