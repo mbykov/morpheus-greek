@@ -1,14 +1,22 @@
 {
     "name": "electron",
-    "version": "0.2.9",
+    "productName": "Electron Morpheus",
+     "version": "0.2.9",
     "description": "Morpheus for ancient greek based on electron.js",
     "main": "main.js",
     "scripts": {
         "postinstall": "electron-rebuild",
         "start": "electron .",
         "dev": "electron . --debug",
-        "lint": "standard | snazzy"
-    },
+        "lint": "standard | snazzy",
+        "mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=icons/mac/book.icns --prune=true --out=release-builds",
+        "win32": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/win/icon.ico --prune=true --out=release-builds",
+        "win64": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true --out=release-builds",
+        "linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=icons/png/1024x1024.png --prune=true --out=release-builds",
+        "installer-mac": "electron-installer-dmg ./release-builds/Electron\\ tutorial\\ app-darwin-x64/Electron\\ tutorial\\ app.app electron-tutorial-app --out=release-builds --overwrite --icon=icons/mac/book.icns",
+        "installer-win32": "node installers/windows/createinstaller32.js",
+        "installer-win64": "node installers/windows/createinstaller64.js"
+     },
     "repository": "https://github.com/mbykov/electron",
     "keywords": [
         "ancient",
@@ -23,7 +31,10 @@
     "devDependencies": {
         "electron": "^1.6.6",
         "electron-builder": "^17.3.1",
-        "electron-rebuild": "^1.5.11"
+        "electron-rebuild": "^1.5.11",
+        "electron-installer-dmg": "^0.1.2",
+        "electron-packager": "^8.1.0",
+        "electron-winstaller": "^2.4.1"
   },
     "dependencies": {
         "electron-updater": "^1.15.0",
@@ -32,6 +43,7 @@
         "component-emitter": "^1.2.1",
         "component-events": "^1.0.10",
         "electron-window-state": "^4.1.1",
+        "leveldown": "1.5.0",
         "orthos": "^0.2.1",
         "underscore": "^1.8.3"
     },
