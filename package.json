@@ -45,7 +45,7 @@
         "component-emitter": "^1.2.1",
         "component-events": "^1.0.10",
         "electron-window-state": "^4.1.1",
-        "antrax": "^0.1.12",
+        "antrax": "^0.1.13",
         "orthos": "^0.2.1",
         "underscore": "^1.8.3"
     },
