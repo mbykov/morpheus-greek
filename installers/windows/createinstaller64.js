@@ -20,7 +20,6 @@ function getInstallerConfig () {
         outputDirectory: path.join(outPath, 'windows-installer'),
         exe: 'Electron Morpheus.exe',
         setupExe: 'ElectronMorpheus_setup.exe',
-        iconUrl: path.join(rootPath, 'icons', 'win', 'icon.ico'),
         setupIcon: path.join(rootPath, 'icons', 'win', 'icon.ico')
     })
 }
