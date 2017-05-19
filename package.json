@@ -38,7 +38,7 @@
     "electron-winstaller": "^2.4.1"
   },
   "dependencies": {
-    "antrax": "^0.1.31",
+    "antrax": "^0.1.37",
     "component-classes": "^1.2.6",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",

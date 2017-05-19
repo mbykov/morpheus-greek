@@ -10,8 +10,10 @@ const log = require('electron-log');
 // const {autoUpdater} = require("electron-updater");
 
 const orthos = require('orthos');
+// const antrax = require('antrax')
 
 const BrowserWindow = electron.BrowserWindow
+
 
 // autoUpdater.logger = log;
 // autoUpdater.logger.transports.file.level = 'info';
@@ -145,6 +147,7 @@ app.on('ready', () => {
         app.exit(0)
     })
 })
+
 
 app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
