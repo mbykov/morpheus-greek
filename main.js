@@ -10,7 +10,6 @@ const log = require('electron-log');
 // const {autoUpdater} = require("electron-updater");
 
 const orthos = require('orthos');
-const BaseURL = 'http://localhost'
 
 const BrowserWindow = electron.BrowserWindow
 
