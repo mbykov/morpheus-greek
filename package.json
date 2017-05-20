@@ -54,11 +54,6 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
-        "files": [
-            "app/**/*",
-            "node_modules/**/*",
-            "package.json"
-        ],
         "asarUnpack": "node_modules/antrax/pouchdb",
         "publish": null,
         "mac": {
