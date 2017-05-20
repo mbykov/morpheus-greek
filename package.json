@@ -54,8 +54,8 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
-        "asar.unpackDir": "node_modules/antrax",
-        "asar.unpack": "*.node",
+        "smartUnpack": true,
+        "asarUnpack": "*.node",
         "publish": null,
         "mac": {
             "category": "Educational software",
