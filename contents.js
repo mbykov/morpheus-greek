@@ -1,6 +1,6 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('antrax')
+const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const classes = require('component-classes')
@@ -14,6 +14,7 @@ let words
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
+    // words = obj
     antrax.query(obj.sentence, obj.num, function(_words) {
         log('W', words)
         words = _words

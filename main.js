@@ -8,11 +8,18 @@ const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
 // const {autoUpdater} = require("electron-updater");
+const fs = require("fs")
 
 const orthos = require('orthos');
-// const antrax = require('antrax')
+// const antrax = require('./antrax')
 
 const BrowserWindow = electron.BrowserWindow
+
+// let init = true
+// let init = null
+// antrax.init(function(res) {
+//     if (res) init = true;
+// })
 
 
 // autoUpdater.logger = log;
@@ -83,16 +90,16 @@ function createWindow(msg) {
     mainWindow.webContents.openDevTools()
     mainWindow.setAlwaysOnTop(true)
 
-    mainWindow.webContents.executeJavaScript(`
-    let path = require('path');
-    module.paths.push(path.resolve('node_modules'));
-    module.paths.push(path.resolve('../node_modules'));
-    module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
-    module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
-    module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
-    module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
-    path = null;
-  `)
+  //   mainWindow.webContents.executeJavaScript(`
+  //   let path = require('path');
+  //   module.paths.push(path.resolve('node_modules'));
+  //   module.paths.push(path.resolve('../node_modules'));
+  //   module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
+  //   module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
+  //   module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
+  //   module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
+  //   path = null;
+  // `)
 
 
     mainWindow.webContents.on('did-finish-load', function() {
@@ -138,9 +145,9 @@ app.on('window-all-closed', function () {
 })
 
 app.on('ready', () => {
-
-    let oldstr
+    let oldstr = null
     timerId = setInterval(function(){
+
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
@@ -149,8 +156,10 @@ app.on('ready', () => {
 
         str = orthos.toComb(str);
         let sent = {sentence: str, punct: "!", num: 0}
-        let msg = JSON.stringify(sent)
-
+        // let msg = JSON.stringify(sent)
+        // antrax.query(str, 0, function(words) {
+            // selectWindow(words)
+        // })
         selectWindow(sent)
 
     }, 100);
