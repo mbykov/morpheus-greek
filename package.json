@@ -54,7 +54,8 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
-        "asarUnpack": "node_modules/antrax/pouchdb",
+        "asar.unpackDir": "node_modules/antrax",
+        "asar.unpack": "*.node",
         "publish": null,
         "mac": {
             "category": "Educational software",
