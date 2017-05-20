@@ -51,18 +51,19 @@
     "pouchdb-load": "^1.4.6",
     "underscore": "^1.8.3"
   },
-  "build": {
-    "appId": "com.github.mbykov.electron",
-    "mac": {
-      "category": "Educational software",
-      "target": [
-        "zip",
-        "dmg"
-      ]
-    },
-    "nsis": {
-      "perMachine": true,
-      "installerIcon": "build/icon.ico"
+    "build": {
+        "appId": "com.github.mbykov.electron",
+        "asar": false,
+        "mac": {
+            "category": "Educational software",
+            "target": [
+                "zip",
+                "dmg"
+            ]
+        },
+        "nsis": {
+            "perMachine": true,
+            "installerIcon": "build/icon.ico"
+        }
     }
-  }
 }
