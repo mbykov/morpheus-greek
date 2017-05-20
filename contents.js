@@ -14,7 +14,6 @@ let words
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
-    log('==', obj.sentence)
     antrax.query(obj.sentence, obj.num, function(_words) {
         log('W', words)
         words = _words
