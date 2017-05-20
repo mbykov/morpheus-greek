@@ -54,7 +54,7 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
-        "asarUnpack": "*.node",
+        "asar": false,
         "publish": null,
         "mac": {
             "category": "Educational software",
