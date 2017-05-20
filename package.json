@@ -1,6 +1,6 @@
 {
   "name": "electron",
-  "productName": "Electron Morpheus",
+  "productName": "electron",
   "version": "0.2.9",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
@@ -9,6 +9,7 @@
     "start": "electron .",
     "dev": "electron . --debug",
     "lint": "standard | snazzy",
+    "bild": "build",
     "mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=icons/mac/book.icns --prune=true --out=release-builds",
     "win32": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/win/icon.ico --prune=true --out=release-builds",
     "win64_asar": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true --out=release-builds",
@@ -31,14 +32,14 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^1.6.6",
+    "electron-packager": "^8.1.0",
     "electron-builder": "^17.3.1",
     "electron-rebuild": "^1.5.11",
     "electron-installer-dmg": "^0.1.2",
-    "electron-packager": "^8.1.0",
     "electron-winstaller": "^2.4.1"
   },
   "dependencies": {
-    "antrax": "^0.1.37",
+    "antrax": "^0.1.39",
     "component-classes": "^1.2.6",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
@@ -53,6 +54,7 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
+        "app-category-type": "public.app-category.education",
         "asar": false,
         "mac": {
             "category": "Educational software",
