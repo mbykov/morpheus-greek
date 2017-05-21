@@ -61,8 +61,15 @@ log.info('App starting...');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+
+let populated = null
 let mainWindow = null
 let timerId = null
+
+// app.on('ready', () => {
+//     log.info('B: start');
+//     mainWindow.webContents.send('init')
+// })
 
 function sendStatusToWindow(text) {
     log.info(text);
@@ -103,7 +110,10 @@ function createWindow(msg) {
 
 
     mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.webContents.send('ping', msg)
+        // log.info('M: init', msg)
+        if (msg) mainWindow.webContents.send('ping', msg)
+        else mainWindow.webContents.send('init')
+        // mainWindow.webContents.send('ping', msg)
     })
 
     mainWindowState.manage(mainWindow)
@@ -115,9 +125,16 @@ function createWindow(msg) {
         // when you should delete the corresponding element.
         clearInterval(timerId)
         timerId = null
+        populated = null
         mainWindow = null
     })
 }
+
+app.on('ready', () => {
+    if (populated) return
+    createWindow()
+    populated = true
+})
 
 // autoUpdater.on('checking-for-update', () => {
 //     log.info('Checking for update...');
@@ -155,12 +172,9 @@ app.on('ready', () => {
         oldstr = str
 
         str = orthos.toComb(str);
-        let sent = {sentence: str, punct: "!", num: 0}
+        let msg = {sentence: str, punct: "!", num: 0}
         // let msg = JSON.stringify(sent)
-        // antrax.query(str, 0, function(words) {
-            // selectWindow(words)
-        // })
-        selectWindow(sent)
+        selectWindow(msg)
 
     }, 100);
 

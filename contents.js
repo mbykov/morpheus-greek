@@ -12,9 +12,22 @@ const fs = require('fs');
 
 let words
 
+require('electron').ipcRenderer.on('init', (event, msg) => {
+    log('B: INIT START')
+    let fpath = './lib/help.html'
+    // let html = fs.readFileSync(fpath,'utf8').trim();
+    let html = 'please wait while we synchronize your data'
+    let parent = q('#antrax-dicts')
+    parent.innerHTML = html
+    antrax.init(function(res) {
+        log('B: init', res)
+        html = 'copy some Ancient Greek text: ctrl-C'
+        parent.innerHTML = html
+    })
+})
+
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     let oRes = document.getElementById('antrax-result')
-    // words = obj
     antrax.query(obj.sentence, obj.num, function(_words) {
         log('W', words)
         words = _words
