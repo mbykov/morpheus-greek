@@ -44,7 +44,9 @@ app.on('ready', () => {
     else if (platform == 'win32') {
         log.info('platform win32')
         // ipath = path.join(__dirname, 'icons/icon.png')
-        ipath = nativeImage.createFromPath(path.join(__dirname, 'icons/icon.png'))
+        let winpath = path.join(__dirname, 'icons/icon.png')
+        log.info('EXISTS', fs.exists(winpath));
+        ipath = nativeImage.createFromPath(winpath)
     } else {
         ipath = 'build/icons/256x256.png'
     }
