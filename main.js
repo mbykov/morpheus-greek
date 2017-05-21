@@ -46,7 +46,7 @@ app.on('ready', () => {
         // ipath = path.join(__dirname, 'icons/icon.png')
         let winpath = path.join(__dirname, 'icons/icon.png')
         log.info('winpath', winpath)
-        log.info('EXISTS', fs.exists(winpath));
+        log.info('EXISTS', fs.stat(winpath));
         ipath = nativeImage.createFromPath(winpath)
     } else {
         ipath = 'build/icons/256x256.png'
