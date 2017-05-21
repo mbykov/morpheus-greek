@@ -15,49 +15,52 @@ const orthos = require('orthos');
 
 const BrowserWindow = electron.BrowserWindow
 
-// let init = true
-// let init = null
-// antrax.init(function(res) {
-//     if (res) init = true;
-// })
-
-
 // autoUpdater.logger = log;
 // autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
-// Module to control application life.
-// const app = electron.app
-// Module to create native browser window.
-
+let tray = null
 // app.on('ready', () => {
-//     const iconPath = path.join(__dirname, 'icons/icon.png');
-//     let appIcon = null;
-
-//     // let platform = require('os').platform()
-//     // let ipath
-//     // if (platform == 'darwin') {
-//     //     ipath = path.join(__dirname, 'build/icon.icns')
-//     // }
-//     // else if (platform == 'win32') {
-//     //     ipath = 'build/icon.ico';
-//     // } else {
-//     //     ipath = 'build/icons/256x256.png';
-//     // }
-//     // let nimage = nativeImage.createFromPath(ipath)
-
-//     appIcon = new Tray(iconPath)
+//     tray = new Tray('build/icons/256x256.png')
 //     const contextMenu = Menu.buildFromTemplate([
-//         {label: 'about', click: function() { selectWindow('about') }},
-//         {label: 'todo', click: function() { console.log('todo') }},
-//         {label: 'help', click: function() { selectWindow('help') }},
-//         {label: 'volunteers', click: function() { selectWindow('vol') }},
-//         {label: '--------'},
-//         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+//         {label: 'Item1', type: 'radio'},
+//         {label: 'Item2', type: 'radio'},
+//         {label: 'Item3', type: 'radio', checked: true},
+//         {label: 'Item4', type: 'radio'}
 //     ])
-//     appIcon.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
-//     appIcon.setContextMenu(contextMenu)
+//     tray.setToolTip('This is my application.')
+//     tray.setContextMenu(contextMenu)
 // })
+
+app.on('ready', () => {
+    // const iconPath = path.join(__dirname, 'icons/icon.png');
+
+    let ipath
+    let platform = require('os').platform()
+    if (platform == 'darwin') {
+        ipath = path.join(__dirname, 'build/icon.icns')
+    }
+    else if (platform == 'win32') {
+        ipath = 'build/icon.ico';
+    } else {
+        ipath = 'build/icons/256x256.png';
+    }
+    // let nimage = nativeImage.createFromPath(ipath)
+
+    tray = new Tray(ipath)
+    const contextMenu = Menu.buildFromTemplate([
+        {label: 'about', click: function() { selectWindow('about') }},
+        {label: 'todo', click: function() { console.log('todo') }},
+        {label: 'help', click: function() { selectWindow('help') }},
+        {label: 'volunteers', click: function() { selectWindow('vol') }},
+        {label: '--------'},
+        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+    ])
+    // log.info('contextMenu', contextMenu)
+    tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
+    tray.setContextMenu(contextMenu)
+    // log.info('TRAY', tray)
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -127,6 +130,7 @@ function createWindow(msg) {
         timerId = null
         populated = null
         mainWindow = null
+        tray = null
     })
 }
 
@@ -134,6 +138,29 @@ app.on('ready', () => {
     if (populated) return
     createWindow()
     populated = true
+})
+
+app.on('ready', () => {
+    let oldstr = null
+    timerId = setInterval(function(){
+
+        let str = clipboard.readText()
+        if (!str) return
+        str = cleanGreek(str.trim())
+        if (!str || str == oldstr) return
+        log.info('old', oldstr, 'str', str)
+        oldstr = str
+
+        str = orthos.toComb(str);
+        let msg = {sentence: str, punct: "!", num: 0}
+        // let msg = JSON.stringify(sent)
+        selectWindow(msg)
+
+    }, 100);
+
+    globalShortcut.register('CommandOrControl+Shift+Q', () => {
+        app.exit(0)
+    })
 })
 
 // autoUpdater.on('checking-for-update', () => {
@@ -156,31 +183,9 @@ app.on('ready', () => {
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-      app.quit()
-  }
-})
-
-app.on('ready', () => {
-    let oldstr = null
-    timerId = setInterval(function(){
-
-        let str = clipboard.readText()
-        if (!str) return
-        str = cleanGreek(str.trim())
-        if (!str || str == oldstr) return
-        oldstr = str
-
-        str = orthos.toComb(str);
-        let msg = {sentence: str, punct: "!", num: 0}
-        // let msg = JSON.stringify(sent)
-        selectWindow(msg)
-
-    }, 100);
-
-    globalShortcut.register('CommandOrControl+Shift+Q', () => {
-        app.exit(0)
-    })
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
 })
 
 
