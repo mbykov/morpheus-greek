@@ -35,16 +35,16 @@ let tray = null
 app.on('ready', () => {
     // const iconPath = path.join(__dirname, 'icons/icon.png');
 
-    let ipath
+    let ipath = null
     let platform = require('os').platform()
     if (platform == 'darwin') {
         ipath = path.join(__dirname, 'build/icon.icns')
     }
     else if (platform == 'win32') {
         log.info('platform win32')
-        ipath = 'tmp/IconTemplate.png';
+        ipath = path.join(__dirname, 'build/icons/32x32.png')
     } else {
-        ipath = 'build/icons/256x256.png';
+        ipath = 'build/icons/256x256.png'
     }
     // let nimage = nativeImage.createFromPath(ipath)
 
