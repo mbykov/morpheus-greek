@@ -45,6 +45,7 @@ app.on('ready', () => {
         log.info('platform win32')
         // ipath = path.join(__dirname, 'icons/icon.png')
         let winpath = path.join(__dirname, 'icons/icon.png')
+        log.info('winpath', winpath)
         log.info('EXISTS', fs.exists(winpath));
         ipath = nativeImage.createFromPath(winpath)
     } else {
