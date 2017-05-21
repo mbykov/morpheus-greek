@@ -29,7 +29,7 @@ b {
     color: #fff;
     background-color: #8aba87;
     text-align: center;
-    font-size: 36px;
+    font-size: 32px;
     padding: 5px;
     margin-top: 5px;
     -webkit-app-region: drag;
@@ -66,7 +66,7 @@ b {
 
 #antrax-morphs {
     font-family: 'DejaVu Sans';
-    font-size: 24px;
+    font-size: 22px;
     margin-left: 25px;
     margin-top: 10px;
     color: maroon;
@@ -84,7 +84,7 @@ b {
 
 
 .dict-pos {
-    font-size: 22px;
+    font-size: 20px;
     color: maroon;
     padding-left: 20px;
     cursor: pointer;

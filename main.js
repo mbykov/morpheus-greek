@@ -9,7 +9,7 @@ const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
 // const {autoUpdater} = require("electron-updater");
 const fs = require("fs")
-const jetpack = require("fs-jetpack")
+// const jetpack = require("fs-jetpack")
 
 const orthos = require('orthos');
 // const antrax = require('./antrax')
@@ -21,21 +21,8 @@ const BrowserWindow = electron.BrowserWindow
 log.info('App starting...');
 
 let tray = null
-// app.on('ready', () => {
-//     tray = new Tray('build/icons/256x256.png')
-//     const contextMenu = Menu.buildFromTemplate([
-//         {label: 'Item1', type: 'radio'},
-//         {label: 'Item2', type: 'radio'},
-//         {label: 'Item3', type: 'radio', checked: true},
-//         {label: 'Item4', type: 'radio'}
-//     ])
-//     tray.setToolTip('This is my application.')
-//     tray.setContextMenu(contextMenu)
-// })
 
 app.on('ready', () => {
-    // const iconPath = path.join(__dirname, 'icons/icon.png');
-
     let ipath = null
     let nimage
     let platform = require('os').platform()
@@ -43,16 +30,11 @@ app.on('ready', () => {
         ipath = path.join(__dirname, 'build/icon.icns')
     }
     else if (platform == 'win32') {
-        log.info('platform win32')
-        // ipath = path.join(__dirname, 'icons/icon.png')
         let winpath = path.join(__dirname, 'icons/icon.png')
-        log.info('winpath', winpath)
-        log.info('EXISTS', jetpack.exists(winpath));
         ipath = nativeImage.createFromPath(winpath)
     } else {
         ipath = 'build/icons/256x256.png'
     }
-    // let nimage = nativeImage.createFromPath(ipath)
 
     tray = new Tray(ipath)
     const contextMenu = Menu.buildFromTemplate([
@@ -63,23 +45,16 @@ app.on('ready', () => {
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
-    // log.info('contextMenu', contextMenu)
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
-    // log.info('TRAY', tray)
+    tray.on('right-click', function() {
+        tray.popContextMenu(contextMenu);
+    })
 })
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 
 let populated = null
 let mainWindow = null
 let timerId = null
-
-// app.on('ready', () => {
-//     log.info('B: start');
-//     mainWindow.webContents.send('init')
-// })
 
 function sendStatusToWindow(text) {
     log.info(text);
@@ -93,13 +68,16 @@ function createWindow(msg) {
         defaultHeight: 600
     })
 
+    // let winpath = path.join(__dirname, 'build/icon.ico')
+    // let icon = nativeImage.createFromPath(winpath)
+
     mainWindow = new BrowserWindow({  //width: 800, height: 600, frame: false})
         'x': mainWindowState.x,
         'y': mainWindowState.y,
         'width': mainWindowState.width,
         'height': mainWindowState.height,
-        // icon: 'build/icon.png',
-        frame: true})
+        // icon: icon,
+        frame: false})
 
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
