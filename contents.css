@@ -45,7 +45,9 @@ b {
     margin-top: -3px;
     margin-right: 3px;
     font-size: 20px;
+    -webkit-app-region: no-drag;
 }
+
 
 .antrax-form {
     cursor: pointer;

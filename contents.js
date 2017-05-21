@@ -14,7 +14,7 @@ let words
 
 require('electron').ipcRenderer.on('init', (event, msg) => {
     log('B: INIT START')
-    let fpath = './lib/help.html'
+    // let fpath = './lib/help.html'
     // let html = fs.readFileSync(fpath,'utf8').trim();
     let html = 'please wait while we synchronize your data'
     let parent = q('#antrax-dicts')
@@ -27,7 +27,22 @@ require('electron').ipcRenderer.on('init', (event, msg) => {
 })
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
-    let oRes = document.getElementById('antrax-result')
+    // let oRes = document.getElementById('antrax-result')
+    // log('MSG', obj)
+    if (typeof(obj) === 'string') {
+        switch(obj) {
+        case 'help':
+            showSection(null, 'help')
+            break
+        case 'about':
+            showSection(null, 'about')
+            break
+        case 'todo':
+            showHelp()
+            break
+        }
+        return
+    }
     antrax.query(obj.sentence, obj.num, function(_words) {
         log('W', words)
         words = _words
@@ -352,9 +367,22 @@ function openExternal(key){
 }
 
 function showHelp(e) {
-    e.preventDefault()
-    e.stopPropagation()
+    if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+    }
     let fpath = './lib/help.html'
+    let html = fs.readFileSync(fpath,'utf8').trim();
+    let parent = q('#antrax-dicts')
+    parent.innerHTML = html
+}
+
+function showSection(e, name) {
+    if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    let fpath = ['./lib/', name, '.html'].join('')
     let html = fs.readFileSync(fpath,'utf8').trim();
     let parent = q('#antrax-dicts')
     parent.innerHTML = html

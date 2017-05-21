@@ -52,7 +52,7 @@ app.on('ready', () => {
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
         {label: 'help', click: function() { selectWindow('help') }},
-        {label: 'volunteers', click: function() { selectWindow('vol') }},
+        {label: 'volunteers', click: function() { selectWindow('volunteers') }},
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
@@ -91,7 +91,7 @@ function createWindow(msg) {
         'y': mainWindowState.y,
         'width': mainWindowState.width,
         'height': mainWindowState.height,
-        icon: 'build/icon.png',
+        // icon: 'build/icon.png',
         frame: false})
 
     // and load the index.html of the app.
