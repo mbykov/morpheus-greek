@@ -38,7 +38,10 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
             showSection(null, 'about')
             break
         case 'todo':
-            showHelp()
+            showSection(null, 'todo')
+            break
+        case 'volunteer':
+            showSection(null, 'volunteer')
             break
         }
         return

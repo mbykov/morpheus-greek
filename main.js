@@ -52,7 +52,7 @@ app.on('ready', () => {
         {label: 'about', click: function() { selectWindow('about') }},
         {label: 'todo', click: function() { console.log('todo') }},
         {label: 'help', click: function() { selectWindow('help') }},
-        {label: 'volunteers', click: function() { selectWindow('volunteers') }},
+        {label: 'volunteer', click: function() { selectWindow('volunteer') }},
         {label: '--------'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
