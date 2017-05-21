@@ -9,6 +9,7 @@ const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
 // const {autoUpdater} = require("electron-updater");
 const fs = require("fs")
+const jetpack = require("fs-jetpack")
 
 const orthos = require('orthos');
 // const antrax = require('./antrax')
@@ -46,7 +47,7 @@ app.on('ready', () => {
         // ipath = path.join(__dirname, 'icons/icon.png')
         let winpath = path.join(__dirname, 'icons/icon.png')
         log.info('winpath', winpath)
-        log.info('EXISTS', fs.stat(winpath));
+        log.info('EXISTS', jetpack.exists(winpath));
         ipath = nativeImage.createFromPath(winpath)
     } else {
         ipath = 'build/icons/256x256.png'
