@@ -41,7 +41,7 @@ app.on('ready', () => {
         ipath = path.join(__dirname, 'build/icon.icns')
     }
     else if (platform == 'win32') {
-        ipath = 'build/icon.ico';
+        ipath = 'build/icons/32x32.png';
     } else {
         ipath = 'build/icons/256x256.png';
     }
