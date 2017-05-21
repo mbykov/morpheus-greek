@@ -384,7 +384,7 @@ function showSection(e, name) {
         e.preventDefault()
         e.stopPropagation()
     }
-    let fpath = path.join(__dirname, ['./lib/', name, '.html'].join(''))
+    let fpath = path.join(__dirname, ['lib/', name, '.html'].join(''))
     let html = fs.readFileSync(fpath,'utf8').trim();
     let parent = q('#antrax-dicts')
     parent.innerHTML = html
