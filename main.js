@@ -99,25 +99,13 @@ function createWindow(msg) {
         'width': mainWindowState.width,
         'height': mainWindowState.height,
         // icon: 'build/icon.png',
-        frame: false})
+        frame: true})
 
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
     mainWindow.setAlwaysOnTop(true)
-
-  //   mainWindow.webContents.executeJavaScript(`
-  //   let path = require('path');
-  //   module.paths.push(path.resolve('node_modules'));
-  //   module.paths.push(path.resolve('../node_modules'));
-  //   module.paths.push(path.resolve(__dirname, '..', '..', 'electron', 'node_modules'));
-  //   module.paths.push(path.resolve(__dirname, '..', '..', 'electron.asar', 'node_modules'));
-  //   module.paths.push(path.resolve(__dirname, '..', '..', 'app', 'node_modules'));
-  //   module.paths.push(path.resolve(__dirname, '..', '..', 'app.asar', 'node_modules'));
-  //   path = null;
-  // `)
-
 
     mainWindow.webContents.on('did-finish-load', function() {
         // log.info('M: init', msg)

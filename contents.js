@@ -1,6 +1,6 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('./antrax')
+const antrax = require('antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const classes = require('component-classes')
@@ -9,13 +9,12 @@ const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
 const util = require('util');
 const fs = require('fs');
+const path = require('path')
 
 let words
 
 require('electron').ipcRenderer.on('init', (event, msg) => {
-    log('B: INIT START')
-    // let fpath = './lib/help.html'
-    // let html = fs.readFileSync(fpath,'utf8').trim();
+    log('C: INIT START')
     let html = 'please wait while we synchronize your data'
     let parent = q('#antrax-dicts')
     parent.innerHTML = html
@@ -385,7 +384,7 @@ function showSection(e, name) {
         e.preventDefault()
         e.stopPropagation()
     }
-    let fpath = ['./lib/', name, '.html'].join('')
+    let fpath = path.join(__dirname, ['./lib/', name, '.html'].join(''))
     let html = fs.readFileSync(fpath,'utf8').trim();
     let parent = q('#antrax-dicts')
     parent.innerHTML = html
