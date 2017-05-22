@@ -11,7 +11,7 @@
         "dev": "electron . --debug",
         "lint": "standard | snazzy",
         "pack": "build --dir",
-        "dist": "build",
+        "dist": "build"
     },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
