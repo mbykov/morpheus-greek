@@ -140,21 +140,21 @@ app.on('ready', () => {
     })
 })
 
-// autoUpdater.on('checking-for-update', () => {
-//     log.info('Checking for update...');
-// })
-// autoUpdater.on('update-available', (ev, info) => {
-//     log.info('Update available.');
-// })
-// autoUpdater.on('update-not-available', (ev, info) => {
-//     log.info('Update not available.');
-// })
-// autoUpdater.on('error', (ev, err) => {
-//     log.info('Error in auto-updater.');
-// })
-// autoUpdater.on('update-downloaded', (ev, info) => {
-//     log.info('Update downloaded; will install in 5 seconds');
-// });
+autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+    log.info('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+    log.info('Update not available.');
+})
+autoUpdater.on('error', (ev, err) => {
+    log.info('Error in auto-updater.');
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+    log.info('Update downloaded; will install in 5 seconds');
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
