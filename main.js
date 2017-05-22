@@ -20,9 +20,9 @@ const orthos = require('orthos');
 
 const BrowserWindow = electron.BrowserWindow
 
-// autoUpdater.logger = log;
-// autoUpdater.logger.transports.file.level = 'info';
-// log.info('App starting...');
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 let populated = null
 let mainWindow = null
