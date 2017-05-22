@@ -36,7 +36,7 @@
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
     "electron-log": "^2.2.6",
-    "electron-updater": "^1.15.0",
+    "electron-updater": "^1.16.0",
     "electron-window-state": "^4.1.1",
     "fs-jetpack": "^1.0.0",
     "orthos": "^0.2.1",
@@ -55,6 +55,7 @@
             ]
         },
         "nsis": {
+            "publish": [{provider: "github"}]
             "perMachine": false,
             "installerIcon": "build/icon.ico"
         }
