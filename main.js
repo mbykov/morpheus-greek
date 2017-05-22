@@ -11,8 +11,6 @@ const fs = require("fs")
 // const jetpack = require("fs-jetpack")
 
 const autoUpdater = require("electron-updater").autoUpdater
-autoUpdater.logger = require("electron-log")
-autoUpdater.logger.transports.file.level = "info"
 
 const orthos = require('orthos');
 // const antrax = require('./antrax')
@@ -152,9 +150,6 @@ autoUpdater.on('update-not-available', (ev, info) => {
 autoUpdater.on('error', (ev, err) => {
     mainWindow.webContents.send('Error in auto-updater.');
 })
-autoUpdater.on('update-downloaded', (ev, info) => {
-    log.info('Update downloaded; will install in 5 seconds');
-});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
