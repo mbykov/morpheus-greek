@@ -7,9 +7,12 @@ const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
-// const {autoUpdater} = require("electron-updater");
 const fs = require("fs")
 // const jetpack = require("fs-jetpack")
+
+const autoUpdater = require("electron-updater").autoUpdater
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info"
 
 const orthos = require('orthos');
 // const antrax = require('./antrax')
@@ -19,6 +22,10 @@ const BrowserWindow = electron.BrowserWindow
 // autoUpdater.logger = log;
 // autoUpdater.logger.transports.file.level = 'info';
 // log.info('App starting...');
+
+let populated = null
+let mainWindow = null
+let timerId = null
 
 let tray = null
 
@@ -42,19 +49,17 @@ app.on('ready', () => {
         {label: 'todo', click: function() { console.log('todo') }},
         {label: 'help', click: function() { selectWindow('help') }},
         {label: 'volunteer', click: function() { selectWindow('volunteer') }},
-        {label: '--------'},
+        {type: 'separator'},
         {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
     tray.on('right-click', function() {
+        log.info('right clicked')
+        contextMenu.popup([mainWindow])
         tray.popUpContextMenu(contextMenu);
     })
 })
-
-let populated = null
-let mainWindow = null
-let timerId = null
 
 function sendStatusToWindow(text) {
     // log.info(text);
@@ -226,15 +231,15 @@ function cleanGreek(str) {
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
 
-// autoUpdater.on('update-downloaded', (ev, info) => {
-//   // Wait 5 seconds, then quit and install
-//   // In your application, you don't need to wait 5 seconds.
-//   // You could call autoUpdater.quitAndInstall(); immediately
-//   setTimeout(function() {
-//     autoUpdater.quitAndInstall();
-//   }, 5000)
-// })
+autoUpdater.on('update-downloaded', (ev, info) => {
+  // Wait 5 seconds, then quit and install
+  // In your application, you don't need to wait 5 seconds.
+  // You could call autoUpdater.quitAndInstall(); immediately
+  setTimeout(function() {
+    autoUpdater.quitAndInstall();
+  }, 5000)
+})
 
-// app.on('ready', function()  {
-//   autoUpdater.checkForUpdates();
-// });
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
