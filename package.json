@@ -55,7 +55,7 @@
             ]
         },
         "nsis": {
-            "publish": [{provider: "github"}]
+            "publish": [{provider: "github"}],
             "perMachine": false,
             "installerIcon": "build/icon.ico"
         }
