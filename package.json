@@ -1,7 +1,7 @@
 {
     "name": "electron",
     "productName": "electron",
-    "version": "0.2.14",
+    "version": "0.2.15",
     "description": "Morpheus for ancient greek based on electron.js",
     "main": "main.js",
     "scripts": {
@@ -55,7 +55,6 @@
             ]
         },
         "nsis": {
-            "publish": null,
             "perMachine": false,
             "installerIcon": "build/icon.ico"
         }
