@@ -10,7 +10,8 @@ const log = require('electron-log');
 const fs = require("fs")
 // const jetpack = require("fs-jetpack")
 
-const autoUpdater = require("electron-updater").autoUpdater
+// const autoUpdater = require("electron-updater").autoUpdater
+import { autoUpdater } from "electron-updater"
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
 
@@ -141,16 +142,16 @@ app.on('ready', () => {
 })
 
 autoUpdater.on('checking-for-update', () => {
-    log.info('Checking for update...');
+    mainWindow.webContents.send('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
-    log.info('Update available.');
+    mainWindow.webContents.send('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-    log.info('Update not available.');
+    mainWindow.webContents.send('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
-    log.info('Error in auto-updater.');
+    mainWindow.webContents.send('Error in auto-updater.');
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
     log.info('Update downloaded; will install in 5 seconds');

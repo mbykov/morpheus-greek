@@ -13,6 +13,14 @@ const path = require('path')
 
 let words
 
+ipcRenderer.on('message', function(event, text) {
+    let parent = q('#antrax-dicts')
+    let message = document.createElement('div');
+    message.innerHTML = text;
+    parent.appendChild(message);
+})
+
+
 require('electron').ipcRenderer.on('init', (event, msg) => {
     let html = 'please wait while we synchronize your data'
     let parent = q('#antrax-dicts')
