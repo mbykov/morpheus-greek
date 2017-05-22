@@ -10,8 +10,7 @@ const log = require('electron-log');
 const fs = require("fs")
 // const jetpack = require("fs-jetpack")
 
-// const autoUpdater = require("electron-updater").autoUpdater
-import { autoUpdater } from "electron-updater"
+const autoUpdater = require("electron-updater") // .autoUpdater
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
 
