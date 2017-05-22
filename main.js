@@ -188,6 +188,7 @@ function selectWindow(msg) {
     }
     else {
         mainWindow.show()
+        window.minimize()
         mainWindow.focus()
         mainWindow.webContents.send('ping', msg)
     }

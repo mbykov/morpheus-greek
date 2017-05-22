@@ -1,7 +1,7 @@
 {
     "name": "electron",
     "productName": "electron",
-    "version": "0.2.9",
+    "version": "0.2.10",
     "description": "Morpheus for ancient greek based on electron.js",
     "main": "main.js",
     "scripts": {
@@ -12,14 +12,6 @@
         "lint": "standard | snazzy",
         "pack": "build --dir",
         "dist": "build",
-        "mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=icons/mac/book.icns --prune=true --out=release-builds",
-        "win32": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=icons/win/icon.ico --prune=true --out=release-builds",
-        "win64_asar": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true --out=release-builds",
-        "win64": "electron-packager . --overwrite --platform=win32 --arch=x64 --icon=icons/win/icon.ico --prune=true --out=release-builds",
-        "linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=icons/png/1024x1024.png --prune=true --out=release-builds",
-        "installer-mac": "electron-installer-dmg ./release-builds/Electron\\ tutorial\\ app-darwin-x64/Electron\\ tutorial\\ app.app electron-tutorial-app --out=release-builds --overwrite --icon=icons/mac/book.icns",
-        "installer-win32": "node installers/windows/createinstaller32.js",
-        "installer-win64": "node installers/windows/createinstaller64.js"
     },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
@@ -37,8 +29,6 @@
     "electron-packager": "^8.1.0",
     "electron-builder": "^17.3.1",
     "electron-rebuild": "^1.5.11",
-    "electron-installer-dmg": "^0.1.2",
-    "electron-winstaller": "^2.4.1"
   },
   "dependencies": {
     "antrax": "^0.1.51",
