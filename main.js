@@ -18,7 +18,7 @@ const BrowserWindow = electron.BrowserWindow
 
 // autoUpdater.logger = log;
 // autoUpdater.logger.transports.file.level = 'info';
-log.info('App starting...');
+// log.info('App starting...');
 
 let tray = null
 
@@ -48,7 +48,7 @@ app.on('ready', () => {
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
     tray.on('right-click', function() {
-        tray.popContextMenu(contextMenu);
+        tray.popUpContextMenu(contextMenu);
     })
 })
 
@@ -57,7 +57,7 @@ let mainWindow = null
 let timerId = null
 
 function sendStatusToWindow(text) {
-    log.info(text);
+    // log.info(text);
     mainWindow.webContents.send('message', text);
 }
 
@@ -86,7 +86,6 @@ function createWindow(msg) {
     mainWindow.setAlwaysOnTop(true)
 
     mainWindow.webContents.on('did-finish-load', function() {
-        // log.info('M: init', msg)
         if (msg) mainWindow.webContents.send('ping', msg)
         else mainWindow.webContents.send('init')
         // mainWindow.webContents.send('ping', msg)
@@ -121,7 +120,7 @@ app.on('ready', () => {
         if (!str) return
         str = cleanGreek(str.trim())
         if (!str || str == oldstr) return
-        log.info('old', oldstr, 'str', str)
+        // log.info('old', oldstr, 'str', str)
         oldstr = str
 
         str = orthos.toComb(str);

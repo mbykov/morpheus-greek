@@ -14,20 +14,16 @@ const path = require('path')
 let words
 
 require('electron').ipcRenderer.on('init', (event, msg) => {
-    log('C: INIT START')
     let html = 'please wait while we synchronize your data'
     let parent = q('#antrax-dicts')
     parent.innerHTML = html
     antrax.init(function(res) {
-        log('B: init', res)
         html = 'copy some Ancient Greek text: ctrl-C'
         parent.innerHTML = html
     })
 })
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
-    // let oRes = document.getElementById('antrax-result')
-    // log('MSG', obj)
     if (typeof(obj) === 'string') {
         switch(obj) {
         case 'help':
@@ -46,7 +42,6 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
         return
     }
     antrax.query(obj.sentence, obj.num, function(_words) {
-        log('W', words)
         words = _words
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
@@ -120,7 +115,6 @@ function conformNames(words, num){
 }
 
 function drawCurrent(cur) {
-    // log('draw CURRENT', cur)
     cur.dicts.forEach(function(d) {
         if (!d.weight) d.weight = 1
     })
@@ -337,7 +331,7 @@ document.onkeydown = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
         ipcRenderer.send('sync', 'window-hide');
     } else if (e.ctrlKey && e.which === 72) { // help
-        showHelp(e)
+        showSection(e, 'help')
     } else if (e.ctrlKey && e.which === 65) { // about
         e.preventDefault()
         // e.stopPropagation()
@@ -368,16 +362,16 @@ function openExternal(key){
     shell.openExternal(url)
 }
 
-function showHelp(e) {
-    if (e) {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-    let fpath = './lib/help.html'
-    let html = fs.readFileSync(fpath,'utf8').trim();
-    let parent = q('#antrax-dicts')
-    parent.innerHTML = html
-}
+// function showHelp(e) {
+//     if (e) {
+//         e.preventDefault()
+//         e.stopPropagation()
+//     }
+//     let fpath = path.join(__dirname, ['lib/', 'help.html'].join(''))
+//     let html = fs.readFileSync(fpath,'utf8').trim();
+//     let parent = q('#antrax-dicts')
+//     parent.innerHTML = html
+// }
 
 function showSection(e, name) {
     if (e) {
@@ -422,10 +416,9 @@ x.onclick = function() {
     closeAll()
 }
 
-let quest = q('#antrax-help')
-quest.onclick = function(e) {
-    log('here help')
-    showHelp(e)
+let qhelp = q('#antrax-help')
+qhelp.onclick = function(e) {
+    showSection(e, 'help')
 }
 
 // function log() { }
