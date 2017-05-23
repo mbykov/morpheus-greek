@@ -139,16 +139,23 @@ app.on('ready', () => {
 })
 
 autoUpdater.on('checking-for-update', () => {
-    mainWindow.webContents.send('Checking for update...');
+    sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
-    mainWindow.webContents.send('Update available.');
+    sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-    mainWindow.webContents.send('Update not available.');
+    sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
-    mainWindow.webContents.send('Error in auto-updater.');
+    sendStatusToWindow('Error in auto-updater.');
+})
+
+autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    sendStatusToWindow(log_message);
 })
 
 // Quit when all windows are closed.
@@ -226,6 +233,10 @@ function cleanGreek(str) {
 // })
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+    sendStatusToWindow('Update downloaded; will install in 5 seconds');
+});
 
 autoUpdater.on('update-downloaded', (ev, info) => {
   // Wait 5 seconds, then quit and install
