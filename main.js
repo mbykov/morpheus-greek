@@ -248,7 +248,5 @@ autoUpdater.on('update-downloaded', (ev, info) => {
 })
 
 app.on('ready', function()  {
-    log.info('autoUpdater.checkForUpdates');
-    autoUpdater.logger('')
     autoUpdater.checkForUpdates();
 });

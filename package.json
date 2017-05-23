@@ -46,7 +46,10 @@
   },
     "build": {
         "appId": "com.github.mbykov.electron",
-         "publish": [{
+        "asarUnpack": [
+            "**/node_modules/antrax/**/*"
+        ],
+        "publish": [{
           "provider": "github",
           "owner": "mbykov",
           "repo": "electron"
