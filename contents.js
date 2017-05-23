@@ -24,10 +24,16 @@ ipcRenderer.on('message', function(event, text) {
 require('electron').ipcRenderer.on('init', (event, msg) => {
     let html = 'please wait while we synchronize your data'
     let parent = q('#antrax-dicts')
-    parent.innerHTML = html
+    // parent.innerHTML = html
+    let message = document.createElement('div');
+    message.innerHTML = html;
+    parent.appendChild(message);
     antrax.init(function(res) {
         html = 'copy some Ancient Greek text: ctrl-C'
-        parent.innerHTML = html
+        // parent.innerHTML = html
+        let message = document.createElement('div');
+        message.innerHTML = html;
+        parent.appendChild(message);
     })
 })
 

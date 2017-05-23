@@ -60,7 +60,7 @@ app.on('ready', () => {
 })
 
 function sendStatusToWindow(text) {
-    // log.info(text);
+    log.info(text);
     mainWindow.webContents.send('message', text);
 }
 
