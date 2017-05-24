@@ -45,15 +45,15 @@ install:
   - ps: Install-Product node 7 x64
   # - git reset --hard HEAD
   - npm install
-  - npm i electron-rebuild
-  - npm i electron-prebuilt
-  - npm i electron-builder
+  # - npm i electron-rebuild
+  # - npm i electron-prebuilt
+  # - npm i electron-builder
   # - npm prune
 
 build_script:
   - node --version
   - npm --version
   - npm run dist
-  - npm prune
+  # - npm prune
 
 test: off
