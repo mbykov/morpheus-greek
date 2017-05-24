@@ -33,7 +33,7 @@ platform:
   - x64
 
 cache:
-  # - node_modules
+  - node_modules
   # - app\node_modules
   # - '%APPDATA%\npm-cache'
   # - '%USERPROFILE%\.electron'
@@ -44,14 +44,16 @@ cache:
 install:
   - ps: Install-Product node 7 x64
   # - git reset --hard HEAD
+  - npm install
   - npm i electron-rebuild
   - npm i electron-prebuilt
-  - npm install
-  - npm prune
+  - npm i electron-builder
+  # - npm prune
 
 build_script:
   - node --version
   - npm --version
   - npm run dist
+  - npm prune
 
 test: off
