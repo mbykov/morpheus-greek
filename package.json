@@ -25,11 +25,11 @@
   "author": "m.bykov@gmail.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "electron": "^1.6.8",
-    "electron-builder": "^18.0.1",
-    "electron-packager": "^8.1.0",
-    "electron-prebuilt": "^1.4.13",
-    "electron-rebuild": "^1.5.11"
+      "electron": "^1.6.8",
+      "electron-builder": "^18.0.1",
+      "electron-packager": "^8.1.0",
+      "electron-prebuilt": "^1.4.13",
+      "electron-rebuild": "^1.5.11"
   },
   "dependencies": {
     "antrax": "^0.1.58",
