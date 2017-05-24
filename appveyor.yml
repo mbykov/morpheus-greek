@@ -1,24 +1,50 @@
-# Test against the latest version of this Node.js version
-environment:
-  nodejs_version: "7"
+# # Test against the latest version of this Node.js version
+# environment:
+#   nodejs_version: "7"
 
-# Install scripts. (runs after repo cloning)
+# # Install scripts. (runs after repo cloning)
+# install:
+#   # Get the latest stable version of Node.js or io.js
+#   - ps: Install-Product node $env:nodejs_version
+#   # install modules
+#   - npm install
+
+# # Post-install test scripts.
+# test_script:
+#   # Output useful info for debugging.
+#   - node --version
+#   - npm --version
+#   # run tests
+#   # - npm test
+
+# # Don't actually build.
+# # build: off
+# build:
+#   project: './'
+#   parallel: true
+#   verbosity: minimal
+
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - app\node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+
+# init:
+#   - git config --global core.autocrlf input
+
 install:
-  # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node $env:nodejs_version
-  # install modules
+  - ps: Install-Product node 7 x64
+  - git reset --hard HEAD
   - npm install
+  - npm prune
 
-# Post-install test scripts.
-test_script:
-  # Output useful info for debugging.
+build_script:
   - node --version
   - npm --version
-  # run tests
-  # - npm test
+  - npm run dist
 
-# Don't actually build.
-# build: off
-build:
-  parallel: true
-  verbosity: minimal
+test: off
