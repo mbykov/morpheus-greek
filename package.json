@@ -11,7 +11,7 @@
     "dev": "electron . --debug",
     "lint": "standard | snazzy",
     "pack": "build --dir",
-    "dist": "cross-env NODE_ENV=production build"
+    "dist": "build"
   },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
@@ -25,7 +25,6 @@
   "author": "m.bykov@gmail.com",
   "license": "GPL-3.0",
   "devDependencies": {
-    "cross-env": "^5.0.0",
     "electron": "^1.6.8",
     "electron-builder": "^18.0.1",
     "electron-packager": "^8.1.0",
