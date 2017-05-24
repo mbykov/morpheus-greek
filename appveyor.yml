@@ -28,6 +28,7 @@ environment:
   GH_TOKEN:
     secure: EGdUtTShdVdc6HFZvziVkrpRV//zl6c5XxqV4owLlybsdwyGrWAA/Z1y0pS+wt65
   NODE_ENV: production
+  BUILD_ENVIRONMENT: production
 
 platform:
   - x64
@@ -45,10 +46,10 @@ install:
   - ps: Install-Product node 7 x64
   # - git reset --hard HEAD
   - npm install
-  # - npm i electron-rebuild
-  # - npm i electron-prebuilt
-  # - npm i electron-builder
-  # - npm prune
+  - npm i electron-rebuild
+  - npm i electron-prebuilt
+  - npm i electron-builder
+  - npm prune
 
 build_script:
   - node --version
