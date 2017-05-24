@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.27",
+  "version": "0.2.28",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
@@ -29,10 +29,11 @@
     "electron": "^1.6.8",
     "electron-builder": "^18.0.1",
     "electron-packager": "^8.1.0",
+    "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.5.11"
   },
   "dependencies": {
-    "antrax": "^0.1.55",
+    "antrax": "^0.1.56",
     "component-classes": "^1.2.6",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
@@ -48,7 +49,7 @@
   },
   "build": {
     "appId": "com.github.mbykov.electron",
-    "asar": false,
+    "asarUnpack": "pouchdb",
     "publish": [
       {
         "provider": "github",
