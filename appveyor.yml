@@ -45,10 +45,10 @@ cache:
 install:
   - ps: Install-Product node 7 x64
   # - git reset --hard HEAD
-  - npm install
   - npm i electron-rebuild
   - npm i electron-prebuilt
   - npm i electron-builder
+  - npm install
   # - npm prune
 
 build_script:
