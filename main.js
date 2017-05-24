@@ -21,8 +21,13 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
-let env  = process.env
-log.info('ENV', env.NODE_ENV);
+const isDev = require('electron-is-dev');
+
+if (isDev) {
+    log.info('Running in development');
+} else {
+    log.info('Running in production');
+}
 
 let populated = null
 let mainWindow = null
