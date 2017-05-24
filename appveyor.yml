@@ -24,6 +24,10 @@
 #   parallel: true
 #   verbosity: minimal
 
+environment:
+  GH_TOKEN:
+    secure: EGdUtTShdVdc6HFZvziVkrpRV//zl6c5XxqV4owLlybsdwyGrWAA/Z1y0pS+wt65
+
 platform:
   - x64
 
