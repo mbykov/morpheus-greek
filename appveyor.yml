@@ -27,6 +27,7 @@
 environment:
   GH_TOKEN:
     secure: EGdUtTShdVdc6HFZvziVkrpRV//zl6c5XxqV4owLlybsdwyGrWAA/Z1y0pS+wt65
+  NODE_ENV: production
 
 platform:
   - x64
@@ -49,7 +50,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - set NODE_ENV=production
   - npm run dist
 
 test: off

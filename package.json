@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "electron-rebuild": "^1.5.11"
   },
   "dependencies": {
-    "antrax": "^0.1.57",
+    "antrax": "^0.1.58",
     "component-classes": "^1.2.6",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
