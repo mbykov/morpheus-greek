@@ -21,6 +21,10 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
+process.env.NODE_ENV = 'production';
+let env  = process.env
+log.info('ENV', env.NODE_ENV);
+
 let populated = null
 let mainWindow = null
 let timerId = null

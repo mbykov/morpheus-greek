@@ -47,7 +47,7 @@
     "build": {
         "appId": "com.github.mbykov.electron",
         "asarUnpack": [
-            "**/node_modules/antrax/**/*"
+            "pouchdb/**/*"
         ],
         "publish": [{
           "provider": "github",
