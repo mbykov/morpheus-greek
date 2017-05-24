@@ -20,6 +20,5 @@ test_script:
 # Don't actually build.
 # build: off
 build:
-  project: antrax.sln
   parallel: true
   verbosity: minimal
