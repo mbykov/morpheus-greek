@@ -43,7 +43,8 @@ cache:
 
 install:
   - ps: Install-Product node 7 x64
-  - git reset --hard HEAD
+  # - git reset --hard HEAD
+  - npm i electron-rebuild
   - npm install
   - npm prune
 
