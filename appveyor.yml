@@ -49,6 +49,7 @@ install:
 build_script:
   - node --version
   - npm --version
-  - NODE_ENV=production npm run dist
+  - set NODE_ENV=production
+  - npm run dist
 
 test: off
