@@ -49,11 +49,12 @@ install:
   - npm i electron-rebuild
   - npm i electron-prebuilt
   - npm i electron-builder
-  - npm prune
+  # - npm prune
 
 build_script:
   - node --version
   - npm --version
+  - set NODE_ENV=production
   - npm run dist
   # - npm prune
 
