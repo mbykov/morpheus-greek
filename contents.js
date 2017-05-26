@@ -101,6 +101,7 @@ function drawMorphs(words, num) {
     let idxs = conformNames(words, num)
     if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
+    setSectionEvents()
 }
 
 // TODO: second cycle: pronouns
@@ -346,14 +347,14 @@ document.onkeydown = function(e) {
         ipcRenderer.send('sync', 'window-hide');
     } else if (e.ctrlKey && e.which === 72) { // help
         showSection(e, 'help')
-    } else if (e.ctrlKey && e.which === 65) { // about
-        e.preventDefault()
-        // e.stopPropagation()
-        let fpath = './lib/about.html'
-        let html = fs.readFileSync(fpath,'utf8').trim();
-        let parent = q('#antrax-dicts')
-        parent.innerHTML = html
-        bindHelpEvents(parent)
+    // } else if (e.ctrlKey && e.which === 65) { // about
+        // e.preventDefault()
+        // // e.stopPropagation()
+        // let fpath = './lib/about.html'
+        // let html = fs.readFileSync(fpath,'utf8').trim();
+        // let parent = q('#antrax-dicts')
+        // parent.innerHTML = html
+        // bindSectionEvents(parent)
     } else if (e.ctrlKey && e.which === 80) {
         openExternal(80)
     } else if (e.ctrlKey && e.which === 76) {
@@ -398,16 +399,19 @@ function showSection(e, name) {
     parent.innerHTML = html
 }
 
-function bindHelpEvents(el) {
-    let events = Events(el, {
-        diglossa: function(e){
-            let url = e.target.textContent
-            shell.openExternal(url)
-        }
-    })
-    events.bind('click .link', 'diglossa')
+function setSectionEvents(){
+    let linkEl = q('#antrax-dicts')
+    bindSectionEvents(linkEl)
+    function bindSectionEvents(el) {
+        let events = Events(el, {
+            link: function(e){
+                let url = e.target.textContent
+                shell.openExternal(url)
+            }
+        })
+        events.bind('click .link', 'link')
+    }
 }
-
 
 function moveCurrent(e) {
     let el = q('.antrax-current')
