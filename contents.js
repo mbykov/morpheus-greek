@@ -53,6 +53,7 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
             showSection(null, 'volunteer')
             break
         }
+        bindSectionEvents()
         return
     }
     antrax.query(obj.sentence, obj.num, function(_words) {
@@ -86,6 +87,7 @@ function bindHeaderEvents(el) {
             let old = q('#antrax-header span.antrax-current')
             classes(old).remove('antrax-current')
             classes(el).add('antrax-current')
+            drawMorphs(words, el.idx)
         }
     })
     events.bind('click .antrax-form', 'current')
@@ -101,7 +103,6 @@ function drawMorphs(words, num) {
     let idxs = conformNames(words, num)
     if (idxs && idxs.length) underline(idxs)
     drawCurrent(current)
-    setSectionEvents()
 }
 
 // TODO: second cycle: pronouns
@@ -377,17 +378,6 @@ function openExternal(key){
     shell.openExternal(url)
 }
 
-// function showHelp(e) {
-//     if (e) {
-//         e.preventDefault()
-//         e.stopPropagation()
-//     }
-//     let fpath = path.join(__dirname, ['lib/', 'help.html'].join(''))
-//     let html = fs.readFileSync(fpath,'utf8').trim();
-//     let parent = q('#antrax-dicts')
-//     parent.innerHTML = html
-// }
-
 function showSection(e, name) {
     if (e) {
         e.preventDefault()
@@ -399,18 +389,15 @@ function showSection(e, name) {
     parent.innerHTML = html
 }
 
-function setSectionEvents(){
-    let linkEl = q('#antrax-dicts')
-    bindSectionEvents(linkEl)
-    function bindSectionEvents(el) {
-        let events = Events(el, {
-            link: function(e){
-                let url = e.target.textContent
-                shell.openExternal(url)
-            }
-        })
-        events.bind('click .link', 'link')
-    }
+function bindSectionEvents() {
+    let el = q('#antrax-dicts')
+    let events = Events(el, {
+        link: function(e){
+            let url = e.target.textContent
+            shell.openExternal(url)
+        }
+    })
+    events.bind('click .link', 'link')
 }
 
 function moveCurrent(e) {

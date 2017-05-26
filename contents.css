@@ -51,6 +51,7 @@ b {
 
 .antrax-form {
     cursor: pointer;
+    -webkit-app-region: no-drag;
 }
 
 .antrax-current {
