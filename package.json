@@ -24,48 +24,48 @@
   ],
   "author": "m.bykov@gmail.com",
   "license": "GPL-3.0",
-  "devDependencies": {
-      "electron": "^1.6.8",
-      "electron-builder": "^18.0.1",
-      "electron-packager": "^8.1.0",
-      "electron-prebuilt": "^1.4.13",
-      "electron-rebuild": "^1.5.11"
-  },
-  "dependencies": {
-    "antrax": "^0.1.58",
-    "component-classes": "^1.2.6",
-    "component-emitter": "^1.2.1",
-    "component-events": "^1.0.10",
-    "electron-is-dev": "^0.1.2",
-    "electron-log": "^2.2.6",
-    "electron-updater": "^1.16.0",
-    "electron-window-state": "^4.1.1",
-    "fs-jetpack": "^1.0.0",
-    "orthos": "^0.2.1",
-    "pouchdb": "^6.2.0",
-    "pouchdb-load": "^1.4.6",
-    "underscore": "^1.8.3"
-  },
-  "build": {
-    "appId": "com.github.mbykov.electron",
-    "asarUnpack": "pouchdb",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "mbykov",
-        "repo": "electron"
-      }
-    ],
-    "mac": {
-      "category": "Educational software",
-      "target": [
-        "zip",
-        "dmg"
-      ]
+    "devDependencies": {
+        "electron": "^1.6.8",
+        "electron-builder": "^18.0.1",
+        "electron-packager": "^8.1.0",
+        "electron-prebuilt": "^1.4.13",
+        "electron-rebuild": "^1.5.11",
+        "electron-log": "^2.2.6"
     },
-    "nsis": {
-      "perMachine": false,
-      "installerIcon": "build/icon.ico"
+    "dependencies": {
+        "antrax": "^0.1.59",
+        "component-classes": "^1.2.6",
+        "component-emitter": "^1.2.1",
+        "component-events": "^1.0.10",
+        "electron-is-dev": "^0.1.2",
+        "electron-updater": "^1.16.0",
+        "electron-window-state": "^4.1.1",
+        "fs-jetpack": "^1.0.0",
+        "orthos": "^0.2.1",
+        "pouchdb": "^6.2.0",
+        "pouchdb-load": "^1.4.6",
+        "underscore": "^1.8.3"
+    },
+    "build": {
+        "appId": "com.github.mbykov.electron",
+        "asarUnpack": "pouchdb",
+        "publish": [
+            {
+                "provider": "github",
+                "owner": "mbykov",
+                "repo": "electron"
+            }
+        ],
+        "mac": {
+            "category": "Educational software",
+            "target": [
+                "zip",
+                "dmg"
+            ]
+        },
+        "nsis": {
+            "perMachine": false,
+            "installerIcon": "build/icon.ico"
+        }
     }
-  }
 }
