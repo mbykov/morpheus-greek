@@ -11,6 +11,15 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path')
 
+const isDev = require('electron-is-dev');
+
+if (isDev) {
+    log('Running in development');
+} else {
+    log('Running in production');
+}
+
+
 let words
 
 ipcRenderer.on('message', function(event, text) {
