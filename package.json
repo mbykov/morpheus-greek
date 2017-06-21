@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.52",
+  "version": "0.2.53",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
@@ -63,6 +63,7 @@
         },
         "nsis": {
             "perMachine": false,
+            "publisherName": "Michael Bykov",
             "installerIcon": "build/icon.ico"
         }
     }
