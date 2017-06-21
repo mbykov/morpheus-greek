@@ -1,18 +1,19 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.36",
+  "version": "0.2.37",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
-    "postinstall": "export npm_config_abi=50; npm rebuild",
-    "postinstall_": "electron-rebuild",
-    "postinstall_": "install-app-deps",
-    "start": "NODE_ENV=production electron .",
-    "dev": "electron . --debug",
-    "lint": "standard | snazzy",
-    "pack": "build --dir",
-    "dist": "build"
+      "postinstall_": "export npm_config_abi=50; npm run rebuild",
+      "postinstall": "electron-rebuild",
+      "postinstall_": "install-app-deps",
+      "rebuild_": "node_modules/.bin/electron-rebuild -f -w pouchdb",
+      "start": "NODE_ENV=production electron .",
+      "dev": "electron . --debug",
+      "lint": "standard | snazzy",
+      "pack": "build --dir",
+      "dist": "build"
   },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
@@ -27,8 +28,8 @@
   "license": "GPL-3.0",
     "devDependencies": {
         "electron": "^1.6.8",
-        "electron-builder": "^18.0.1",
-        "electron-packager": "^8.1.0",
+        "electron-builder": "^19.6.3",
+        "electron-packager": "^8.7.1",
         "electron-prebuilt": "^1.4.13",
         "electron-rebuild": "^1.5.11",
         "electron-log": "^2.2.6"
@@ -39,7 +40,7 @@
         "component-emitter": "^1.2.1",
         "component-events": "^1.0.10",
         "electron-is-dev": "^0.1.2",
-        "electron-updater": "^1.16.0",
+        "electron-updater": "^2.4.1",
         "electron-window-state": "^4.1.1",
         "fs-jetpack": "^1.0.0",
         "orthos": "^0.2.1",
@@ -47,9 +48,15 @@
         "pouchdb-load": "^1.4.6",
         "underscore": "^1.8.3"
     },
+    "directories": {
+        "buildResources ": "assets"
+    },
     "build": {
         "appId": "com.github.mbykov.electron",
         "asarUnpack": "pouchdb",
+        "directories": {
+            "buildResources ": "assets"
+        },
         "publish": [
             {
                 "provider": "github",
