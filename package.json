@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.43",
+  "version": "0.2.44",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "author": "m.bykov@gmail.com",
   "license": "GPL-3.0",
     "devDependencies": {
-        "electron": "^1.6.8",
+        "electron": "^1.6.11",
         "electron-builder": "^19.6.3",
         "electron-packager": "^8.7.1",
         "electron-prebuilt": "^1.4.13",
