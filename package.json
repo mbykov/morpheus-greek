@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.37",
+  "version": "0.2.38",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
@@ -47,9 +47,6 @@
         "pouchdb": "^6.2.0",
         "pouchdb-load": "^1.4.6",
         "underscore": "^1.8.3"
-    },
-    "directories": {
-        "buildResources ": "assets"
     },
     "build": {
         "appId": "com.github.mbykov.electron",
