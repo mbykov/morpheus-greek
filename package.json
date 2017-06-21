@@ -1,14 +1,11 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.39",
+  "version": "0.2.40",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "scripts": {
-      "postinstall_": "export npm_config_abi=50; npm run rebuild",
-      "postinstall": "electron-rebuild",
-      "postinstall_": "install-app-deps",
-      "rebuild_": "node_modules/.bin/electron-rebuild -f -w pouchdb",
+      postinstall": "electron-builder install-app-deps"
       "start": "NODE_ENV=production electron .",
       "dev": "electron . --debug",
       "lint": "standard | snazzy",
@@ -31,7 +28,6 @@
         "electron-builder": "^19.6.3",
         "electron-packager": "^8.7.1",
         "electron-prebuilt": "^1.4.13",
-        "electron-rebuild": "^1.5.11",
         "electron-log": "^2.2.6"
     },
     "dependencies": {
