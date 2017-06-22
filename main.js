@@ -22,21 +22,13 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
-const isDev = require('electron-is-dev');
-
-if (isDev) {
-    log.info('Running in development');
-    sendStatusToWindow('Running in development');
-} else {
-    log.info('Running in production');
-    sendStatusToWindow('Running in production');
-}
-
 let populated = null
 let mainWindow = null
 let timerId = null
 
 let tray = null
+
+const isDev = require('electron-is-dev');
 
 app.on('ready', () => {
     let ipath = null
@@ -68,6 +60,14 @@ app.on('ready', () => {
         contextMenu.popup([mainWindow])
         tray.popUpContextMenu(contextMenu);
     })
+
+    if (isDev) {
+        log.info('Running in development');
+        sendStatusToWindow('Running in development');
+    } else {
+        log.info('Running in production');
+        sendStatusToWindow('Running in production');
+    }
 })
 
 function sendStatusToWindow(text) {
