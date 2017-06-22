@@ -1,9 +1,10 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.73",
+  "version": "0.2.74",
   "description": "Morpheus for ancient greek based on electron.js_",
-  "main": "main.js",
+    "main": "main.js",
+    "env": "production",
   "scripts": {
       "postinstall": "electron-builder install-app-deps",
       "start": "NODE_ENV=production electron .",
