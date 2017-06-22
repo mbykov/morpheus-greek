@@ -53,9 +53,6 @@ build_script:
   - node --version
   - npm --version
   - set NODE_ENV=production
-  - set BUILD_ENVIRONMENT=production
-  - $env:NODE_ENV=production
-  - $env:BUILD_ENVIRONMENT=production
   - npm run dist
   # - npm prune
 
