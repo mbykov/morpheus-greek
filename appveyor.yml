@@ -27,8 +27,6 @@
 environment:
   GH_TOKEN:
     secure: EGdUtTShdVdc6HFZvziVkrpRV//zl6c5XxqV4owLlybsdwyGrWAA/Z1y0pS+wt65
-  NODE_ENV: production
-  BUILD_ENVIRONMENT: production
 
 platform:
   - x64
@@ -56,6 +54,8 @@ build_script:
   - npm --version
   - set NODE_ENV=production
   - set BUILD_ENVIRONMENT=production
+  - $env:NODE_ENV=production
+  - $env:BUILD_ENVIRONMENT=production
   - npm run dist
   # - npm prune
 
