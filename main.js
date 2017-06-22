@@ -26,8 +26,10 @@ const isDev = require('electron-is-dev');
 
 if (isDev) {
     log.info('Running in development');
+    sendStatusToWindow('Running in development');
 } else {
     log.info('Running in production');
+    sendStatusToWindow('Running in production');
 }
 
 let populated = null

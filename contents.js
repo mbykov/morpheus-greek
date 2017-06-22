@@ -11,17 +11,6 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path')
 
-const isDev = require('electron-is-dev');
-
-if (isDev) {
-    log('Running in development');
-} else {
-    log('Running in production');
-}
-
-log('process.env.NODE_ENV', process.env.NODE_ENV)
-log('process.defaultApp', process.defaultApp)
-log('process', process)
 
 let words
 
