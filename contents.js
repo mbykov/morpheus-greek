@@ -19,6 +19,9 @@ if (isDev) {
     log('Running in production');
 }
 
+log('process.env.NODE_ENV', process.env.NODE_ENV)
+log('process.defaultApp', process.defaultApp)
+log('process', process)
 
 let words
 
