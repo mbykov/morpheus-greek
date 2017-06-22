@@ -112,14 +112,6 @@ function createWindow(msg) {
         tray = null
     })
 
-    if (isDev) {
-        log.info('Running in development');
-        sendStatusToWindow('Running in development');
-    } else {
-        log.info('Running in production');
-        sendStatusToWindow('Running in production');
-    }
-
 }
 
 app.on('ready', () => {
@@ -151,9 +143,6 @@ app.on('ready', () => {
     })
 })
 
-autoUpdater.on('error', (err) => {
-    sendStatusToWindow(err);
-})
 autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
 })
@@ -183,7 +172,6 @@ app.on('window-all-closed', function () {
     }
 })
 
-
 app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -205,6 +193,14 @@ function selectWindow(msg) {
         createWindow(msg)
     }
     else {
+        if (isDev) {
+            log.info('Running in development');
+            sendStatusToWindow('Running in development');
+        } else {
+            log.info('Running in production');
+            sendStatusToWindow('Running in production');
+        }
+
         mainWindow.show()
         // mainWindow.minimize()
         mainWindow.setAlwaysOnTop(true)

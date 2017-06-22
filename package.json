@@ -1,7 +1,7 @@
 {
   "name": "electron",
   "productName": "electron",
-  "version": "0.2.75",
+  "version": "0.2.76",
   "description": "Morpheus for ancient greek based on electron.js_",
     "main": "main.js",
     "env": "production",
@@ -11,7 +11,7 @@
       "dev": "electron . --debug",
       "lint": "standard | snazzy",
       "pack": "build --dir",
-      "dist": "set NODE_ENV=production && build"
+      "dist": "build"
   },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
@@ -27,8 +27,7 @@
     "devDependencies": {
         "electron": "^1.6.11",
         "electron-builder": "^19.6.3",
-        "electron-packager": "^8.7.1",
-        "electron-prebuilt": "^1.4.13"
+        "electron-packager": "^8.7.1"
     },
     "dependencies": {
         "antrax": "^0.1.60",
