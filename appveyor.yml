@@ -52,7 +52,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - set NODE_ENV=production
   - npm run dist
   # - npm prune
 
