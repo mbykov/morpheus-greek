@@ -61,13 +61,6 @@ app.on('ready', () => {
         tray.popUpContextMenu(contextMenu);
     })
 
-    if (isDev) {
-        log.info('Running in development');
-        sendStatusToWindow('Running in development');
-    } else {
-        log.info('Running in production');
-        sendStatusToWindow('Running in production');
-    }
 })
 
 function sendStatusToWindow(text) {
@@ -118,6 +111,15 @@ function createWindow(msg) {
         mainWindow = null
         tray = null
     })
+
+    if (isDev) {
+        log.info('Running in development');
+        sendStatusToWindow('Running in development');
+    } else {
+        log.info('Running in production');
+        sendStatusToWindow('Running in production');
+    }
+
 }
 
 app.on('ready', () => {
