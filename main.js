@@ -11,6 +11,7 @@ const fs = require("fs")
 // const jetpack = require("fs-jetpack")
 
 const autoUpdater = require("electron-updater").autoUpdater
+// import { autoUpdater } from "electron-updater"
 
 const orthos = require('orthos');
 // const antrax = require('./antrax')
@@ -146,6 +147,9 @@ app.on('ready', () => {
     })
 })
 
+autoUpdater.on('error', (err) => {
+    sendStatusToWindow(err);
+})
 autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
 })
@@ -257,5 +261,6 @@ autoUpdater.on('update-downloaded', (ev, info) => {
 })
 
 app.on('ready', function()  {
+    sendStatusToWindow('checkForUpdates');
     autoUpdater.checkForUpdates();
 });
