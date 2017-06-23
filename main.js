@@ -203,6 +203,9 @@ function selectWindow(msg) {
             sendStatusToWindow('Running in production');
         }
 
+        sendStatusToWindow('checkForUpdates');
+        autoUpdater.checkForUpdates();
+
         mainWindow.show()
         // mainWindow.minimize()
         mainWindow.setAlwaysOnTop(true)
