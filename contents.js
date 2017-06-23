@@ -1,7 +1,7 @@
 // Morpheus for ancient greek based on electron.js
 
-// const antrax = require('antrax')
-const antrax = require('./antrax')
+const antrax = require('antrax')
+// const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const Tree = require('./tree')
