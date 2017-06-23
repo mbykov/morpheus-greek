@@ -152,7 +152,7 @@ autoUpdater.on('update-not-available', (ev, info) => {
     sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
-    sendStatusToWindow('Error in auto-updater.');
+    sendStatusToWindow('Error in auto-updater.' + err);
 })
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -195,9 +195,9 @@ function selectWindow(msg) {
         if (isDev) {
             // log.info('Running in development');
             sendStatusToWindow('Running in development');
-            sendStatusToWindow('defaultApp: ', process.defaultApp);
-            sendStatusToWindow('execPath', process.execPath);
-             // process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath);
+            sendStatusToWindow('defaultApp: '+ process.defaultApp);
+            sendStatusToWindow('execPath: ' + process.execPath);
+            // process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath);
         } else {
             // log.info('Running in production');
             sendStatusToWindow('Running in production');
