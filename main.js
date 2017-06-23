@@ -14,7 +14,6 @@ const autoUpdater = require("electron-updater").autoUpdater
 // import { autoUpdater } from "electron-updater"
 
 const orthos = require('orthos');
-// const antrax = require('./antrax')
 
 const BrowserWindow = electron.BrowserWindow
 
@@ -35,13 +34,13 @@ app.on('ready', () => {
     let nimage
     let platform = require('os').platform()
     if (platform == 'darwin') {
-        ipath = path.join(__dirname, 'build/icon.icns')
+        ipath = path.join(__dirname, 'assets/icon.icns')
     }
     else if (platform == 'win32') {
-        let winpath = path.join(__dirname, 'icons/icon.png')
+        let winpath = path.join(__dirname, 'assets/icon.png')
         ipath = nativeImage.createFromPath(winpath)
     } else {
-        ipath = 'build/icons/256x256.png'
+        ipath = 'assets/icons/256x256.png'
     }
 
     tray = new Tray(ipath)
@@ -64,7 +63,7 @@ app.on('ready', () => {
 })
 
 function sendStatusToWindow(text) {
-    log.info(text);
+    // log.info(text);
     mainWindow.webContents.send('message', text);
 }
 
@@ -194,10 +193,10 @@ function selectWindow(msg) {
     }
     else {
         if (isDev) {
-            log.info('Running in development');
+            // log.info('Running in development');
             sendStatusToWindow('Running in development');
         } else {
-            log.info('Running in production');
+            // log.info('Running in production');
             sendStatusToWindow('Running in production');
         }
 

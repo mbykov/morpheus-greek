@@ -2,16 +2,16 @@
   "name": "electron",
   "productName": "electron",
   "version": "0.2.76",
-  "description": "Morpheus for ancient greek based on electron.js_",
-    "main": "main.js",
-    "env": "production",
+  "description": "Morpheus for ancient greek based on electron.js",
+  "main": "main.js",
+  "env": "production",
   "scripts": {
-      "postinstall": "electron-builder install-app-deps",
-      "start": "NODE_ENV=production electron .",
-      "dev": "electron . --debug",
-      "lint": "standard | snazzy",
-      "pack": "build --dir",
-      "dist": "build"
+    "postinstall": "electron-builder install-app-deps",
+    "start": "export NODE_ENV=production && electron .",
+    "dev": "electron . --debug",
+    "lint": "standard | snazzy",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "repository": "https://github.com/mbykov/electron",
   "keywords": [
@@ -24,49 +24,48 @@
   ],
   "author": "m.bykov@gmail.com",
   "license": "GPL-3.0",
-    "devDependencies": {
-        "electron": "^1.6.11",
-        "electron-builder": "^19.6.3",
-        "electron-packager": "^8.7.1"
+  "devDependencies": {
+    "electron": "^1.6.11",
+    "electron-builder": "^19.6.3",
+    "electron-packager": "^8.7.1",
+    "electron-rebuild": "^1.5.11"
+  },
+  "dependencies": {
+    "antrax": "^0.1.60",
+    "component-classes": "^1.2.6",
+    "component-emitter": "^1.2.1",
+    "component-events": "^1.0.10",
+    "electron-is-dev": "^0.1.2",
+    "electron-updater": "^2.4.1",
+    "electron-window-state": "^4.1.1",
+    "electron-log": "^2.2.6",
+    "fs-jetpack": "^1.0.0",
+    "orthos": "^0.2.1",
+    "underscore": "^1.8.3"
+  },
+  "build": {
+    "appId": "com.github.mbykov.electron",
+    "asarUnpack": "pouchdb",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "mbykov",
+        "repo": "electron"
+      }
+    ],
+    "mac": {
+      "category": "Educational software",
+      "target": [
+        "zip",
+        "dmg"
+      ]
     },
-    "dependencies": {
-        "antrax": "^0.1.60",
-        "component-classes": "^1.2.6",
-        "component-emitter": "^1.2.1",
-        "component-events": "^1.0.10",
-        "electron-is-dev": "^0.1.2",
-        "electron-updater": "^2.4.1",
-        "electron-window-state": "^4.1.1",
-        "electron-log": "^2.2.6",
-        "fs-jetpack": "^1.0.0",
-        "orthos": "^0.2.1",
-        "pouchdb": "^6.2.0",
-        "pouchdb-load": "^1.4.6",
-        "underscore": "^1.8.3"
+    "win": {
+      "publisherName": "Michael Bykov",
+      "icon": "assets/icon.ico"
     },
-    "build": {
-        "appId": "com.github.mbykov.electron",
-        "asarUnpack": "pouchdb",
-        "publish": [
-            {
-                "provider": "github",
-                "owner": "mbykov",
-                "repo": "electron"
-            }
-        ],
-        "mac": {
-            "category": "Educational software",
-            "target": [
-                "zip",
-                "dmg"
-            ]
-        },
-        "win": {
-            "publisherName": "Michael Bykov",
-            "icon": "assets/icon.ico"
-        },
-        "nsis": {
-            "perMachine": false
-        }
+    "nsis": {
+      "perMachine": false
     }
+  }
 }

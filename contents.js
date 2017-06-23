@@ -1,6 +1,7 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('antrax')
+// const antrax = require('antrax')
+const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const classes = require('component-classes')
@@ -21,22 +22,44 @@ ipcRenderer.on('message', function(event, text) {
     parent.appendChild(message);
 })
 
+function showMessage(str) {
+    let parent = q('#antrax-dicts')
+    parent.textContent = str
+}
 
 require('electron').ipcRenderer.on('init', (event, msg) => {
-    let html = 'please wait while we synchronize your data'
-    let parent = q('#antrax-dicts')
-    // parent.innerHTML = html
-    let message = document.createElement('div');
-    message.innerHTML = html;
-    parent.appendChild(message);
-    antrax.init(function(res) {
-        html = 'copy some Ancient Greek text: ctrl-C'
-        // parent.innerHTML = html
-        let message = document.createElement('div');
-        message.innerHTML = html;
-        parent.appendChild(message);
+    antrax.init(function(msg) {
+        // log('B', msg)
+        if (msg == 'ready') {
+            syncing()
+        } else if (msg == 'loading dumps') {
+            populating()
+        } else {
+            showMessage('somethig goes wrong')
+        }
     })
 })
+
+function syncing() {
+    // showMessage('syncing databases...')
+    antrax.sync(function() {
+        let opro = q('#progress')
+        opro.classList.add('hidden')
+        showMessage('Ready. Copy some Ancient Greek sentence: ctrl-C')
+    })
+}
+
+function populating() {
+    let opro = q('#progress')
+    opro.classList.remove('hidden')
+    showMessage('populating databases from dumps...')
+    antrax.populate(function(res) {
+        // log('M:', res)
+        antrax.sync(function(res) {
+            syncing()
+        })
+    })
+}
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     if (typeof(obj) === 'string') {
