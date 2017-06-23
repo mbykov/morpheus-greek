@@ -63,7 +63,7 @@ app.on('ready', () => {
 })
 
 function sendStatusToWindow(text) {
-    // log.info(text);
+    log.info('SSW', text);
     mainWindow.webContents.send('message', text);
 }
 
@@ -195,6 +195,9 @@ function selectWindow(msg) {
         if (isDev) {
             // log.info('Running in development');
             sendStatusToWindow('Running in development');
+            sendStatusToWindow('defaultApp: ', process.defaultApp);
+            sendStatusToWindow('execPath', process.execPath);
+             // process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath);
         } else {
             // log.info('Running in production');
             sendStatusToWindow('Running in production');

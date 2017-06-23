@@ -1,10 +1,9 @@
 // Morpheus for ancient greek based on electron.js
 
-// const antrax = require('antrax')
-const antrax = require('./antrax')
+const antrax = require('antrax')
+// const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
-const classes = require('component-classes')
 const Tree = require('./tree')
 const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
@@ -16,6 +15,7 @@ const path = require('path')
 let words
 
 ipcRenderer.on('message', function(event, text) {
+    log('Message', text)
     let parent = q('#antrax-dicts')
     let message = document.createElement('div');
     message.innerHTML = text;
@@ -97,8 +97,8 @@ function drawHeader(words, num) {
         let space = cret(' ')
         oHeader.appendChild(span)
         oHeader.appendChild(space)
-        classes(span).add('antrax-form')
-        if (i == num) classes(span).add('antrax-current')
+        span.classList.add('antrax-form')
+        if (i == num) span.classList.add('antrax-current')
     })
     bindHeaderEvents(oHeader)
 }
@@ -109,8 +109,8 @@ function bindHeaderEvents(el) {
         current: function(e){
             let el = e.target
             let old = q('#antrax-header span.antrax-current')
-            classes(old).remove('antrax-current')
-            classes(el).add('antrax-current')
+            old.classList.remove('antrax-current')
+            el.classList.add('antrax-current')
             drawMorphs(words, el.idx)
         }
     })
@@ -238,7 +238,7 @@ function compactNameMorph(cur) {
 
 function creDict() {
     let oDict = cre('div')
-    classes(oDict).add('antrax-dict')
+    oDict.classList.add('antrax-dict')
     let parent = q('#antrax-dicts')
     parent.appendChild(oDict)
     return oDict
@@ -309,7 +309,7 @@ function removeVoc(morphs) {
 function emptyDict() {
     let uns = qs('.underlined')
     uns.forEach(function(el) {
-        classes(el).remove('underlined')
+        el.classList.remove('underlined')
     })
     let odicts = q('#antrax-dicts')
     remove(odicts)
@@ -323,7 +323,7 @@ function underline(idxs) {
     let oWords = qs('#antrax-header span.antrax-form')
     idxs.forEach(function(idx) {
         let el = oWords[idx]
-        classes(el).add('underlined')
+        el.classList.add('underlined')
     })
 }
 
@@ -435,8 +435,8 @@ function moveCurrent(e) {
     if (next == size) next = 0
     if (next == -1) next = size -1
     let nextEl = oWords[next]
-    classes(el).remove('antrax-current')
-    classes(nextEl).add('antrax-current')
+    el.classList.remove('antrax-current')
+    nextEl.classList.add('antrax-current')
     drawMorphs(words, next)
 }
 
