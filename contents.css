@@ -113,6 +113,7 @@ b {
     width: 200px;
     margin-left: 25px;
     padding: 5px;
+    background-color: #e6ffff;
 }
 
 .help-row {
@@ -121,4 +122,8 @@ b {
 
 .help-row:hover {
     background-color: #8aba87;
+}
+
+#book {
+    margin-left: 50px;
 }

@@ -15,7 +15,7 @@ const path = require('path')
 let words
 
 ipcRenderer.on('message', function(event, text) {
-    log('Message', text)
+    // log('Message', text)
     let parent = q('#antrax-dicts')
     let message = document.createElement('div');
     message.innerHTML = text;
@@ -45,6 +45,8 @@ function syncing() {
     antrax.sync(function() {
         let opro = q('#progress')
         opro.classList.add('hidden')
+        let obook = q('#book')
+        obook.classList.remove('hidden')
         showMessage('Ready. Copy some Ancient Greek sentence: ctrl-C')
     })
 }
@@ -67,6 +69,8 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
         return
     }
     antrax.query(obj.sentence, obj.num, function(_words) {
+        let obook = q('#book')
+        obook.classList.add('hidden')
         words = _words
         drawHeader(words, obj.num)
         drawMorphs(words, obj.num)
@@ -384,6 +388,10 @@ function showSection(e, name) {
         e.preventDefault()
         e.stopPropagation()
     }
+
+    let obook = q('#book')
+    obook.classList.add('hidden')
+
     let fpath = path.join(__dirname, ['lib/', name, '.html'].join(''))
     let html = fs.readFileSync(fpath,'utf8').trim();
     let odicts = q('#antrax-dicts')
@@ -407,7 +415,6 @@ function bindSectionEvents(el) {
     let events = Events(el, {
         link: function(ev){
             let url = ev.target.textContent
-            log('U', url)
             shell.openExternal(url)
         },
         menu: function(ev){
