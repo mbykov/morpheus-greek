@@ -107,3 +107,18 @@ b {
 .hidden {
     display: none;
 }
+
+.help-menu {
+    float: right;
+    width: 200px;
+    margin-left: 25px;
+    padding: 5px;
+}
+
+.help-row {
+    margin: 0;
+}
+
+.help-row:hover {
+    background-color: #8aba87;
+}

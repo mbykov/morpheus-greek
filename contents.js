@@ -1,7 +1,7 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('antrax')
-// const antrax = require('./antrax')
+// const antrax = require('antrax')
+const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const Tree = require('./tree')
@@ -63,21 +63,7 @@ function populating() {
 
 require('electron').ipcRenderer.on('ping', (event, obj) => {
     if (typeof(obj) === 'string') {
-        switch(obj) {
-        case 'help':
-            showSection(null, 'help')
-            break
-        case 'about':
-            showSection(null, 'about')
-            break
-        case 'todo':
-            showSection(null, 'todo')
-            break
-        case 'volunteer':
-            showSection(null, 'volunteer')
-            break
-        }
-        bindSectionEvents()
+        showSection(null, obj)
         return
     }
     antrax.query(obj.sentence, obj.num, function(_words) {
@@ -370,16 +356,6 @@ function closeAll() {
 document.onkeydown = function(e) {
     if (e.shiftKey && e.which === 27) { // Esc + Shift
         ipcRenderer.send('sync', 'window-hide');
-    } else if (e.ctrlKey && e.which === 72) { // help
-        showSection(e, 'help')
-    // } else if (e.ctrlKey && e.which === 65) { // about
-        // e.preventDefault()
-        // // e.stopPropagation()
-        // let fpath = './lib/about.html'
-        // let html = fs.readFileSync(fpath,'utf8').trim();
-        // let parent = q('#antrax-dicts')
-        // parent.innerHTML = html
-        // bindSectionEvents(parent)
     } else if (e.ctrlKey && e.which === 80) {
         openExternal(80)
     } else if (e.ctrlKey && e.which === 76) {
@@ -403,25 +379,43 @@ function openExternal(key){
 }
 
 function showSection(e, name) {
+    if (!name) return
     if (e) {
         e.preventDefault()
         e.stopPropagation()
     }
     let fpath = path.join(__dirname, ['lib/', name, '.html'].join(''))
     let html = fs.readFileSync(fpath,'utf8').trim();
-    let parent = q('#antrax-dicts')
-    parent.innerHTML = html
+    let odicts = q('#antrax-dicts')
+    if (odicts) remove(odicts)
+    odicts = cre('div')
+    odicts.id = 'antrax-dicts'
+    let ores = q('#antrax-results')
+    ores.appendChild(odicts)
+
+    odicts.innerHTML = html
+    let menupath = path.join(__dirname, ['lib/help-menu.html'].join(''))
+    let menu = fs.readFileSync(menupath,'utf8').trim();
+    let omenu = cre('div')
+    omenu.classList.add('help-menu')
+    omenu.innerHTML = menu
+    odicts.insertBefore(omenu, odicts.firstChild);
+    bindSectionEvents(odicts)
 }
 
-function bindSectionEvents() {
-    let el = q('#antrax-dicts')
+function bindSectionEvents(el) {
     let events = Events(el, {
-        link: function(e){
-            let url = e.target.textContent
+        link: function(ev){
+            let url = ev.target.textContent
+            log('U', url)
             shell.openExternal(url)
+        },
+        menu: function(ev){
+            showSection(ev, ev.target.id)
         }
     })
     events.bind('click .link', 'link')
+    events.bind('click .help-menu', 'menu')
 }
 
 function moveCurrent(e) {

@@ -45,12 +45,10 @@ app.on('ready', () => {
 
     tray = new Tray(ipath)
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'about', click: function() { selectWindow('about') }},
-        {label: 'todo', click: function() { console.log('todo') }},
         {label: 'help', click: function() { selectWindow('help') }},
-        {label: 'volunteer', click: function() { selectWindow('volunteer') }},
         {type: 'separator'},
-        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+        // {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+        {role: 'quit'},
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
