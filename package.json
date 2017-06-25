@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.2.96",
+  "version": "0.2.97",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
