@@ -190,6 +190,7 @@ function selectWindow(msg) {
     }
     else {
         mainWindow.show()
+        mainWindow.restore()
         mainWindow.setAlwaysOnTop(true)
         mainWindow.focus()
         mainWindow.webContents.send('ping', msg)
