@@ -46,7 +46,7 @@ app.on('ready', () => {
     const contextMenu = Menu.buildFromTemplate([
         {label: 'help', click: function() { selectWindow('help') }},
         {type: 'separator'},
-        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+q', click: function() { app.quit();}}
         // {role: 'quit'},
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
@@ -145,7 +145,7 @@ autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-    sendStatusToWindow('Update not available.');
+    // sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
     sendStatusToWindow('Error in auto-updater.' + err);
