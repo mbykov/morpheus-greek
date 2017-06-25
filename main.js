@@ -46,8 +46,8 @@ app.on('ready', () => {
     const contextMenu = Menu.buildFromTemplate([
         {label: 'help', click: function() { selectWindow('help') }},
         {type: 'separator'},
-        // {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
-        {role: 'quit'},
+        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+Q', click: function() { app.quit();}}
+        // {role: 'quit'},
     ])
     tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
     tray.setContextMenu(contextMenu)
