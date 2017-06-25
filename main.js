@@ -122,8 +122,6 @@ function createWindow(msg) {
         tray = null
     })
 
-    allowSetForegroundWindow()
-
 }
 
 app.on('ready', () => {
