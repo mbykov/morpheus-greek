@@ -1,10 +1,10 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('antrax')
-// const antrax = require('./antrax')
+// const antrax = require('antrax')
+const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
-const Tree = require('./tree')
+const Tree = require('./lib/tree')
 const {ipcRenderer} = require('electron')
 const shell = require('electron').shell
 const util = require('util');
