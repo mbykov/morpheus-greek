@@ -13,7 +13,6 @@ const fs = require("fs")
 const autoUpdater = require("electron-updater").autoUpdater
 // import { autoUpdater } from "electron-updater"
 
-const orthos = require('orthos');
 
 const BrowserWindow = electron.BrowserWindow
 
@@ -128,7 +127,6 @@ app.on('ready', () => {
         // log.info('old', oldstr, 'str', str)
         oldstr = str
 
-        str = orthos.toComb(str);
         let msg = {sentence: str, punct: "!", num: 0}
         // let msg = JSON.stringify(sent)
         selectWindow(msg)

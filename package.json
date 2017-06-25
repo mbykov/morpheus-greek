@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.2.82",
+  "version": "0.2.83",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
@@ -35,8 +35,7 @@
     "electron-rebuild": "^1.5.11"
   },
   "dependencies": {
-    "antrax": "^0.1.62",
-    "component-classes": "^1.2.6",
+    "antrax": "^0.1.63",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
     "electron-is-dev": "^0.1.2",
@@ -44,7 +43,6 @@
       "electron-window-state": "^4.1.1",
     "electron-log": "^2.2.6",
     "fs-jetpack": "^1.0.0",
-    "orthos": "^0.2.1",
     "underscore": "^1.8.3"
   },
   "build": {
