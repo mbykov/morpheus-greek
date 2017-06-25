@@ -87,6 +87,7 @@ function createWindow(msg) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
     mainWindow.setAlwaysOnTop(true)
+    mainWindow.focus()
 
     mainWindow.webContents.on('did-finish-load', function() {
         if (msg) mainWindow.webContents.send('ping', msg)
@@ -188,22 +189,7 @@ function selectWindow(msg) {
         createWindow(msg)
     }
     else {
-        // if (isDev) {
-        //     // log.info('Running in development');
-        //     sendStatusToWindow('Running in development');
-        //     sendStatusToWindow('defaultApp: '+ process.defaultApp);
-        //     sendStatusToWindow('execPath: ' + process.execPath);
-        //     // process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath);
-        // } else {
-        //     // log.info('Running in production');
-        //     sendStatusToWindow('Running in production');
-        // }
-
-        // sendStatusToWindow('checkForUpdates');
-        // autoUpdater.checkForUpdates();
-
         mainWindow.show()
-        // mainWindow.minimize()
         mainWindow.setAlwaysOnTop(true)
         mainWindow.focus()
         mainWindow.webContents.send('ping', msg)
@@ -256,12 +242,12 @@ autoUpdater.on('update-downloaded', (ev, info) => {
   // Wait 5 seconds, then quit and install
   // In your application, you don't need to wait 5 seconds.
   // You could call autoUpdater.quitAndInstall(); immediately
-  setTimeout(function() {
-      autoUpdater.quitAndInstall();
-  }, 5000)
+    autoUpdater.quitAndInstall();
+    // setTimeout(function() {
+    //     autoUpdater.quitAndInstall();
+    // }, 5000)
 })
 
 app.on('ready', function()  {
-    // sendStatusToWindow('checkForUpdates');
     autoUpdater.checkForUpdates();
 });
