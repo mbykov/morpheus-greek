@@ -15,11 +15,7 @@ const path = require('path')
 let words
 
 ipcRenderer.on('message', function(event, text) {
-    // log('Message', text)
-    let parent = q('#antrax-dicts')
-    let message = document.createElement('div');
-    message.innerHTML = text;
-    parent.appendChild(message);
+    showMessage(text)
 })
 
 function showMessage(str) {
