@@ -86,8 +86,9 @@ function createWindow(msg) {
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
-    mainWindow.setAlwaysOnTop(true)
+    mainWindow.setFocusable(true)
     mainWindow.focus()
+    mainWindow.setAlwaysOnTop(true)
 
     mainWindow.webContents.on('did-finish-load', function() {
         if (msg) mainWindow.webContents.send('ping', msg)
@@ -191,6 +192,7 @@ function selectWindow(msg) {
     else {
         mainWindow.show()
         mainWindow.restore()
+        mainWindow.setFocusable(true)
         mainWindow.setAlwaysOnTop(true)
         mainWindow.focus()
         mainWindow.webContents.send('ping', msg)
