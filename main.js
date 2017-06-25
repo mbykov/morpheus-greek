@@ -191,6 +191,7 @@ function selectWindow(msg) {
     }
     else {
         mainWindow.show()
+        mainWindow.minimize()
         mainWindow.restore()
         mainWindow.setFocusable(true)
         mainWindow.setAlwaysOnTop(true)
