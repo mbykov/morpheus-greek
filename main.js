@@ -13,8 +13,6 @@ const fs = require("fs")
 const autoUpdater = require("electron-updater").autoUpdater
 // import { autoUpdater } from "electron-updater"
 
-let allowSetForegroundWindow = require('windows-foreground-love').allowSetForegroundWindow
-
 const BrowserWindow = electron.BrowserWindow
 
 autoUpdater.logger = log;
@@ -28,6 +26,19 @@ let timerId = null
 let tray = null
 
 const isDev = require('electron-is-dev');
+
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus()
+    }
+})
+
+if (shouldQuit) {
+    app.quit()
+}
+
 
 app.on('ready', () => {
     let ipath = null
