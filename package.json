@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.2.94",
+  "version": "0.2.95",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
@@ -35,7 +35,7 @@
     "electron-rebuild": "^1.5.11"
   },
   "dependencies": {
-    "antrax": "^0.1.66",
+    "antrax": "^0.1.68",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
     "component-classes": "^1.2.6",
@@ -48,7 +48,7 @@
   },
   "build": {
     "appId": "com.github.mbykov.morpheus-greek",
-    "asarUnpack": "pouchdb",
+      "asarUnpack": "pouchdb",
     "publish": [
       {
         "provider": "github",
