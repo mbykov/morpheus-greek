@@ -42,20 +42,20 @@ app.on('ready', () => {
         ipath = 'assets/icons/256x256.png'
     }
 
-    tray = new Tray(ipath)
-    const contextMenu = Menu.buildFromTemplate([
-        {label: 'help', click: function() { selectWindow('help') }},
-        {type: 'separator'},
-        {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+q', click: function() { app.quit();}}
-        // {role: 'quit'},
-    ])
-    tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
-    tray.setContextMenu(contextMenu)
-    tray.on('right-click', function() {
-        log.info('right clicked')
-        contextMenu.popup([mainWindow])
-        tray.popUpContextMenu(contextMenu);
-    })
+    // tray = new Tray(ipath)
+    // const contextMenu = Menu.buildFromTemplate([
+    //     {label: 'help', click: function() { selectWindow('help') }},
+    //     {type: 'separator'},
+    //     {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+q', click: function() { app.quit();}}
+    //     // {role: 'quit'},
+    // ])
+    // tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
+    // tray.setContextMenu(contextMenu)
+    // tray.on('right-click', function() {
+    //     log.info('right clicked')
+    //     contextMenu.popup([mainWindow])
+    //     tray.popUpContextMenu(contextMenu);
+    // })
 
 })
 
