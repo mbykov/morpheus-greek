@@ -13,6 +13,7 @@ const fs = require("fs")
 const autoUpdater = require("electron-updater").autoUpdater
 // import { autoUpdater } from "electron-updater"
 
+let allowSetForegroundWindow = require('windows-foreground-love').allowSetForegroundWindow
 
 const BrowserWindow = electron.BrowserWindow
 
@@ -110,6 +111,8 @@ function createWindow(msg) {
         tray = null
     })
 
+    allowSetForegroundWindow()
+
 }
 
 app.on('ready', () => {
@@ -191,7 +194,7 @@ function selectWindow(msg) {
     }
     else {
         mainWindow.show()
-        mainWindow.minimize()
+        // mainWindow.minimize()
         // mainWindow.restore()
         mainWindow.setFocusable(true)
         mainWindow.setAlwaysOnTop(true)
