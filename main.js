@@ -15,9 +15,9 @@ const autoUpdater = require("electron-updater").autoUpdater
 
 const BrowserWindow = electron.BrowserWindow
 
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
-// log.info('App starting...');
+// autoUpdater.logger = log;
+// autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 let populated = null
 let mainWindow = null
@@ -45,28 +45,16 @@ if (shouldQuit) {
 
 
 app.on('ready', () => {
-    // let ipath = null
-    // let nimage
-    // let platform = require('os').platform()
-    // if (platform == 'darwin') {
-    //     ipath = path.join(__dirname, 'assets/icon.icns')
-    // }
-    // else if (platform == 'win32') {
-    //     let winpath = path.join(__dirname, 'assets/icon.png')
-    //     ipath = nativeImage.createFromPath(winpath)
-    // } else {
-    //     ipath = 'assets/icons/256x256.png'
-    // }
-
+    createWindow()
     globalShortcut.register('CommandOrControl+q', () => {
         app.quit()
-        console.log('CommandOrControl+q is pressed')
+        // console.log('CommandOrControl+q is pressed')
     })
 })
 
 
 function sendStatusToWindow(text) {
-    log.info('SSW', text);
+    // log.info('SSW', text);
     mainWindow.webContents.send('message', text);
 }
 
@@ -91,7 +79,7 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
     // mainWindow.setFocusable(true)
     mainWindow.focus()
     mainWindow.setAlwaysOnTop(true)
@@ -110,21 +98,20 @@ function createWindow() {
         clearInterval(timerId)
         timerId = null
         mainWindow = null
-        tray = null
+        // tray = null
         populated = null
     })
 }
 
 
 app.on('ready', () => {
-    createWindow()
     let oldstr = null
     timerId = setInterval(function(){
 
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
-        if (!str || str == oldstr) return
+        if (!str || str === oldstr) return
         // log.info('old', oldstr, 'str', str)
         oldstr = str
 
@@ -137,8 +124,9 @@ app.on('ready', () => {
 
 ipcMain.on('synced', (event, arg) => {
     populated = true
-    // log.info('POPUL', populated)
 })
+
+// πατέρα αὐτοῦ καὶ τὴν μητέρα
 
 function fireQuery(msg) {
     log.info('FIRE')
@@ -155,6 +143,7 @@ autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
+    populated = null
     sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
@@ -235,9 +224,9 @@ function cleanGreek(str) {
 // autoUpdater.on('download-progress', (ev, progressObj) => {
 // })
 
-autoUpdater.on('update-downloaded', (ev, info) => {
-    sendStatusToWindow('Update downloaded; will install in 5 seconds');
-});
+// autoUpdater.on('update-downloaded', (ev, info) => {
+    // sendStatusToWindow('Update downloaded; will install in 5 seconds');
+// });
 
 autoUpdater.on('update-downloaded', (ev, info) => {
   // Wait 5 seconds, then quit and install
