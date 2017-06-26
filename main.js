@@ -1,7 +1,7 @@
 'use strict'
 
 const electron = require('electron')
-const {app, Menu, Tray, globalShortcut, nativeImage} = require('electron')
+const {app, globalShortcut} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
@@ -91,8 +91,8 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
-    mainWindow.setFocusable(true)
+    // mainWindow.webContents.openDevTools()
+    // mainWindow.setFocusable(true)
     mainWindow.focus()
     mainWindow.setAlwaysOnTop(true)
 
@@ -144,8 +144,8 @@ function fireQuery(msg) {
     log.info('FIRE')
     msg.dpath = dpath
     mainWindow.show()
-    mainWindow.setFocusable(true)
-    // mainWindow.setAlwaysOnTop(true)
+    // mainWindow.setFocusable(true)
+    mainWindow.setAlwaysOnTop(true)
     mainWindow.focus()
     mainWindow.webContents.send('ping', msg)
 }
