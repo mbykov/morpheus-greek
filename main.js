@@ -27,6 +27,10 @@ let tray = null
 
 const isDev = require('electron-is-dev');
 
+const dpath = app.getPath('userData')
+
+
+
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
     // Someone tried to run a second instance, we should focus our window.
     if (mainWindow) {
@@ -54,21 +58,6 @@ app.on('ready', () => {
         ipath = 'assets/icons/256x256.png'
     }
 
-    // tray = new Tray(ipath)
-    // const contextMenu = Menu.buildFromTemplate([
-    //     {label: 'help', click: function() { selectWindow('help') }},
-    //     {type: 'separator'},
-    //     {label: 'quit, cmd+q', accelerator: 'CmdOrCtrl+q', click: function() { app.quit();}}
-    //     // {role: 'quit'},
-    // ])
-    // tray.setToolTip('Morpheus Greek v.0.3 "Antrax" ')
-    // tray.setContextMenu(contextMenu)
-    // tray.on('right-click', function() {
-    //     log.info('right clicked')
-    //     contextMenu.popup([mainWindow])
-    //     tray.popUpContextMenu(contextMenu);
-    // })
-
 })
 
 function sendStatusToWindow(text) {
@@ -76,7 +65,7 @@ function sendStatusToWindow(text) {
     mainWindow.webContents.send('message', text);
 }
 
-function createWindow(msg) {
+function createWindow() {
     // Create the browser window.
     let mainWindowState = windowStateKeeper({
         defaultWidth: 800,
@@ -97,15 +86,13 @@ function createWindow(msg) {
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
     mainWindow.setFocusable(true)
     mainWindow.focus()
     mainWindow.setAlwaysOnTop(true)
 
     mainWindow.webContents.on('did-finish-load', function() {
-        if (msg) mainWindow.webContents.send('ping', msg)
-        else mainWindow.webContents.send('init')
-        // mainWindow.webContents.send('ping', msg)
+        mainWindow.webContents.send('init', dpath)
     })
 
     mainWindowState.manage(mainWindow)
@@ -117,20 +104,15 @@ function createWindow(msg) {
         // when you should delete the corresponding element.
         clearInterval(timerId)
         timerId = null
-        populated = null
         mainWindow = null
         tray = null
+        populated = null
     })
-
 }
 
-app.on('ready', () => {
-    if (populated) return
-    createWindow()
-    populated = true
-})
 
 app.on('ready', () => {
+    createWindow()
     let oldstr = null
     timerId = setInterval(function(){
 
@@ -142,15 +124,27 @@ app.on('ready', () => {
         oldstr = str
 
         let msg = {sentence: str, punct: "!", num: 0}
-        // let msg = JSON.stringify(sent)
-        selectWindow(msg)
+        if (!populated) oldstr = null
+        else fireQuery(msg)
 
     }, 100);
-
-    globalShortcut.register('CommandOrControl+Shift+Q', () => {
-        app.exit(0)
-    })
 })
+
+ipcMain.on('synced', (event, arg) => {
+    populated = true
+    log.info('POPUL', populated)
+})
+
+function fireQuery(msg) {
+    log.info('FIRE')
+    msg.dpath = dpath
+    mainWindow.show()
+    mainWindow.setFocusable(true)
+    // mainWindow.setAlwaysOnTop(true)
+    mainWindow.focus()
+    mainWindow.webContents.send('ping', msg)
+}
+
 
 autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
@@ -197,20 +191,6 @@ ipcMain.on('sync', (event, arg) => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-function selectWindow(msg) {
-    if (mainWindow === null) {
-        createWindow(msg)
-    }
-    else {
-        mainWindow.show()
-        // mainWindow.minimize()
-        // mainWindow.restore()
-        mainWindow.setFocusable(true)
-        mainWindow.setAlwaysOnTop(true)
-        mainWindow.focus()
-        mainWindow.webContents.send('ping', msg)
-    }
-}
 
 // punctuation \u002E\u002C\u0021\u003B\u00B7\u0020\u0027 - ... middle dot, space, apostrophe
 // parens ()[]{-/

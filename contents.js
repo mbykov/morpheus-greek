@@ -1,7 +1,7 @@
 // Morpheus for ancient greek based on electron.js
 
-const antrax = require('antrax')
-// const antrax = require('./antrax')
+// const antrax = require('antrax')
+const antrax = require('./antrax')
 const _ = require('underscore')
 const Events = require('component-events')
 const Tree = require('./lib/tree')
@@ -11,8 +11,8 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path')
 
-
 let words
+
 
 ipcRenderer.on('message', function(event, text) {
     showMessage(text)
@@ -23,13 +23,12 @@ function showMessage(str) {
     parent.textContent = str
 }
 
-require('electron').ipcRenderer.on('init', (event, msg) => {
-    antrax.init(function(msg) {
-        // log('B', msg)
+require('electron').ipcRenderer.on('init', (event, dpath) => {
+    antrax.init(dpath, function(msg) {
         if (msg == 'ready') {
             syncing()
         } else if (msg == 'loading dumps') {
-            populating()
+            populating(dpath)
         } else {
             showMessage('somethig goes wrong')
         }
@@ -37,22 +36,23 @@ require('electron').ipcRenderer.on('init', (event, msg) => {
 })
 
 function syncing() {
-    // showMessage('syncing databases...')
+    showMessage('syncing databases...')
     antrax.sync(function() {
         let opro = q('#progress')
         opro.classList.add('hidden')
         let obook = q('#book')
         obook.classList.remove('hidden')
         showMessage('Ready. Copy some Ancient Greek sentence: ctrl-C')
+        ipcRenderer.send('synced');
     })
 }
 
-function populating() {
+function populating(dpath) {
     let opro = q('#progress')
     opro.classList.remove('hidden')
     showMessage('populating databases from dumps...')
-    antrax.populate(function(res) {
-        // log('M:', res)
+    antrax.populate(dpath, function(res) {
+        // log('Populated:', res)
         antrax.sync(function(res) {
             syncing()
         })
@@ -64,7 +64,7 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
         showSection(null, obj)
         return
     }
-    antrax.query(obj.sentence, obj.num, function(_words) {
+    antrax.query(obj, function(_words) {
         let obook = q('#book')
         obook.classList.add('hidden')
         words = _words
