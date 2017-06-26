@@ -7,7 +7,7 @@ const path = require('path')
 const ipcMain = electron.ipcMain
 const windowStateKeeper = require('electron-window-state');
 const log = require('electron-log');
-const fs = require("fs")
+// const fs = require("fs")
 // const jetpack = require("fs-jetpack")
 
 const autoUpdater = require("electron-updater").autoUpdater
@@ -17,7 +17,7 @@ const BrowserWindow = electron.BrowserWindow
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
-log.info('App starting...');
+// log.info('App starting...');
 
 let populated = null
 let mainWindow = null
@@ -58,7 +58,12 @@ app.on('ready', () => {
         ipath = 'assets/icons/256x256.png'
     }
 
+    globalShortcut.register('CommandOrControl+q', () => {
+        app.quit()
+        console.log('CommandOrControl+q is pressed')
+    })
 })
+
 
 function sendStatusToWindow(text) {
     log.info('SSW', text);
@@ -132,7 +137,7 @@ app.on('ready', () => {
 
 ipcMain.on('synced', (event, arg) => {
     populated = true
-    log.info('POPUL', populated)
+    // log.info('POPUL', populated)
 })
 
 function fireQuery(msg) {

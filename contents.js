@@ -36,15 +36,15 @@ require('electron').ipcRenderer.on('init', (event, dpath) => {
 })
 
 function syncing() {
-    showMessage('syncing databases...')
-    antrax.sync(function() {
-        let opro = q('#progress')
-        opro.classList.add('hidden')
-        let obook = q('#book')
-        obook.classList.remove('hidden')
-        showMessage('Ready. Copy some Ancient Greek sentence: ctrl-C')
-        ipcRenderer.send('synced');
-    })
+    // showMessage('syncing databases...')
+    // antrax.sync(function() {
+    // })
+    let opro = q('#progress')
+    opro.classList.add('hidden')
+    let obook = q('#book')
+    obook.classList.remove('hidden')
+    showMessage('Ready. Copy some Ancient Greek sentence: ctrl-C')
+    ipcRenderer.send('synced');
 }
 
 function populating(dpath) {
@@ -53,9 +53,10 @@ function populating(dpath) {
     showMessage('populating databases from dumps...')
     antrax.populate(dpath, function(res) {
         // log('Populated:', res)
-        antrax.sync(function(res) {
-            syncing()
-        })
+        syncing()
+        // antrax.sync(function(res) {
+            // syncing()
+        // })
     })
 }
 
