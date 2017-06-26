@@ -75,6 +75,7 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
 
 function drawHeader(words, num) {
     let oHeader = q('#antrax-header')
+    oHeader.focus()
     empty(oHeader)
     words.forEach(function(word, i) {
         let form = word.raw
