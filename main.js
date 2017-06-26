@@ -45,18 +45,18 @@ if (shouldQuit) {
 
 
 app.on('ready', () => {
-    let ipath = null
-    let nimage
-    let platform = require('os').platform()
-    if (platform == 'darwin') {
-        ipath = path.join(__dirname, 'assets/icon.icns')
-    }
-    else if (platform == 'win32') {
-        let winpath = path.join(__dirname, 'assets/icon.png')
-        ipath = nativeImage.createFromPath(winpath)
-    } else {
-        ipath = 'assets/icons/256x256.png'
-    }
+    // let ipath = null
+    // let nimage
+    // let platform = require('os').platform()
+    // if (platform == 'darwin') {
+    //     ipath = path.join(__dirname, 'assets/icon.icns')
+    // }
+    // else if (platform == 'win32') {
+    //     let winpath = path.join(__dirname, 'assets/icon.png')
+    //     ipath = nativeImage.createFromPath(winpath)
+    // } else {
+    //     ipath = 'assets/icons/256x256.png'
+    // }
 
     globalShortcut.register('CommandOrControl+q', () => {
         app.quit()
