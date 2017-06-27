@@ -24,11 +24,17 @@ function showMessage(str) {
 }
 
 require('electron').ipcRenderer.on('init', (event, dpath) => {
+    log('init start')
+    let opro = q('#progress')
+    opro.classList.remove('hidden')
+    showMessage('syncing with server...')
     antrax.init(dpath, function(msg) {
         if (msg == 'ready') {
             syncing()
         } else if (msg == 'loading dumps') {
             populating(dpath)
+        } else if (msg == 'sync') {
+            syncing()
         } else {
             showMessage('somethig goes wrong')
         }
@@ -52,11 +58,9 @@ function populating(dpath) {
     opro.classList.remove('hidden')
     showMessage('populating databases from dumps...')
     antrax.populate(dpath, function(res) {
-        // log('Populated:', res)
-        syncing()
-        // antrax.sync(function(res) {
-            // syncing()
-        // })
+        log('Populated:', res)
+        if (res) syncing()
+        else throw new Error()
     })
 }
 
