@@ -71,6 +71,10 @@ require('electron').ipcRenderer.on('ping', (event, obj) => {
         return
     }
     antrax.query(obj, function(_words) {
+        if (!_words) {
+            showMessage('connection refused')
+            return
+        }
         let obook = q('#book')
         obook.classList.add('hidden')
         words = _words
