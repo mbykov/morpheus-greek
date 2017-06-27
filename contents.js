@@ -27,18 +27,19 @@ require('electron').ipcRenderer.on('init', (event, dpath) => {
     log('init start')
     let opro = q('#progress')
     opro.classList.remove('hidden')
-    showMessage('syncing with server...')
-    antrax.init(dpath, function(msg) {
-        if (msg == 'ready') {
-            syncing()
-        } else if (msg == 'loading dumps') {
-            populating(dpath)
-        } else if (msg == 'sync') {
-            syncing()
-        } else {
-            showMessage('somethig goes wrong')
-        }
-    })
+    // showMessage('syncing with server...')
+    syncing()
+    // antrax.init(dpath, function(msg) {
+    //     if (msg == 'ready') {
+    //         syncing()
+    //     } else if (msg == 'loading dumps') {
+    //         populating(dpath)
+    //     } else if (msg == 'sync') {
+    //         syncing()
+    //     } else {
+    //         showMessage('somethig goes wrong')
+    //     }
+    // })
 })
 
 function syncing() {
