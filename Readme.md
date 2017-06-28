@@ -8,7 +8,6 @@ Simple practical Ancient Greek morph analizer on a top of [electron.js](https://
 
 To start, just select and copy Crtl-C Greek text anywhere on a desktop
 
-[data for Morpheus](https://github.com/mbykov/greek-data)
 
 ## Windows
 
