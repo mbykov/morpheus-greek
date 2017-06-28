@@ -12,7 +12,7 @@ const fs = require('fs');
 const path = require('path')
 
 let words
-
+let flexes
 
 ipcRenderer.on('message', function(event, text) {
     showMessage(text)
@@ -23,29 +23,7 @@ function showMessage(str) {
     parent.textContent = str
 }
 
-require('electron').ipcRenderer.on('init', (event, dpath) => {
-    log('init start')
-    let opro = q('#progress')
-    opro.classList.remove('hidden')
-    // showMessage('syncing with server...')
-    syncing()
-    // antrax.init(dpath, function(msg) {
-    //     if (msg == 'ready') {
-    //         syncing()
-    //     } else if (msg == 'loading dumps') {
-    //         populating(dpath)
-    //     } else if (msg == 'sync') {
-    //         syncing()
-    //     } else {
-    //         showMessage('somethig goes wrong')
-    //     }
-    // })
-})
-
-function syncing() {
-    // showMessage('syncing databases...')
-    // antrax.sync(function() {
-    // })
+function ready() {
     let opro = q('#progress')
     opro.classList.add('hidden')
     let obook = q('#book')
@@ -54,23 +32,17 @@ function syncing() {
     ipcRenderer.send('synced');
 }
 
-function populating(dpath) {
+require('electron').ipcRenderer.on('init', (event, dpath) => {
     let opro = q('#progress')
     opro.classList.remove('hidden')
-    showMessage('populating databases from dumps...')
-    antrax.populate(dpath, function(res) {
-        log('Populated:', res)
-        if (res) syncing()
-        else throw new Error()
+    antrax.init(function(_flexes) {
+        flexes = _flexes
+        ready()
     })
-}
+})
 
-require('electron').ipcRenderer.on('ping', (event, obj) => {
-    if (typeof(obj) === 'string') {
-        showSection(null, obj)
-        return
-    }
-    antrax.query(obj, function(_words) {
+require('electron').ipcRenderer.on('query', (event, obj) => {
+    antrax.query(obj, flexes, function(_words) {
         if (!_words) {
             showMessage('connection refused')
             return

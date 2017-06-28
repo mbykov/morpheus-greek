@@ -17,7 +17,7 @@ const BrowserWindow = electron.BrowserWindow
 
 // autoUpdater.logger = log;
 // autoUpdater.logger.transports.file.level = 'info';
-log.info('App starting...');
+// log.info('App starting...');
 
 let populated = null
 let mainWindow = null
@@ -28,8 +28,6 @@ let tray = null
 const isDev = require('electron-is-dev');
 
 const dpath = app.getPath('userData')
-
-
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
     // Someone tried to run a second instance, we should focus our window.
@@ -43,18 +41,15 @@ if (shouldQuit) {
     app.quit()
 }
 
-
 app.on('ready', () => {
     createWindow()
     globalShortcut.register('CommandOrControl+q', () => {
         app.quit()
-        // console.log('CommandOrControl+q is pressed')
     })
 })
 
 
 function sendStatusToWindow(text) {
-    // log.info('SSW', text);
     mainWindow.webContents.send('message', text);
 }
 
@@ -79,7 +74,7 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
     // mainWindow.setFocusable(true)
     mainWindow.focus()
     mainWindow.setAlwaysOnTop(true)
@@ -107,7 +102,7 @@ function createWindow() {
 app.on('ready', () => {
     let oldstr = null
     timerId = setInterval(function(){
-
+        // if (!populated) return
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
@@ -129,13 +124,12 @@ ipcMain.on('synced', (event, arg) => {
 // πατέρα αὐτοῦ καὶ τὴν μητέρα
 
 function fireQuery(msg) {
-    log.info('FIRE')
     msg.dpath = dpath
     mainWindow.show()
-    // mainWindow.setFocusable(true)
+    mainWindow.setFocusable(true)
     mainWindow.setAlwaysOnTop(true)
     mainWindow.focus()
-    mainWindow.webContents.send('ping', msg)
+    mainWindow.webContents.send('query', msg)
 }
 
 
