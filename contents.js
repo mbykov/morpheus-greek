@@ -16,6 +16,10 @@ let flexes
 
 ipcRenderer.on('message', function(event, text) {
     showMessage(text)
+    if (text == 'Update available, downloading') {
+        let opro = q('#progress')
+        opro.classList.remove('hidden')
+    }
 })
 
 function showMessage(str) {

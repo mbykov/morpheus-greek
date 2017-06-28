@@ -138,7 +138,7 @@ autoUpdater.on('checking-for-update', () => {
 })
 autoUpdater.on('update-available', (ev, info) => {
     populated = null
-    sendStatusToWindow('Update available.');
+    sendStatusToWindow('Update available, downloading');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
     // sendStatusToWindow('Update not available.');
@@ -147,12 +147,12 @@ autoUpdater.on('error', (ev, err) => {
     sendStatusToWindow('Error in auto-updater.' + err);
 })
 
-autoUpdater.on('download-progress', (progressObj) => {
-    let log_message = "Download speed: " + progressObj.bytesPerSecond;
-    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-    sendStatusToWindow(log_message);
-})
+// autoUpdater.on('download-progress', (progressObj) => {
+//     let log_message = "Download speed: " + progressObj.bytesPerSecond;
+//     log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+//     log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+//     sendStatusToWindow(log_message);
+// })
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -227,9 +227,6 @@ autoUpdater.on('update-downloaded', (ev, info) => {
   // In your application, you don't need to wait 5 seconds.
   // You could call autoUpdater.quitAndInstall(); immediately
     autoUpdater.quitAndInstall();
-    // setTimeout(function() {
-    //     autoUpdater.quitAndInstall();
-    // }, 5000)
 })
 
 app.on('ready', function()  {
