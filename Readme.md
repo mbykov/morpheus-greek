@@ -4,7 +4,7 @@
 Simple practical Ancient Greek morph analizer on a top of [electron.js](https://github.com/electron/electron)
 
 
-![Morpheus](http://assets/morpheus.png)
+![Morpheus](https://github.com/mbykov/morpheus-greek/assets/morpheus.png)
 
 To start, just select and copy Crtl-C Greek text anywhere on a desktop
 
