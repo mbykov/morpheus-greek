@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.2.121",
+  "version": "0.2.122",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
@@ -53,7 +53,7 @@
       {
         "provider": "github",
         "owner": "mbykov",
-        "repo": "electron"
+        "repo": "morpheus-greek"
       }
     ],
     "mac": {
