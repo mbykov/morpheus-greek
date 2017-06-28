@@ -2,6 +2,7 @@ components
 .todo.org
 todo.org
 node_modules
+build
 log
 Junk
 client
