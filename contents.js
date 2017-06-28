@@ -40,6 +40,10 @@ require('electron').ipcRenderer.on('init', (event, dpath) => {
     let opro = q('#progress')
     opro.classList.remove('hidden')
     antrax.init(function(_flexes) {
+        if (!_flexes) {
+            showMessage('connection refused. Try later')
+            return
+        }
         flexes = _flexes
         ready()
     })
@@ -48,7 +52,7 @@ require('electron').ipcRenderer.on('init', (event, dpath) => {
 require('electron').ipcRenderer.on('query', (event, obj) => {
     antrax.query(obj, flexes, function(_words) {
         if (!_words) {
-            showMessage('connection refused')
+            showMessage('connection refused. Try later')
             return
         }
         let obook = q('#book')
