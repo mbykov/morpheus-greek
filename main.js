@@ -102,7 +102,7 @@ function createWindow() {
 app.on('ready', () => {
     let oldstr = null
     timerId = setInterval(function(){
-        // if (!populated) return
+        if (!populated) return
         let str = clipboard.readText()
         if (!str) return
         str = cleanGreek(str.trim())
