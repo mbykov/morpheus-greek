@@ -18,7 +18,7 @@ To start, just select and copy Crtl-C Greek text anywhere on a desktop
 ````bash
 git clone https://github.com/mbykov/morpheus-greek
 cd morpheus-greek
-npm install (in case of trouble look [rebuild](https://stackoverflow.com/questions/42616008/node-module-version-conflict-when-installing-modules-for-electron))
+npm install (if you get trouble look [rebuild](https://stackoverflow.com/questions/42616008/node-module-version-conflict-when-installing-modules-for-electron)
 npm start
 
 ````

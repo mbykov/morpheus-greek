@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.2.122",
+  "version": "0.2.123",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
@@ -11,13 +11,13 @@
     "dev": "electron . --debug",
     "lint_": "standard | snazzy",
     "pack_": "build --dir",
-      "dist_": "build",
-      "pack": "electron-builder --dir",
-      "dist": "electron-builder",
-      "release": "electron-builder"
+    "dist_": "build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "release": "electron-builder"
   },
-    "homepage": "http://gr.diglossa.org",
-    "repository": "https://github.com/mbykov/morpheus-greek",
+  "homepage": "http://gr.diglossa.org",
+  "repository": "https://github.com/mbykov/morpheus-greek",
   "keywords": [
     "ancient",
     "greek",
@@ -36,19 +36,20 @@
   },
   "dependencies": {
     "antrax": "^0.1.77",
+    "component-classes": "^1.2.6",
     "component-emitter": "^1.2.1",
     "component-events": "^1.0.10",
-    "component-classes": "^1.2.6",
     "electron-is-dev": "^0.1.2",
-    "electron-updater": "^2.4.1",
-      "electron-window-state": "^4.1.1",
     "electron-log": "^2.2.6",
+    "electron-updater": "^2.4.1",
+    "electron-window-state": "^4.1.1",
     "fs-jetpack": "^1.0.0",
+    "screen": "^0.2.10",
     "underscore": "^1.8.3"
   },
   "build": {
     "appId": "com.github.mbykov.morpheus-greek",
-      "asarUnpack": "pouchdb",
+    "asarUnpack": "pouchdb",
     "publish": [
       {
         "provider": "github",
