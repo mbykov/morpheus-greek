@@ -26,7 +26,8 @@
     "node.js",
     "electron.js"
   ],
-  "author": "m.bykov@gmail.com",
+  "author": "Michael Bykov",
+  "email": "m.bykov@gmail.com",
   "license": "GPL-3.0",
   "devDependencies": {
     "electron": "^1.6.11",
