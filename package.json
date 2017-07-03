@@ -66,12 +66,15 @@
         "dmg"
       ]
     },
-    "win": {
-      "publisherName": "Michael Bykov",
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "perMachine": false
+      "linux": {
+          "icon": "assets/icon.ico"
+      },
+      "win": {
+          "publisherName": "Michael Bykov",
+          "icon": "assets/icon.ico"
+      },
+      "nsis": {
+          "perMachine": false
     }
   }
 }

@@ -55,4 +55,6 @@ build_script:
   - npm run dist
   # - npm prune
 
+build: off
+
 test: off
