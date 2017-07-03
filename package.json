@@ -67,7 +67,7 @@
       ]
     },
       "linux": {
-          "icon": "assets/icon.ico"
+          "icon": "assets/icons"
       },
       "win": {
           "publisherName": "Michael Bykov",
