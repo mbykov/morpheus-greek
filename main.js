@@ -60,7 +60,7 @@ function createWindow() {
         defaultHeight: 600
     })
 
-    let winpath = path.join(__dirname, 'build/icon.ico')
+    let winpath = path.join(__dirname, 'build/64x64.png')
     let icon = nativeImage.createFromPath(winpath)
 
     mainWindow = new BrowserWindow({  //width: 800, height: 600, frame: false})

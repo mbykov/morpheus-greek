@@ -6,8 +6,8 @@
   "main": "main.js",
   "env": "production",
   "scripts": {
-    "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
+      "rebuild": "electron-rebuild -f -w leveldown",
     "dev": "electron . --debug",
     "lint_": "standard | snazzy",
     "pack_": "build --dir",
@@ -31,10 +31,9 @@
         "email": "m.bykov@gmail.com"},
   "license": "GPL-3.0",
   "devDependencies": {
-    "electron": "^1.6.11",
-    "electron-builder": "^19.6.3",
-    "electron-packager": "^8.7.1",
-    "electron-rebuild": "^1.5.11"
+    "electron": "^1.7.5",
+    "electron-builder": "^19.22.1",
+    "electron-rebuild": "^1.6.0"
   },
   "dependencies": {
     "antrax": "^0.1.78",
@@ -51,7 +50,6 @@
   },
   "build": {
     "appId": "com.github.mbykov.morpheus-greek",
-    "asarUnpack": "pouchdb",
       "files": [
       "build/",
       "lib/",
