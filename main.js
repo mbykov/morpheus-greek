@@ -1,7 +1,7 @@
 'use strict'
 
 const electron = require('electron')
-const {app, globalShortcut, nativeImage} = require('electron')
+const {app, globalShortcut, nativeImage, Menu, Tray} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
@@ -117,6 +117,20 @@ app.on('ready', () => {
 
     }, 100);
 })
+
+app.on('ready', () => {
+    let trayicon = path.join(__dirname, 'assets/64x64.png')
+    // let trayicon = path.join(__dirname, '../build/book.png')
+    tray = new Tray(trayicon)
+    const contextMenu = Menu.buildFromTemplate([
+        {label: 'help', role: 'help'},
+        {label: 'learn more', click () { electron.shell.openExternal('http:\/\/diglossa.org/greek') }},
+        {label: 'quit', role: 'quit'}
+    ])
+    tray.setToolTip('Morpheus-eastern')
+    tray.setContextMenu(contextMenu)
+})
+
 
 ipcMain.on('synced', (event, arg) => {
     populated = true

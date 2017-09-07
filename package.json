@@ -59,11 +59,12 @@
       "files": [
           "build/",
           "assets/",
+          "assets/icons/",
           "lib/",
           "main.js",
           "contents.js",
           "contents.css",
-      "index.html",
+          "index.html",
           "package.json"
       ],
     "publish": [
@@ -82,7 +83,7 @@
     },
     "linux": {
       "category": "Educational software",
-        "icon": "icons",
+        "icon": "icons/*",
         "target": [
         "AppImage",
         "deb"
