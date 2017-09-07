@@ -79,13 +79,15 @@
     },
     "linux": {
       "category": "Educational software",
-      "target": [
+        "icon": "assets",
+        "target": [
         "AppImage",
         "deb"
       ]
     },
     "win": {
-      "publisherName": "Michael Bykov"
+        "icon": "assets/icon.ico",
+        "publisherName": "Michael Bykov"
     },
     "nsis": {
       "perMachine": false
