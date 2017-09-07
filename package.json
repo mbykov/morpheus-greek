@@ -53,21 +53,24 @@
   },
   "build": {
     "appId": "com.github.mbykov.morpheus-greek",
+      "directories": {
+          "buildResources": "assets"
+      },
       "files": [
-      "build/",
-      "assets/",
-      "lib/",
-      "main.js",
-      "contents.js",
-      "contents.css",
+          "build/",
+          "assets/",
+          "lib/",
+          "main.js",
+          "contents.js",
+          "contents.css",
       "index.html",
-      "package.json"
-    ],
+          "package.json"
+      ],
     "publish": [
-      {
-        "provider": "github",
-        "owner": "mbykov",
-        "repo": "morpheus-greek"
+        {
+            "provider": "github",
+            "owner": "mbykov",
+            "repo": "morpheus-greek"
       }
     ],
     "mac": {
@@ -79,14 +82,14 @@
     },
     "linux": {
       "category": "Educational software",
-        "icon": "assets",
+        "icon": "icons",
         "target": [
         "AppImage",
         "deb"
       ]
     },
     "win": {
-        "icon": "assets/icon.ico",
+        "icon": "icons/icon.ico",
         "publisherName": "Michael Bykov"
     },
     "nsis": {
