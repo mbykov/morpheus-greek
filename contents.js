@@ -430,7 +430,7 @@ function moveCurrent(e) {
 
 let x = q('#antrax-close')
 x.onclick = function() {
-    closeAll()
+    ipcRenderer.send('quit', 'window-hide');
 }
 
 let qhelp = q('#antrax-help')

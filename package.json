@@ -1,7 +1,7 @@
 {
   "name": "morpheus",
   "productName": "morpheus greek",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Morpheus for ancient greek based on electron.js",
   "main": "main.js",
   "env": "production",
@@ -52,7 +52,12 @@
   "build": {
     "appId": "com.github.mbykov.morpheus-greek",
     "asarUnpack": "pouchdb",
-    "publish": [
+      "files": [
+      "build/",
+      "src",
+      "package.json"
+    ],
+  "publish": [
       {
         "provider": "github",
         "owner": "mbykov",
@@ -67,7 +72,11 @@
       ]
     },
       "linux": {
-          "icon": "assets/icons"
+          "category": "Educational software",
+          "target": [
+              "AppImage",
+              "deb"
+          ]
       },
       "win": {
           "publisherName": "Michael Bykov",

@@ -1,7 +1,7 @@
 'use strict'
 
 const electron = require('electron')
-const {app, globalShortcut} = require('electron')
+const {app, globalShortcut, nativeImage} = require('electron')
 const clipboard = electron.clipboard
 const path = require('path')
 const ipcMain = electron.ipcMain
@@ -60,24 +60,25 @@ function createWindow() {
         defaultHeight: 600
     })
 
-    // let winpath = path.join(__dirname, 'build/icon.ico')
-    // let icon = nativeImage.createFromPath(winpath)
+    let winpath = path.join(__dirname, 'build/icon.ico')
+    let icon = nativeImage.createFromPath(winpath)
 
     mainWindow = new BrowserWindow({  //width: 800, height: 600, frame: false})
         'x': mainWindowState.x,
         'y': mainWindowState.y,
         'width': mainWindowState.width,
         'height': mainWindowState.height,
-        // icon: icon,
+        // icon: icon})
         frame: false})
 
     // and load the index.html of the app.
     mainWindow.loadURL(`file://${__dirname}/index.html`)
-    // Open the DevTools.
+
     // mainWindow.webContents.openDevTools()
+
     // mainWindow.setFocusable(true)
     mainWindow.focus()
-    mainWindow.setAlwaysOnTop(true)
+    // mainWindow.setAlwaysOnTop(true)
 
     mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.webContents.send('init', dpath)
@@ -127,7 +128,7 @@ function fireQuery(msg) {
     msg.dpath = dpath
     mainWindow.show()
     mainWindow.setFocusable(true)
-    mainWindow.setAlwaysOnTop(true)
+    // mainWindow.setAlwaysOnTop(true)
     mainWindow.focus()
     mainWindow.webContents.send('query', msg)
 }
@@ -174,6 +175,10 @@ app.on('activate', function () {
 ipcMain.on('sync', (event, arg) => {
     // event.preventDefault()
     mainWindow.hide()
+})
+
+ipcMain.on('quit', (event, arg) => {
+    app.quit()
 })
 
 // In this file you can include the rest of your app's specific main process
