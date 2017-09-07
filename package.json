@@ -55,6 +55,7 @@
     "appId": "com.github.mbykov.morpheus-greek",
       "files": [
       "build/",
+      "assets/",
       "lib/",
       "main.js",
       "contents.js",
