@@ -54,7 +54,11 @@
     "asarUnpack": "pouchdb",
       "files": [
       "build/",
-      "src",
+      "lib/",
+      "main.js",
+      "contents.js",
+      "contents.css",
+      "index.html",
       "package.json"
     ],
   "publish": [
