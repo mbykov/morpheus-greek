@@ -1,0 +1,92 @@
+/* @import 'bootstrap.css' */
+
+
+html,
+body {
+  /* width: 100%; */
+  height: 100%;
+  padding-left: 10px;
+  margin: 0;
+  line-height: 1.5;
+  background: none repeat scroll 0 0 #ffffee;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.container {
+    float: left;
+    height: 100%;
+    width: 100%;
+    margin-left: 0;
+}
+
+
+h2 {
+    color: maroon;
+}
+
+b {
+    color: maroon;
+}
+
+#book {
+    float: left;
+    padding: 25px;
+}
+
+ul {
+    list-style: none;
+}
+
+ul.about li:before {
+    content:  "—";
+    position: relative;
+    left:     -5px;
+}
+
+.external {
+    color: maroon;
+    cursor: pointer;
+}
+
+#arrows_ {
+    float: right;
+    margin-left: -250px;
+}
+
+#arrows {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px; /* Need a specific value to work */
+}
+
+.arrow {
+    width: 35px;
+    cursor: pointer;
+}
+
+.progress {
+    display: none;
+    width: 100px;
+    padding-bottom: 10px
+}
+
+
+/* body_ { */
+/*   display: flex; */
+/*   justify-content: center; */
+/*   align-items: center; */
+/*   font-family: sans-serif; */
+/*   color: #525252; */
+/* } */
+
+/* a_ { */
+/*   text-decoration: none; */
+/*   color: #cb3837; */
+/* } */
+
+/* .container_ { */
+/*   text-align: center; */
+/* } */

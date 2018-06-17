@@ -1,0 +1,146 @@
+#main {
+    margin: 0;
+    padding: 10px;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+#app {
+    margin: 0;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.split {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.gutter {
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    height: 100%;
+    width: 5px;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('../resources/vertical.png');
+    cursor: ew-resize;
+}
+
+.split, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+}
+
+#text {
+    font-family: "Helvetica Neue", Helvetica, Arial;
+    font-size: 16px;
+    /* padding: 15px; */
+    margin-top: 15px;
+    margin-bottom: 25px;
+    /* padding: 50px; */
+    padding-top: 15px;
+    padding-bottom: 25px;
+    /* -webkit-app-region: drag; */
+}
+
+#results {
+    font-family: 'DejaVu Sans';
+    font-size: 14px;
+    padding-left: 15px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    /* margin-top: -50px; */
+}
+
+.link {
+    cursor: pointer;
+}
+
+.clause {
+    background-color: #eee;
+}
+
+
+span.greek {
+    /* padding-left: 5px; */
+}
+
+span.greek:hover {
+    background-color: #eee8aa;
+}
+
+
+
+.check {
+    width: 20px;
+}
+
+.dict {
+    color: maroon;
+    padding-left: 5px;
+}
+
+.dicthead {
+    margin-top: 5px;
+    padding-left: 5px;
+    background-color: #F5F4A7;
+}
+
+.dname {
+    float: right;
+}
+
+ul.fls {
+    line-height: 16px;
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #A4F3F3;
+}
+
+ul.trns {
+    padding-left: 5px;
+    line-height: 16px;
+}
+
+.scheme-red {
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    background-color: #FCC4B9;
+}
+
+.scheme-green {
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    background-color: #C9F3B0;
+}
+
+.grey {
+    color: grey;
+}
+
+.hidden {
+    display: 'none';
+}
+
+input[type='file'] {
+    color: transparent;
+}
+
+.maroon {
+    color: maroon;
+}
+
+/* span.clear { clear: left; display: block; } */

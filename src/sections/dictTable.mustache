@@ -1,0 +1,20 @@
+<table width="75%">
+  <tr class="maroon">
+    <td></td><td>dictionary name</td><td>&nbsp;</td><td>active</td>
+  </tr>
+    {{#dbs}}
+  <tr>
+    <td><img src="../resources/check.png" class="check"></td>
+    <td>{{name}}</td>
+    <td>&nbsp;</td>
+    <td><input type="checkbox" class="active-dict" name="{{name}}"></td>
+  </tr>
+  {{/dbs}}
+</table>
+
+<p>click to move first:</p>
+<div id="order">
+  {{#dbs}}
+  <input type="button" id="{{name}}" value="{{name}}">
+  {{/dbs}}
+</div>
