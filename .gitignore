@@ -1,4 +1,3 @@
-components
 .todo.org
 todo.org
 node_modules
@@ -7,3 +6,5 @@ Junk
 client
 .cfg
 TMP
+v03
+todo.org
