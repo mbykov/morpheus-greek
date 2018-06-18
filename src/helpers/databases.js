@@ -1,11 +1,10 @@
 //
 
-// import { app } from 'electron'
-// import { app, BrowserWindow, screen } from "electron"
 import _ from "lodash"
 import jetpack from "fs-jetpack"
 import { remote } from "electron"
-import { enableDBs } from '../../../antrax/dist/lib/pouch'
+// import { enableDBs } from '../../../antrax/dist/lib/pouch'
+import { enableDBs } from 'antrax/dist/lib/pouch'
 
 const path = require('path')
 const app = remote.app

@@ -62,7 +62,8 @@
     "test": "npm run unit && npm run e2e",
     "start_": "node build/start.js &> /dev/null",
     "start": "node build/start.js",
-    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
+    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder",
+    "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
     "antrax": "^0.8.1",
