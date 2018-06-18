@@ -1,7 +1,7 @@
 {
   "name": "morpheus-greek",
   "productName": "MorpheusGreek",
-  "description": "Morpheus for Ancient Greek based on electron.js",
+  "description": "Morpheus for Ancient Greek  based on electron.js",
   "version": "0.8.2",
   "author": "Michael Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
