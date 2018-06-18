@@ -9,9 +9,11 @@ import "./helpers/context_menu.js";
 import "./helpers/external_links.js";
 import { readCfg, writeCfg, recreateDBs, addCfg } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
-// import { setPath, antrax, clause } from '../../antrax/dist/antrax'
-import { antrax, clause } from '../../antrax/dist/antrax'
-import { enableDBs } from '../../antrax/dist/lib/pouch'
+
+// import { antrax, clause } from '../../antrax/dist/antrax'
+// import { enableDBs } from '../../antrax/dist/lib/pouch'
+import { antrax, clause } from 'antrax/dist/antrax'
+import { enableDBs } from 'antrax/dist/lib/pouch'
 
 import _ from "lodash";
 import { remote } from "electron";
