@@ -1,24 +1,57 @@
 {
   "name": "morpheus-greek",
-  "productName": "Morpheus for Greek",
-  "description": "Starter for your Electron application",
-  "version": "0.0.1",
-  "private_": true,
+  "productName": "MorpheusGreek",
+  "description": "Morpheus for Ancient Greek based on electron.js",
+  "version": "0.8.0",
   "author": "Michael Bykov <m.bykov@gmail.com>",
-  "copyright": "© 2017, Michael Bykov",
-  "homepage": "http://example.com",
+  "copyright": "© 2018, Michael Bykov",
+  "license": "GPL-3.0",
+  "homepage": "http://diglossa.org/greek",
   "main": "app/background.js",
   "build": {
     "appId": "org.diglossa.morpheus-greek",
     "files": [
       "app/**/*",
-      "node_modules/**/*",
+      "resources/**/*",
+      "pouch/**/*",
       "package.json"
     ],
     "directories": {
       "buildResources": "resources"
     },
-    "publish": null
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "publisherName": "Michael Bykov",
+      "publish": [
+        "github"
+      ]
+    },
+    "linux": {
+      "category": "Educational software",
+      "target": [
+        "deb"
+      ],
+      "icon": "build/icons"
+    },
+    "publish": "github"
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
@@ -32,7 +65,7 @@
     "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
-    "bootstrap": "^4.1.1",
+    "antrax": "^0.8.0",
     "electron-clipboard-extended": "^1.1.0",
     "fs-jetpack": "^1.0.0",
     "lodash": "^4.17.10",

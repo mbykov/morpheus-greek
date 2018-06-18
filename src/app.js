@@ -30,8 +30,8 @@ const mustache = require('mustache');
 // import { pug } from "pug";
 
 const app = remote.app;
-const apppath = app.getAppPath()
-const jetApp = jetpack.cwd(apppath)
+const appPath = app.getAppPath()
+const jetApp = jetpack.cwd(appPath)
 let log = console.log
 
 const clipboard = require('electron-clipboard-extended')
@@ -42,7 +42,7 @@ let hstates = []
 
 // let cfg = readCfg()
 let userDataPath = app.getPath("userData")
-enableDBs(userDataPath)
+enableDBs(userDataPath, appPath)
 // log('UP', userDataPath)
 // log('CFG', cfg)
 
