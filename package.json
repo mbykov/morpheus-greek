@@ -62,7 +62,6 @@
     "test": "npm run unit && npm run e2e",
     "start_": "node build/start.js &> /dev/null",
     "start": "node build/start.js",
-    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder",
     "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
@@ -72,6 +71,7 @@
     "lodash": "^4.17.10",
     "mousetrap": "^1.6.1",
     "mustache": "^2.3.0",
+    "orthos": "^0.3.0",
     "pouchdb": "^6.4.3",
     "split.js": "^1.3.5"
   },

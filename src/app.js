@@ -24,7 +24,8 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
-const orthos = require('../../orthos')
+// const orthos = require('../../orthos')
+const orthos = require('orthos')
 const path = require('path')
 
 const mustache = require('mustache');
