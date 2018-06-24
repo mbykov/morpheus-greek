@@ -10,6 +10,9 @@ const path = require('path')
 const app = remote.app
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
+// console.log('Upath', userDataPath)
+// console.log('Apath', appPath)
+
 
 let log = console.log
 let PouchDB = require('pouchdb')
@@ -24,34 +27,6 @@ export function writeCfg(cfg) {
   jetData.write('pouch/cfg.json', cfg)
   enableDBs(userDataPath)
 }
-
-// function defaultDBs() {
-//   let src = path.resolve(__dirname, '../pouch')
-//   let dest = path.resolve(userDataPath, 'pouch')
-//   log('defSRC', src)
-//   log('defDEST', dest)
-//   try {
-//     jetData.copy(src, dest, { matching: '**\/*' })
-//     createZeroCfg()
-//   } catch (err) {
-//     log('ERR copying default DBs', err)
-//     app.quit()
-//   }
-// }
-
-// dbs - по умолчанию
-// function createZeroCfg() {
-//   let cfg = []
-//   let fns = jetData.list('pouch')
-//   fns.forEach((dn, idx) => {
-//     let dpath = ['pouch/', dn].join('')
-//     if (jetData.exists(dpath) !== 'dir') return
-//     let cf = {name: dn, active: true, idx: idx}
-//     cfg.push(cf)
-//   })
-//   jetData.write('pouch/cfg.json', cfg)
-//   enableDBs(userDataPath)
-// }
 
 // переделать на имя файла прямо
 export function addCfg() {

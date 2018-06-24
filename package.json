@@ -2,7 +2,7 @@
   "name": "morpheus-greek",
   "productName": "MorpheusGreek",
   "description": "Morpheus for Ancient Greek based on electron.js",
-  "version": "0.8.311",
+  "version": "0.8.312",
   "author": "Michael Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
   "license": "GPL-3.0",
@@ -35,10 +35,10 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "resources/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico",
+      "icon": "resources/icon.ico",
       "publisherName": "Michael Bykov",
       "publish": [
         "github"
@@ -49,7 +49,7 @@
       "target": [
         "deb"
       ],
-      "icon": "build/icons"
+      "icon": "resources/icons"
     },
     "publish": "github"
   },
