@@ -48,9 +48,14 @@ ul.about li:before {
     cursor: pointer;
 }
 
-#arrows_ {
-    float: right;
-    margin-left: -250px;
+#new-version {
+    /* float: right; */
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-left: 10px;
+    color: maroon;
+    cursor: pointer;
 }
 
 #arrows {

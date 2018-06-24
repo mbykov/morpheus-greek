@@ -25,6 +25,7 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
 // const orthos = require('../../orthos')
+const axios = require('axios');
 const orthos = require('orthos')
 const path = require('path')
 
@@ -43,13 +44,28 @@ let hterms = {}
 let hstate = -1
 let hstates = []
 
-// let cfg = readCfg()
 let userDataPath = app.getPath("userData")
 enableDBs(userDataPath, appPath)
-// log('UP', userDataPath)
-// log('CFG', cfg)
 
 showSection('title')
+
+ipcRenderer.on('version', function (event, oldver) {
+  axios.get('https://api.github.com/repos/mbykov/morpheus-greek/releases/latest')
+    .then(function (response) {
+      if (!response || !response.data) return
+      let newver = response.data.name
+      if (oldver && newver && newver > oldver) {
+        let over = q("#new-version")
+        let verTxt = ['new version available:', newver].join(' ')
+        over.textContent = verTxt
+      }
+    })
+    .catch(function (error) {
+      console.log('API ERR', error)
+    })
+})
+
+
 
 ipcRenderer.on('section', function (event, name) {
   if (name == 'dicts') showDicts()
@@ -164,7 +180,7 @@ function showWF(chain) {
   }
 
   segs.forEach((seg, idx) => {
-    // log('CH', chain)
+    log('SEG', seg)
     if (!seg.dicts) return // bad dictionaries !
     let dicts = _.sortBy(seg.dicts, 'weight')
 
@@ -237,6 +253,9 @@ function showTerm(str) {
 const historyMode = event => {
   const checkArrow = element => {
     // if (!element.classList.contains("arrow")) return
+    if (element.id === "new-version") {
+      log('NEW VERS CLICKED')
+    }
     if (element.id === "arrow-left") {
       if (hstate - 1 > -1) hstate--
       showText(hstates[hstate])

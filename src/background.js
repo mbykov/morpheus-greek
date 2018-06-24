@@ -5,7 +5,7 @@
 
 import path from "path";
 import url from "url";
-import { app, Menu, globalShortcut } from "electron";
+import { app, Menu, globalShortcut, net } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 // import { editMenuTemplate } from "./menu/edit_menu_template";
 import { aboutMenuTemplate } from "./menu/about_menu_template";
@@ -36,7 +36,6 @@ if (env.name !== "production") {
 }
 
 app.on("ready", () => {
-  // setApplicationMenu();
 
   const mainWindow = createWindow("main", {
     width: 1000,
@@ -44,12 +43,6 @@ app.on("ready", () => {
   });
 
   setApplicationMenu(mainWindow);
-
-  // mainWindow.webPreferences.webSecurity = false
-  // mainWindow.webPreferences.nodeIntegration = false
-  // mainWindow.eval = global.eval = function () {
-    // throw new Error(`Sorry, this app does not support window.eval().`)
-  // }
 
   mainWindow.loadURL(
     url.format({
@@ -63,15 +56,14 @@ app.on("ready", () => {
     mainWindow.openDevTools();
   }
 
-  // ipcMain.on('cfg', function(event, newcfg) {
-    // log('CFG', newcfg)
-  // })
+  mainWindow.webContents.on('did-finish-load', () => {
+    let pckg = require('../package.json')
+    let name = pckg.name
+    let version = pckg.version
+    mainWindow.webContents.send('version', version)
+    mainWindow.setTitle([name, 'v.', version].join(' '))
+  })
 
-  // globalShortcut.register('CommandOrControl+H', () => {
-  //   mainWindow.webContents.send('section', 'help')
-  // })
-
-  // log('=================== kuku')
 });
 
 app.on("window-all-closed", () => {
