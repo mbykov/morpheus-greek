@@ -2,7 +2,7 @@
   "name": "morpheus-greek",
   "productName": "MorpheusGreek",
   "description": "Morpheus for Ancient Greek based on electron.js",
-  "version": "0.8.312",
+  "version": "0.8.4",
   "author": "Michael Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
   "license": "GPL-3.0",
@@ -12,6 +12,7 @@
     "appId": "org.diglossa.morpheus-greek",
     "files": [
       "app/**/*",
+      "src/**/*",
       "resources/**/*",
       "pouch/**/*",
       "package.json"
