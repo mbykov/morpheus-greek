@@ -180,7 +180,6 @@ function showWF(chain) {
   }
 
   segs.forEach((seg, idx) => {
-    log('SEG', seg)
     if (!seg.dicts) return // bad dictionaries !
     let dicts = _.sortBy(seg.dicts, 'weight')
 
