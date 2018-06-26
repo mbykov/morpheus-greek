@@ -10,8 +10,6 @@ const path = require('path')
 const app = remote.app
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
-// console.log('Upath', userDataPath)
-// console.log('Apath', appPath)
 
 
 let log = console.log
