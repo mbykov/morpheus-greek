@@ -66,7 +66,7 @@
     "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
-    "antrax": "^0.8.26",
+    "antrax": "^0.8.27",
     "axios": "^0.18.0",
     "electron-clipboard-extended": "^1.1.0",
     "fs-jetpack": "^1.0.0",

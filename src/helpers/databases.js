@@ -13,7 +13,6 @@ const userDataPath = app.getPath("userData")
 
 
 let log = console.log
-// let PouchDB = require('pouchdb')
 const jetData = jetpack.cwd(userDataPath)
 
 export function readCfg() {
