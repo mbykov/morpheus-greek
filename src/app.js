@@ -24,14 +24,11 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
-// const orthos = require('../../orthos')
 const axios = require('axios');
 const orthos = require('orthos')
 const path = require('path')
 
 const mustache = require('mustache');
-// const pug = require('pug');
-// import { pug } from "pug";
 
 const app = remote.app;
 const appPath = app.getAppPath()
@@ -45,7 +42,9 @@ let hstate = -1
 let hstates = []
 
 let userDataPath = app.getPath("userData")
+log('B-enableDBs', userDataPath)
 enableDBs(userDataPath, appPath)
+log('A-enableDBs')
 
 showSection('title')
 
