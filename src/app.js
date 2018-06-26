@@ -10,10 +10,8 @@ import "./helpers/external_links.js";
 import { readCfg, writeCfg, recreateDBs, addCfg } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
-// import { antrax, clause } from '../../antrax/dist/antrax'
-// import { enableDBs } from '../../antrax/dist/lib/pouch'
-import { antrax, clause } from 'antrax/dist/antrax'
-import { enableDBs } from 'antrax/dist/lib/pouch'
+// import { antrax, clause, enableDBs } from '../../antrax'
+import { antrax, clause,enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
@@ -43,8 +41,8 @@ let hstate = -1
 let hstates = []
 
 let userDataPath = app.getPath("userData")
-log('B-enableDBs', userDataPath)
-// enableDBs(userDataPath, appPath)
+log('B-enableDBs', userDataPath, appPath)
+enableDBs(userDataPath, appPath)
 log('A-enableDBs')
 
 showSection('title')
