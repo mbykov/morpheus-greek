@@ -24,6 +24,7 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
+
 const axios = require('axios');
 const orthos = require('orthos')
 const path = require('path')
@@ -43,7 +44,7 @@ let hstates = []
 
 let userDataPath = app.getPath("userData")
 log('B-enableDBs', userDataPath)
-enableDBs(userDataPath, appPath)
+// enableDBs(userDataPath, appPath)
 log('A-enableDBs')
 
 showSection('title')
