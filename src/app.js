@@ -4,7 +4,6 @@ import "./stylesheets/app.css";
 import "./stylesheets/main.css";
 import Split from 'split.js'
 
-// Small helpers you might want to keep
 import "./helpers/context_menu.js";
 import "./helpers/external_links.js";
 import { readCfg, writeCfg, recreateDBs, addCfg } from "./helpers/databases.js";
@@ -41,9 +40,7 @@ let hstate = -1
 let hstates = []
 
 let userDataPath = app.getPath("userData")
-log('B-enableDBs', userDataPath, appPath)
 enableDBs(userDataPath, appPath)
-log('A-enableDBs')
 
 showSection('title')
 
@@ -169,7 +166,6 @@ function showNoRes() {
 function showWF(chain) {
   let fls = _.last(chain).flexes
   let segs = chain.slice(0, -1)
-  // log('CH', segs)
 
   let owf = div()
   if (chain.length > 2) {
@@ -345,20 +341,16 @@ function showCleanup() {
 }
 
 function cleanupDBs() {
-  // log('CLEANUP')
   recreateDBs()
-  // cfg = readCfg()
   showDicts()
 }
 
 function showInstall() {
   showSection('install')
-  // let oform = q('#select-file')
   let oinputfile = q('#inputfile')
 
   oinputfile.onchange = function(ev) {
     let fileList = oinputfile.files
-    // log('FL', fileList)
     let fname = fileList[0].name
     let fpath = fileList[0].path
     let ofn = q('#filename')
@@ -373,7 +365,7 @@ function installDB() {
   log('INSTALL DB')
   let ofn = q('#filename')
   let fpath = ofn.getAttribute('fpath')
-  log('FP', fpath)
+  // log('FP', fpath)
   // addCfg()
   // showDicts()
 }
