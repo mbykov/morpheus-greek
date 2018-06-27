@@ -129,7 +129,6 @@ function showText (pars) {
   oprg.style.display = "none"
 }
 
-// унести в databases NB ?
 function queryTerms(wfs) {
   clause(wfs)
     .then(terms => {
@@ -261,6 +260,7 @@ const historyMode = event => {
 };
 
 const checkGreek = event => {
+  if (event.shiftKey) return
   const checkDomElement = element => {
     if (element.nodeName !== "SPAN") return
     if (element.classList.contains("greek")) {
