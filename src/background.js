@@ -53,9 +53,8 @@ app.on("ready", () => {
   );
 
   if (env.name === "development") {
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
   }
-  mainWindow.openDevTools();
 
   mainWindow.webContents.on('did-finish-load', () => {
     let pckg = require('../package.json')

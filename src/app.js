@@ -6,7 +6,7 @@ import Split from 'split.js'
 
 import "./helpers/context_menu.js";
 import "./helpers/external_links.js";
-import { readCfg, writeCfg, recreateDBs, addCfg } from "./helpers/databases.js";
+import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
 // import { antrax, clause, enableDBs } from '../../antrax'
@@ -362,10 +362,9 @@ function showInstall() {
 }
 
 function installDB() {
-  log('INSTALL DB')
   let ofn = q('#filename')
   let fpath = ofn.getAttribute('fpath')
-  // log('FP', fpath)
-  // addCfg()
+  addDB(fpath)
+  ofn.textContent = 'done'
   // showDicts()
 }

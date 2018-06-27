@@ -11,6 +11,8 @@ const app = remote.app
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
 
+const decompress = require('decompress')
+const decompressTargz = require('decompress-targz')
 
 let log = console.log
 const jetData = jetpack.cwd(userDataPath)
@@ -25,11 +27,35 @@ export function writeCfg(cfg) {
   enableDBs(userDataPath)
 }
 
-// переделать на имя файла прямо
-export function addCfg() {
+export function recreateDBs() {
+  try {
+    if (jetData.exists('pouch')) {
+      jetData.remove('pouch')
+    }
+    enableDBs(userDataPath, appPath)
+  } catch (err) {
+    log('ERR re-creating DBs', err)
+    app.quit()
+  }
+}
+
+export function addDB(fpath) {
+  let dbpath = path.resolve(userDataPath, 'pouch')
+  log('addDB: ', dbpath)
+  decompress(fpath, dbpath, {
+    plugins: [
+      decompressTargz()
+    ]
+  }).then(() => {
+    addCfg()
+    // log('Files decompressed')
+  })
+}
+
+function addCfg() {
   let cfg = readCfg()
   let fns = jetData.list('pouch')
-  fns.forEach((dn, idx) => {
+  fns.forEach(dn => {
     let exists = _.find(cfg, cf => { return cf.name == dn})
     if (exists) return
     let dpath = ['pouch/', dn].join('')
@@ -40,18 +66,4 @@ export function addCfg() {
   cfg.forEach((cf, idx) => { cf.idx = idx })
   jetData.write('pouch/cfg.json', cfg)
   enableDBs(userDataPath)
-}
-
-
-export function recreateDBs() {
-  log('RECREATEING DBs')
-  try {
-    if (jetData.exists('pouch')) {
-      jetData.remove('pouch')
-    }
-    enableDBs(userDataPath, appPath)
-  } catch (err) {
-    log('ERR re-creating DBs', err)
-    app.quit()
-  }
 }
