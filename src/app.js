@@ -173,7 +173,7 @@ function showWF(chain) {
   }
 
   segs.forEach((seg, idx) => {
-    if (!seg.dicts) return // bad dictionaries !
+    if (!seg.dicts) return // bad dictionaries !!
     let dicts = _.sortBy(seg.dicts, 'weight')
 
     dicts.forEach(dict => {
