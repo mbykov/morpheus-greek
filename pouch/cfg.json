@@ -1,0 +1,27 @@
+[
+  {
+    "name": "flex",
+    "active": true,
+    "idx": 0
+  },
+  {
+    "name": "specs",
+    "active": true,
+    "idx": 1
+  },
+  {
+    "name": "terms",
+    "active": true,
+    "idx": 2
+  },
+  {
+    "name": "wktname",
+    "active": true,
+    "idx": 3
+  },
+  {
+    "name": "wktverb",
+    "active": true,
+    "idx": 4
+  }
+]

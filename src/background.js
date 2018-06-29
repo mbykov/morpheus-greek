@@ -74,8 +74,8 @@ app.on("ready", () => {
     let pckg = require('../package.json')
     let name = pckg.name
     let version = pckg.version
-    let aversion = pckg.dependencies.antrax.replace('^', '')
-    mainWindow.webContents.send('version', {version: version, aversion: aversion})
+    // let aversion = pckg.dependencies.antrax.replace('^', '')
+    mainWindow.webContents.send('version', { version: version })
     mainWindow.setTitle([name, 'v.', version].join(' '))
   })
 
