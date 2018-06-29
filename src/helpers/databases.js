@@ -22,9 +22,9 @@ export function antraxVersion(aver) {
   if (!oldver) {
     oldver = {antrax: aver}
     jetData.write('version.json', oldver)
+    recreateDBs()
   }
   if (aver != oldver.antrax) recreateDBs()
-  log('A-VER:', aver)
 }
 
 export function readCfg() {
