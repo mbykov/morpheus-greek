@@ -23,21 +23,17 @@ export default (code, str) => {
   let rep = new RegExp(puncts)
   let rows = clean.replace(/\r?\n+/, '\n').split('\n')
   let rclauses = rows.map(row => { return row.split(rep) })
-  // log('RCLs', rclauses)
   let spans = []
   rows.forEach(row => {
     let spns = []
     let rclauses = row.split(rep)
     rclauses.forEach(rclause => {
-      log('RCL', rclause)
       if (rep.test(rclause)) {
         let spn = {text: rclause, punct: true}
-        log('PU', spn)
         spns.push(spn)
       } else {
         let clauses = rclause.split(re)
         clauses = _.compact(clauses)
-        log('CLS', clauses)
         clauses.forEach(clause => {
           let lang = (re.test(clause)) ? true : false
           let spn = {text: clause}

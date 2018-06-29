@@ -6,7 +6,7 @@ import Split from 'split.js'
 
 import "./helpers/context_menu.js";
 import "./helpers/external_links.js";
-import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
+import { readCfg, writeCfg, recreateDBs, addDB, antraxVersion } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
 // import { antrax, clause, enableDBs } from '../../antrax'
@@ -49,11 +49,12 @@ ipcRenderer.on('version', function (event, oldver) {
     .then(function (response) {
       if (!response || !response.data) return
       let newver = response.data.name
-      if (oldver && newver && newver > oldver) {
+      if (oldver && newver && newver > oldver.version) {
         let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt
       }
+      antraxVersion(oldver.aversion)
     })
     .catch(function (error) {
       console.log('API ERR', error)
