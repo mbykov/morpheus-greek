@@ -17,16 +17,6 @@ const decompressTargz = require('decompress-targz')
 let log = console.log
 const jetData = jetpack.cwd(userDataPath)
 
-// export function antraxVersion(aver) {
-//   let oldver = jetData.read('version.json', 'json')
-//   if (!oldver) {
-//     oldver = {antrax: aver}
-//     jetData.write('version.json', oldver)
-//     recreateDBs()
-//   }
-//   if (aver != oldver.antrax) recreateDBs()
-// }
-
 export function readCfg() {
   let cfg = jetData.read('pouch/cfg.json', 'json')
   return cfg

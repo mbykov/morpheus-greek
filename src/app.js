@@ -23,6 +23,7 @@ import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
 
 const axios = require('axios');
+// const orthos = require('../../orthos')
 const orthos = require('orthos')
 const path = require('path')
 
@@ -121,6 +122,7 @@ function showText (pars) {
     spans.forEach(spn => {
       let ospan = span(spn.text)
       if (spn.gr) ospan.classList.add('greek'), wfs.push(spn.text)
+      if (spn.text == ' ') ospan.classList.add('space')
       opar.appendChild(ospan)
     })
     otext.appendChild(opar)
@@ -136,7 +138,8 @@ function queryTerms(wfs) {
       hterms = terms
       let grs = qs('span.greek')
       grs.forEach(spn => {
-        if (!terms[spn.textContent]) return
+        let dcase = orthos.downcase(spn.textContent)
+        if (!terms[dcase]) return
         spn.classList.remove('greek')
         spn.classList.add('term')
       })
@@ -221,8 +224,9 @@ function showTerm(str) {
   let ores = q('#results')
   empty(ores)
 
-  let terms = hterms[str]
-  if (!terms.length) return
+  let dcase = orthos.downcase(str)
+  let terms = hterms[dcase]
+  if (!terms || !terms.length) return
   terms.forEach(dict => {
     // dict.pref - only as a first part of a wordform:
     if (dict.pref) return

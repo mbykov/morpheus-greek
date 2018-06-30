@@ -72,6 +72,7 @@ function getPos (dict) {
   else if (dict.indecl)  pos = 'indecl:'
   else if (dict.pref)  pos = 'prefix:'
   else if (dict.particle)  pos = 'particle:'
+  else if (dict.spec)  pos = 'special:'
   else if (dict.xxx)  pos = ''
   return pos
 }
