@@ -16,7 +16,7 @@ import _ from "lodash";
 import { remote } from "electron";
 import jetpack from "fs-jetpack";
 import { greet } from "./hello_world/hello_world";
-import env from "env";
+// import env from "env";
 import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
