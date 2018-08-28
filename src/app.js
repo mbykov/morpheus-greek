@@ -224,19 +224,12 @@ function drawScheme(chain) {
 
 // ἡ αὐτή βάλανος τοῦ ταὐτοῦ βάθος
 function showTerm(dict) {
-  // let ores = q('#results')
-  // empty(ores)
-
-  // log('TERMS', dict)
-  // let dcase = orthos.downcase(str)
-  // let terms = hterms[dcase]
   if (!dict) return
-  // terms.forEach(dict => {
-    // dict.pref - only as a first part of a wordform:
-    if (dict.pref) return
-    let odiv = div()
-    let odict = rDict(dict)
-    odiv.appendChild(odict)
+  // dict.pref - only as a first part of a wordform:
+  if (dict.pref) return
+  let odiv = div()
+  let odict = rDict(dict)
+  odiv.appendChild(odict)
 
   if (dict.morphs) {
     let morphs = getMorphs(dict, dict.morphs)
@@ -244,11 +237,9 @@ function showTerm(dict) {
     odiv.appendChild(oMorph)
   }
 
-    let otrns = rTrns(dict)
+  let otrns = rTrns(dict)
   odiv.appendChild(otrns)
   return odiv
-    // ores.appendChild(odiv)
-  // })
 }
 
 const historyMode = event => {

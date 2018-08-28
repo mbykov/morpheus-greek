@@ -9,14 +9,13 @@ export function rDict (dict) {
   let odname = span(dict.dname)
   odname.classList.add('dname')
   odicthead.appendChild(odname)
-  // let pos = getPos(dict)
-  // let pos = dict.pos
-  let ospos = span(dict.pos)
+  let pos = [dict.pos, ':'].join('')
+  let ospos = span(pos)
   odicthead.appendChild(ospos)
   if (!dict.rdict || dict.rdict == 'undefined') return odicthead
 
   let ogend
-  if (dict.gend) ogend = span([', ', dict.gend].join(''))
+  if (dict.gend) ogend = span(dict.gend)
   let ordict = span(dict.rdict)
   ordict.classList.add('dict')
 
@@ -52,27 +51,9 @@ export function getMorphs (dict, fls) {
   if (dict.pos == 'verb') morphs = fls.map(flex => { return [flex.tense, flex.numper].join(' ') })
   else if (dict.pos == 'name' && dict.gend) morphs = fls.map(flex => { return [dict.gend, flex.numcase].join('.') })
   else if (dict.pos == 'name') morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
-  else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+  else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
   else if (dict.pos == 'art')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   return morphs
 }
-
-// function getPos (dict) {
-//   let pos
-//   if (dict.verb) pos = 'verb:'
-//   else if (dict.name) pos = 'name:'
-//   else if (dict.pron)  pos = 'pronoun:'
-//   else if (dict.art)  pos = 'article:'
-//   else if (dict.adv)  pos = 'adverb:'
-//   else if (dict.part)  pos = 'participle:'
-//   else if (dict.conj)  pos = 'conj:'
-//   else if (dict.prep)  pos = 'prep:'
-//   else if (dict.indecl)  pos = 'indecl:'
-//   else if (dict.pref)  pos = 'prefix:'
-//   else if (dict.particle)  pos = 'particle:'
-//   else if (dict.spec)  pos = 'special:'
-//   else if (dict.xxx)  pos = ''
-//   return pos
-// }
