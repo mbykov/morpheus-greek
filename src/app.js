@@ -9,14 +9,12 @@ import "./helpers/external_links.js";
 import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
-// import { antrax, clause, enableDBs } from '../../antrax'
-import { antrax, clause,enableDBs } from 'antrax'
+import { antrax, clause, enableDBs } from '../../antrax'
+// import { antrax, clause,enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
 import jetpack from "fs-jetpack";
-import { greet } from "./hello_world/hello_world";
-// import env from "env";
 import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
@@ -128,23 +126,23 @@ function showText (pars) {
     otext.appendChild(opar)
   })
 
-  queryTerms(_.uniq(wfs))
+  // queryTerms(_.uniq(wfs))
   oprg.style.display = "none"
 }
 
-function queryTerms(wfs) {
-  clause(wfs)
-    .then(terms => {
-      hterms = terms
-      let grs = qs('span.greek')
-      grs.forEach(spn => {
-        let dcase = orthos.downcase(spn.textContent)
-        if (!terms[dcase]) return
-        spn.classList.remove('greek')
-        spn.classList.add('term')
-      })
-    })
-}
+// function queryTerms(wfs) {
+//   clause(wfs)
+//     .then(terms => {
+//       hterms = terms
+//       let grs = qs('span.greek')
+//       grs.forEach(spn => {
+//         let dcase = orthos.downcase(spn.textContent)
+//         if (!terms[dcase]) return
+//         spn.classList.remove('greek')
+//         spn.classList.add('term')
+//       })
+//     })
+// }
 
 function showResults(result) {
   let ores = q('#results')
@@ -152,9 +150,13 @@ function showResults(result) {
 
   antrax(result)
     .then(chains => {
-      if (!chains.length) showNoRes()
+      // log('R', chains)
+      if (!chains || !chains.length) showNoRes()
       chains.forEach(chain => {
-        let owf = showWF(chain)
+        // log('CHAIN', chain)
+        let owf
+        if (_.isArray(chain)) owf = showWF(chain)
+        else owf = showTerm(chain)
         ores.appendChild(owf)
       })
     })
@@ -185,6 +187,7 @@ function showWF(chain) {
       let odict = rDict(dict)
       oddiv.appendChild(odict)
       if (idx > segs.length - 2) {
+        // log('M', dict, fls)
         let morphs = getMorphs(dict, fls)
         let oMorph = rMorph(morphs)
         oddiv.appendChild(oMorph)
@@ -220,31 +223,32 @@ function drawScheme(chain) {
 }
 
 // ἡ αὐτή βάλανος τοῦ ταὐτοῦ βάθος
-function showTerm(str) {
-  let ores = q('#results')
-  empty(ores)
+function showTerm(dict) {
+  // let ores = q('#results')
+  // empty(ores)
 
-  let dcase = orthos.downcase(str)
-  let terms = hterms[dcase]
-  if (!terms || !terms.length) return
-  terms.forEach(dict => {
+  // log('TERMS', dict)
+  // let dcase = orthos.downcase(str)
+  // let terms = hterms[dcase]
+  if (!dict) return
+  // terms.forEach(dict => {
     // dict.pref - only as a first part of a wordform:
     if (dict.pref) return
     let odiv = div()
     let odict = rDict(dict)
     odiv.appendChild(odict)
 
-    let fls = dict.morphs
-    if (fls) {
-      let morphs = getMorphs(dict, fls)
-      let oMorph = rMorph(morphs)
-      odiv.appendChild(oMorph)
-    }
+  if (dict.morphs) {
+    let morphs = getMorphs(dict, dict.morphs)
+    let oMorph = rMorph(morphs)
+    odiv.appendChild(oMorph)
+  }
 
     let otrns = rTrns(dict)
-    odiv.appendChild(otrns)
-    ores.appendChild(odiv)
-  })
+  odiv.appendChild(otrns)
+  return odiv
+    // ores.appendChild(odiv)
+  // })
 }
 
 const historyMode = event => {
@@ -272,10 +276,10 @@ const checkGreek = event => {
       let query = element.textContent
       if (!query) return
       showResults(query)
-    } else if (element.classList.contains("term")) {
-      let term = element.textContent
-      if (!term) return
-      showTerm(term)
+    // } else if (element.classList.contains("term")) {
+    //   let term = element.textContent
+    //   if (!term) return
+    //   showTerm(term)
     }
   }
   checkDomElement(event.target);

@@ -1,1 +1,26 @@
-2018/06/29-20:34:49.211085 7f3eb996f700 Delete type=3 #1
+2018/08/28-17:07:04.467210 7effee1e2700 Delete type=3 #1
+2018/08/28-17:07:05.574808 7effcffff700 Level-0 table #5: started
+2018/08/28-17:07:05.635113 7effcffff700 Level-0 table #5: 950257 bytes OK
+2018/08/28-17:07:05.659355 7effcffff700 Delete type=0 #3
+2018/08/28-17:07:05.968750 7effcffff700 Level-0 table #7: started
+2018/08/28-17:07:06.060530 7effcffff700 Level-0 table #7: 1122696 bytes OK
+2018/08/28-17:07:06.084454 7effcffff700 Delete type=0 #4
+2018/08/28-17:07:06.111575 7effcffff700 Compacting 1@1 + 1@2 files
+2018/08/28-17:07:06.211078 7effcffff700 Generated table #8@1: 20003 keys, 2072732 bytes
+2018/08/28-17:07:06.211121 7effcffff700 Compacted 1@1 + 1@2 files => 2072732 bytes
+2018/08/28-17:07:06.234297 7effcffff700 compacted to: files[ 0 0 1 0 0 0 0 ]
+2018/08/28-17:07:06.234426 7effcffff700 Delete type=2 #7
+2018/08/28-17:07:06.234640 7effcffff700 Delete type=2 #5
+2018/08/28-17:07:06.339476 7effcffff700 Level-0 table #10: started
+2018/08/28-17:07:06.403316 7effcffff700 Level-0 table #10: 1101563 bytes OK
+2018/08/28-17:07:06.426101 7effcffff700 Delete type=0 #6
+2018/08/28-17:07:06.426863 7effcffff700 Compacting 1@1 + 1@2 files
+2018/08/28-17:07:06.536986 7effcffff700 Generated table #11@1: 21599 keys, 2165514 bytes
+2018/08/28-17:07:06.612210 7effcffff700 Generated table #12@1: 10404 keys, 1008586 bytes
+2018/08/28-17:07:06.612232 7effcffff700 Compacted 1@1 + 1@2 files => 3174100 bytes
+2018/08/28-17:07:06.634383 7effcffff700 compacted to: files[ 0 0 2 0 0 0 0 ]
+2018/08/28-17:07:06.634508 7effcffff700 Delete type=2 #10
+2018/08/28-17:07:06.634735 7effcffff700 Delete type=2 #8
+2018/08/28-17:07:06.774599 7effcffff700 Level-0 table #14: started
+2018/08/28-17:07:06.846077 7effcffff700 Level-0 table #14: 1283837 bytes OK
+2018/08/28-17:07:06.868000 7effcffff700 Delete type=0 #9
