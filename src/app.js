@@ -19,10 +19,10 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
+import {comb, plain, ac} from '../../orthos'
+// const orthos = require('orthos')
 
 const axios = require('axios');
-// const orthos = require('../../orthos')
-const orthos = require('orthos')
 const path = require('path')
 
 const mustache = require('mustache');
@@ -72,7 +72,7 @@ ipcRenderer.on('section', function (event, name) {
 function orthoPars(pars) {
   pars.forEach(spans => {
     spans.forEach(spn => {
-      if (spn.gr) spn.text = orthos.toComb(spn.text)
+      if (spn.gr) spn.text = comb(spn.text)
     })
   })
 }
@@ -144,11 +144,11 @@ function showText (pars) {
 //     })
 // }
 
-function showResults(result) {
+function showResults(query) {
   let ores = q('#results')
   empty(ores)
 
-  antrax(result)
+  antrax(query)
     .then(chains => {
       // log('R', chains)
       if (!chains || !chains.length) showNoRes()
