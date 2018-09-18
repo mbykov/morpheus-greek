@@ -14,6 +14,7 @@ import { antrax, clause, enableDBs } from '../../antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
+import {shell} from 'electron'
 import jetpack from "fs-jetpack";
 import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
@@ -22,6 +23,7 @@ import { q, qs, empty, create, span, p, div } from './helpers/utils'
 import {comb, plain, ac} from '../../orthos'
 // const orthos = require('orthos')
 
+const Mousetrap = require('mousetrap');
 const axios = require('axios');
 const path = require('path')
 
@@ -89,10 +91,10 @@ clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
     let pars = sband('gr', txt)
-    if (!pars) return
+    if (!pars.length) return
     orthoPars(pars)
     hstates.push(pars)
-    hstate++
+    hstate = hstates.length-1
     showText(hstates[hstate])
   })
   .startWatching()
@@ -246,7 +248,7 @@ const historyMode = event => {
   const checkArrow = element => {
     // if (!element.classList.contains("arrow")) return
     if (element.id === "new-version") {
-      log('NEW VERS CLICKED')
+      // log('NEW VERS CLICKED')
     }
     if (element.id === "arrow-left") {
       if (hstate - 1 > -1) hstate--
@@ -278,6 +280,24 @@ const checkGreek = event => {
 
 document.addEventListener("mouseover", checkGreek, false)
 document.addEventListener("click", historyMode, false)
+
+Mousetrap.bind(['command+p', 'ctrl+p'], function() {
+  let el = q('span.greek:hover')
+  if (!el) return
+  let query = el.textContent
+  let href1 = 'http://www.perseus.tufts.edu/hopper/morph?l='
+  let href2 = '&la=greek#lexicon'
+  let href = [href1, query, href2].join('')
+  shell.openExternal(href)
+  return false
+})
+
+Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
+  if (ev.which == 37 && hstate - 1 > -1) hstate--
+  if (ev.which == 39 && hstate + 1 < hstates.length) hstate++
+  showText(hstates[hstate])
+  return false
+})
 
 function showDicts() {
   showSection('dicts')

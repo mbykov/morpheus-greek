@@ -10,6 +10,7 @@ const path = require('path')
 const app = remote.app
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
+// let userDataPath = '/home/michael/.config/MorpheusGreek-tmp' // это убрать, только для запуска antrax =========================== NB
 
 const decompress = require('decompress')
 const decompressTargz = require('decompress-targz')
