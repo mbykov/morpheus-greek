@@ -19,8 +19,8 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
-import {comb, plain, ac} from '../../orthos'
-// const orthos = require('orthos')
+// import {comb, plain, ac} from '../../orthos'
+import {comb, plain, ac} from 'orthos'
 
 const Mousetrap = require('mousetrap');
 const axios = require('axios');
