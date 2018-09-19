@@ -3,14 +3,13 @@
 import _ from "lodash"
 import jetpack from "fs-jetpack"
 import { remote } from "electron"
-import { enableDBs } from '../../../antrax'
-// import { enableDBs } from 'antrax'
+// import { enableDBs } from '../../../antrax'
+import { enableDBs } from 'antrax'
 
 const path = require('path')
 const app = remote.app
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
-// let userDataPath = '/home/michael/.config/MorpheusGreek-tmp' // это убрать, только для запуска antrax =========================== NB
 
 const decompress = require('decompress')
 const decompressTargz = require('decompress-targz')

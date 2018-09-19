@@ -3,6 +3,8 @@
 import _ from 'lodash'
 import { q, qs, empty, create, span, p, div } from './utils'
 
+let log = console.log
+
 export function rDict (dict) {
   let odicthead = div()
   odicthead.classList.add('dicthead')
@@ -48,7 +50,20 @@ export function rTrns (dict) {
 
 export function getMorphs (dict, fls) {
   let morphs
-  if (dict.pos == 'verb') morphs = fls.map(flex => { return [flex.tense, flex.numper].join(' ') })
+  if (dict.pos == 'verb') {
+    let vfls = _.filter(fls, flex=> { return flex.numper })
+    let pfls = _.filter(fls, flex=> { return flex.numcase })
+    let ifls = _.filter(fls, flex=> { return !flex.numcase && !flex.numper })
+    morphs = vfls.map(flex => { return [flex.tense, flex.numper].join(' ') })
+    if (pfls.length) {
+      let pmorphs = pfls.map(flex => { return [flex.tense, [flex.gend, flex.numcase].join('.') ].join(', ') })
+      morphs = morphs.concat(pmorphs)
+    }
+    if (ifls.length) {
+      let imorphs = ifls.map(flex => { return flex.tense })
+      morphs = morphs.concat(imorphs)
+    }
+  }
   else if (dict.pos == 'name' && dict.gend) morphs = fls.map(flex => { return [dict.gend, flex.numcase].join('.') })
   else if (dict.pos == 'name') morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })

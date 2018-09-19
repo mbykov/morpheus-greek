@@ -5,12 +5,11 @@ import "./stylesheets/main.css";
 import Split from 'split.js'
 
 import "./helpers/context_menu.js";
-import "./helpers/external_links.js";
 import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
-import { antrax, clause, enableDBs } from '../../antrax'
-// import { antrax, clause,enableDBs } from 'antrax'
+// import { antrax, clause, enableDBs } from '../../antrax'
+import { antrax, clause, enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
@@ -91,7 +90,7 @@ clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
     let pars = sband('gr', txt)
-    if (!pars.length) return
+    if (!pars || !pars.length) return
     orthoPars(pars)
     hstates.push(pars)
     hstate = hstates.length-1
@@ -132,30 +131,14 @@ function showText (pars) {
   oprg.style.display = "none"
 }
 
-// function queryTerms(wfs) {
-//   clause(wfs)
-//     .then(terms => {
-//       hterms = terms
-//       let grs = qs('span.greek')
-//       grs.forEach(spn => {
-//         let dcase = orthos.downcase(spn.textContent)
-//         if (!terms[dcase]) return
-//         spn.classList.remove('greek')
-//         spn.classList.add('term')
-//       })
-//     })
-// }
-
 function showResults(query) {
   let ores = q('#results')
   empty(ores)
 
   antrax(query)
     .then(chains => {
-      // log('R', chains)
       if (!chains || !chains.length) showNoRes()
       chains.forEach(chain => {
-        // log('CHAIN', chain)
         let owf
         if (_.isArray(chain)) owf = showWF(chain)
         else owf = showTerm(chain)
@@ -189,7 +172,6 @@ function showWF(chain) {
       let odict = rDict(dict)
       oddiv.appendChild(odict)
       if (idx > segs.length - 2) {
-        // log('M', dict, fls)
         let morphs = getMorphs(dict, fls)
         let oMorph = rMorph(morphs)
         oddiv.appendChild(oMorph)
@@ -348,7 +330,6 @@ function activeCfg(ev) {
   let img = row.getElementsByTagName('img')[0]
   // if (chk) img.style.display = 'block'
   // else img.style.display = 'none'
-  // log('P', img)
 
   writeCfg(cfg)
   showDicts()

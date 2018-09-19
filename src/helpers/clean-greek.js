@@ -19,7 +19,9 @@ let coderanges = {
 export default (code, str) => {
   let re = new RegExp(coderanges[code])
   if (!re.test(str)) return
-  let clean = str.trim().replace(/᾽/g, "'")
+  let clean = str.trim().replace(/᾽/g, "\'")
+  let wopunct = clean.split("'").join('')
+  if (!re.test(wopunct)) return
   let rep = new RegExp(puncts)
   let rows = clean.replace(/\r?\n+/, '\n').split('\n')
   let rclauses = rows.map(row => { return row.split(rep) })
