@@ -2,7 +2,7 @@
   "name": "morpheus-greek",
   "productName": "MorpheusGreek",
   "description": "Morpheus for Ancient Greek based on electron.js",
-  "version": "0.8.525",
+  "version": "0.8.5251",
   "author": "Michael Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
   "license": "GPL-3.0",
@@ -17,6 +17,7 @@
       "pouch/**/*",
       "package.json"
     ],
+    "asarUnpack": "pouch",
     "directories": {
       "buildResources": "resources"
     },
