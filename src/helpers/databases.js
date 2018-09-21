@@ -31,6 +31,7 @@ export function writeCfg(cfg) {
 
 export function recreateDBs() {
   let pouchpath = path.resolve(userDataPath, 'pouch')
+  log('RECREATE', pouchpath)
   try {
     if (fse.pathExistsSync(pouchpath)) {
       fse.removeSync(pouchpath)
