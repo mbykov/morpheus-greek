@@ -8,8 +8,8 @@ import "./helpers/context_menu.js";
 import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
-// import { antrax, clause, enableDBs } from '../../antrax'
-import { antrax, clause, enableDBs } from 'antrax'
+// import { antrax, enableDBs } from '../../antrax'
+import { antrax, enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
