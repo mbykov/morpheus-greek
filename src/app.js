@@ -23,11 +23,13 @@ import {comb, plain, ac} from 'orthos'
 
 let fse = require('fs-extra')
 
-const Mousetrap = require('mousetrap');
-const axios = require('axios');
+const Mousetrap = require('mousetrap')
+const axios = require('axios')
 const path = require('path')
 
-const mustache = require('mustache');
+const mustache = require('mustache')
+
+const isDev = require('electron-is-dev')
 
 const app = remote.app;
 const appPath = app.getAppPath()
@@ -40,7 +42,7 @@ let hstate = -1
 let hstates = []
 
 let userDataPath = app.getPath("userData")
-enableDBs(userDataPath, appPath)
+enableDBs(userDataPath, appPath, isDev)
 
 showSection('title')
 

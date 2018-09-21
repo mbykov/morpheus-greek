@@ -71,6 +71,7 @@
     "decompress": "^4.2.0",
     "decompress-targz": "^4.1.1",
     "electron-clipboard-extended": "^1.1.0",
+    "electron-is-dev": "^1.0.1",
     "fs-extra": "^7.0.0",
     "fs-jetpack": "^1.0.0",
     "lodash": "^4.17.10",
