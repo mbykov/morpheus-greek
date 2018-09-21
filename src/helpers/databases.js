@@ -1,7 +1,6 @@
 //
 
 import _ from "lodash"
-import jetpack from "fs-jetpack"
 import { remote } from "electron"
 // import { enableDBs } from '../../../antrax'
 import { enableDBs } from 'antrax'
@@ -15,22 +14,26 @@ const decompress = require('decompress')
 const decompressTargz = require('decompress-targz')
 
 let log = console.log
-const jetData = jetpack.cwd(userDataPath)
+let fse = require('fs-extra')
+
 
 export function readCfg() {
-  let cfg = jetData.read('pouch/cfg.json', 'json')
+  let cfgpath = path.resolve(userDataPath, 'pouch/cfg.json')
+  let cfg = fse.readJsonSync(cfgpath)
   return cfg
 }
 
 export function writeCfg(cfg) {
-  jetData.write('pouch/cfg.json', cfg)
+  let cfgpath = path.resolve(userDataPath, 'pouch/cfg.json')
+  fse.writeJsonSync(cfgpath, cfg)
   enableDBs(userDataPath)
 }
 
 export function recreateDBs() {
+  let pouchpath = path.resolve(userDataPath, 'pouch')
   try {
-    if (jetData.exists('pouch')) {
-      jetData.remove('pouch')
+    if (fse.pathExistsSync(pouchpath)) {
+      fse.removeSync(pouchpath)
     }
     enableDBs(userDataPath, appPath)
   } catch (err) {
@@ -39,29 +42,29 @@ export function recreateDBs() {
   }
 }
 
-export function addDB(fpath) {
-  let dbpath = path.resolve(userDataPath, 'pouch')
-  decompress(fpath, dbpath, {
-    plugins: [
-      decompressTargz()
-    ]
-  }).then(() => {
-    addCfg()
-  })
-}
+// export function addDB(fpath) {
+//   let dbpath = path.resolve(userDataPath, 'pouch')
+//   decompress(fpath, dbpath, {
+//     plugins: [
+//       decompressTargz()
+//     ]
+//   }).then(() => {
+//     addCfg()
+//   })
+// }
 
-function addCfg() {
-  let cfg = readCfg()
-  let fns = jetData.list('pouch')
-  fns.forEach(dn => {
-    let exists = _.find(cfg, cf => { return cf.name == dn})
-    if (exists) return
-    let dpath = ['pouch/', dn].join('')
-    if (jetData.exists(dpath) !== 'dir') return
-    let newcf = {name: dn, active: true, idx: cfg.length}
-    cfg.push(newcf)
-  })
-  cfg.forEach((cf, idx) => { cf.idx = idx })
-  jetData.write('pouch/cfg.json', cfg)
-  enableDBs(userDataPath)
-}
+// function addCfg() {
+//   let cfg = readCfg()
+//   let fns = jetData.list('pouch')
+//   fns.forEach(dn => {
+//     let exists = _.find(cfg, cf => { return cf.name == dn})
+//     if (exists) return
+//     let dpath = ['pouch/', dn].join('')
+//     if (jetData.exists(dpath) !== 'dir') return
+//     let newcf = {name: dn, active: true, idx: cfg.length}
+//     cfg.push(newcf)
+//   })
+//   cfg.forEach((cf, idx) => { cf.idx = idx })
+//   jetData.write('pouch/cfg.json', cfg)
+//   enableDBs(userDataPath)
+// }

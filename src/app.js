@@ -14,13 +14,14 @@ import { antrax, clause, enableDBs } from 'antrax'
 import _ from "lodash";
 import { remote } from "electron";
 import {shell} from 'electron'
-import jetpack from "fs-jetpack";
 import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div } from './helpers/utils'
 
 // import {comb, plain, ac} from '../../orthos'
 import {comb, plain, ac} from 'orthos'
+
+let fse = require('fs-extra')
 
 const Mousetrap = require('mousetrap');
 const axios = require('axios');
@@ -30,7 +31,6 @@ const mustache = require('mustache');
 
 const app = remote.app;
 const appPath = app.getAppPath()
-const jetApp = jetpack.cwd(appPath)
 let log = console.log
 
 const clipboard = require('electron-clipboard-extended')
@@ -80,9 +80,8 @@ function orthoPars(pars) {
 
 function showSection(name) {
   let oapp = q('#app')
-  let rpath = ['src/sections/', name].join('')
-  rpath = [rpath, 'html'].join('.')
-  const section = jetApp.read(rpath, "utf8");
+  let secpath = path.resolve(appPath, 'src/sections', [name, 'html'].join('.'))
+  const section = fse.readFileSync(secpath)
   oapp.innerHTML = section
 }
 
@@ -288,8 +287,8 @@ function showDicts() {
   let mins = _.filter(cfg, db => { return !hiddens.includes(db.name)})
   let obj = {dbs: mins}
 
-  let rpath = 'src/sections/dictTable.mustache'
-  const tmpl = jetApp.read(rpath, "utf8");
+  const tablePath = path.resolve(appPath, 'src/sections/dictTable.mustache')
+  const tmpl = fse.readFileSync(tablePath).toString()
   let html = mustache.render(tmpl, obj);
 
   let otbody = q('#tbody')
