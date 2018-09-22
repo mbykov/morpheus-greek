@@ -8,8 +8,8 @@ import "./helpers/context_menu.js";
 import { readCfg, writeCfg, recreateDBs, addDB } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
-// import { antrax, enableDBs } from '../../antrax'
-import { antrax, enableDBs } from 'antrax'
+import { antrax, enableDBs } from '../../antrax'
+// import { antrax, enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
@@ -22,6 +22,7 @@ import { q, qs, empty, create, span, p, div } from './helpers/utils'
 import {comb, plain, ac} from 'orthos'
 
 let fse = require('fs-extra')
+const log = console.log
 
 const Mousetrap = require('mousetrap')
 const axios = require('axios')
@@ -29,18 +30,15 @@ const path = require('path')
 
 const mustache = require('mustache')
 
-const isDev = require('electron-is-dev')
-
-const app = remote.app;
-const appPath = app.getAppPath()
-let log = console.log
-
 const clipboard = require('electron-clipboard-extended')
 
 let hterms = {}
 let hstate = -1
 let hstates = []
 
+const isDev = require('electron-is-dev')
+const app = remote.app;
+const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
 enableDBs(userDataPath, appPath, isDev)
 
@@ -139,6 +137,15 @@ function showResults(query) {
   antrax(query)
     .then(chains => {
       if (!chains || !chains.length) showNoRes()
+      chains = _.sortBy(chains, chain => {
+        let weight
+        let penult = chain[chain.length-2]
+        if (!penult) return 1000
+        if (penult.weight) weight = penult.weight
+        else if (penult && penult.dicts) weight = penult.dicts[0].weight
+        else weight = 1000
+        return weight
+      })
       chains.forEach(chain => {
         let owf
         if (_.isArray(chain)) owf = showWF(chain)

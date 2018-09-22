@@ -3,18 +3,19 @@
 import _ from "lodash"
 import { remote } from "electron"
 
-// import { enableDBs } from '../../../antrax'
-import { enableDBs } from 'antrax'
+import { enableDBs } from '../../../antrax'
+// import { enableDBs } from 'antrax'
 
+const log = console.log
 const path = require('path')
 const app = remote.app
+const isDev = require('electron-is-dev')
 const appPath = app.getAppPath()
 const userDataPath = app.getPath("userData")
 
 const decompress = require('decompress')
 const decompressTargz = require('decompress-targz')
 
-let log = console.log
 let fse = require('fs-extra')
 
 
@@ -27,17 +28,17 @@ export function readCfg() {
 export function writeCfg(cfg) {
   let cfgpath = path.resolve(userDataPath, 'pouch/cfg.json')
   fse.writeJsonSync(cfgpath, cfg)
-  enableDBs(userDataPath)
+  enableDBs(userDataPath, appPath, isDev)
 }
 
 export function recreateDBs() {
   let pouchpath = path.resolve(userDataPath, 'pouch')
-  log('RECREATE', pouchpath)
+  // log('RECREATE', pouchpath)
   try {
     if (fse.pathExistsSync(pouchpath)) {
       fse.removeSync(pouchpath)
     }
-    enableDBs(userDataPath, appPath)
+    enableDBs(userDataPath, appPath, isDev)
   } catch (err) {
     log('ERR re-creating DBs', err)
     app.quit()
@@ -68,5 +69,5 @@ export function recreateDBs() {
 //   })
 //   cfg.forEach((cf, idx) => { cf.idx = idx })
 //   jetData.write('pouch/cfg.json', cfg)
-//   enableDBs(userDataPath)
+//     enableDBs(userDataPath, appPath, isDev)
 // }
