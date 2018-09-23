@@ -16,10 +16,10 @@ import { remote } from "electron";
 import {shell} from 'electron'
 import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
-import { q, qs, empty, create, span, p, div } from './helpers/utils'
+import { q, qs, empty, create, span, p, div, enclitic } from './helpers/utils'
 
-// import {comb, plain, ac} from '../../orthos'
-import {comb, plain, ac} from 'orthos'
+import {comb, plain, accents as ac} from '../../orthos'
+// import {comb, plain, ac} from 'orthos'
 
 let fse = require('fs-extra')
 const log = console.log
@@ -133,6 +133,9 @@ function showText (pars) {
 function showResults(query) {
   let ores = q('#results')
   empty(ores)
+
+  query = enclitic(query)
+  query = cleanStr(query)
 
   antrax(query)
     .then(chains => {
@@ -259,10 +262,6 @@ const checkGreek = event => {
       let query = element.textContent
       if (!query) return
       showResults(query)
-    // } else if (element.classList.contains("term")) {
-    //   let term = element.textContent
-    //   if (!term) return
-    //   showTerm(term)
     }
   }
   checkDomElement(event.target);
@@ -376,4 +375,9 @@ function installDB() {
   addDB(fpath)
   ofn.textContent = 'done'
   // showDicts()
+}
+
+function cleanStr(str) {
+  str = str.replace(/·/, '')
+  return str
 }

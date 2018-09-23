@@ -1,4 +1,7 @@
 import _ from 'lodash'
+
+import {comb, plain, accents as ac} from '../../../orthos'
+// import {comb, plain, ac} from 'orthos'
 let util = require('util')
 
 export function q (sel) {
@@ -97,4 +100,16 @@ export function plog () {
   if (vs.length === 1) vs = vs[0]
   // console.log(util.inspect(vs, {showHidden: false, depth: null}))
   console.log(util.inspect(vs, {showHidden: false, depth: 3}))
+}
+
+export function enclitic(str) {
+  let syms = str.split('')
+  let stress = false
+  let clean = []
+  let stresses = [ac.oxia, ac.varia, ac.peris]
+  syms.forEach(sym => {
+    if (!stresses.includes(sym)) clean.push(sym)
+    else if (!stress) clean.push(sym), stress = true
+  })
+  return clean.join('')
 }
