@@ -18,8 +18,8 @@ import sband from "./helpers/clean-greek";
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, span, p, div, enclitic } from './helpers/utils'
 
-import {comb, plain, accents as ac} from '../../orthos'
-// import {comb, plain, ac} from 'orthos'
+// import {comb, plain, accents as ac} from '../../orthos'
+import {comb, plain, ac} from 'orthos'
 
 let fse = require('fs-extra')
 const log = console.log
