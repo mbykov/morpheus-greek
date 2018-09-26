@@ -37,11 +37,11 @@ let hstate = -1
 let hstates = []
 
 const isDev = require('electron-is-dev')
+isDev = false
 const app = remote.app;
 const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
 enableDBs(userDataPath, appPath, isDev)
-log('====IS DEV', isDev)
 
 showSection('title')
 
