@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 // import {comb, plain, accents as ac} from '../../../orthos'
-import {comb, plain, ac} from 'orthos'
+import {comb, plain, accents as ac} from 'orthos'
 let util = require('util')
 
 export function q (sel) {
