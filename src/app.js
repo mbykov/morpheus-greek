@@ -41,6 +41,7 @@ const app = remote.app;
 const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
 enableDBs(userDataPath, appPath, isDev)
+log('====IS DEV', isDev)
 
 showSection('title')
 
