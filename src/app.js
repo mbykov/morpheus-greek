@@ -37,7 +37,8 @@ let hstate = -1
 let hstates = []
 
 // const isDev = require('electron-is-dev')
-const isDev = false
+// const isDev = false
+const isDev = true
 const app = remote.app;
 const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
