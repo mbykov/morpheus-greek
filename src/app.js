@@ -128,6 +128,9 @@ function showText (pars) {
     otext.appendChild(opar)
   })
 
+  let grs = qs('span.greek')
+  if (grs.length == 1) showResults(grs[0].textContent)
+  log('GRS', grs.length)
   // queryTerms(_.uniq(wfs))
   oprg.style.display = "none"
 }
