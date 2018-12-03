@@ -44,6 +44,9 @@ const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
 enableDBs(userDataPath, appPath, isDev)
 
+let split
+let splitSizes = [60, 40]
+
 showSection('title')
 
 ipcRenderer.on('version', function (event, oldver) {
@@ -99,18 +102,23 @@ clipboard
   })
   .startWatching()
 
+function twoPages(splitSizes) {
+  split = Split(['#text', '#results'], {
+    sizes: splitSizes,
+    gutterSize: 5,
+    cursor: 'col-resize',
+    minSize: [0, 0]
+    })
+}
+
+
 function showText (pars) {
   if (!pars) return
   showSection('main')
   let oprg = q('#progress')
   oprg.style.display = "inline-block"
 
-  Split(['#text', '#results'], {
-    sizes: [60, 40],
-    gutterSize: 5,
-    cursor: 'col-resize',
-    minSize: [0, 0]
-  })
+  twoPages(splitSizes)
 
   let otext = q('#text')
   empty(otext)
@@ -130,8 +138,7 @@ function showText (pars) {
 
   let grs = qs('span.greek')
   if (grs.length == 1) showResults(grs[0].textContent)
-  log('GRS', grs.length)
-  // queryTerms(_.uniq(wfs))
+  // log('GRS', grs.length)
   oprg.style.display = "none"
 }
 
@@ -290,6 +297,22 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
   if (ev.which == 37 && hstate - 1 > -1) hstate--
   if (ev.which == 39 && hstate + 1 < hstates.length) hstate++
   showText(hstates[hstate])
+  return false
+})
+
+// 1-49, 2-50
+Mousetrap.bind(['1', '2'], function(ev) {
+  let sizes = split.getSizes()
+  if (sizes[0] == 60 && ev.which == 49) {
+    splitSizes = [90, 0]
+    // split.collapse(1)
+  } else if (sizes[0] == 60 && ev.which == 50) {
+    splitSizes = [0, 90]
+    // split.collapse(0)
+  } else if (sizes[0] != 60) {
+    splitSizes = [60, 40]
+  }
+  split.setSizes(splitSizes)
   return false
 })
 
