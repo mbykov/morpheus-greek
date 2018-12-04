@@ -378,7 +378,9 @@ function showCleanup() {
 
 function cleanupDBs() {
   recreateDBs()
-  showDicts()
+  checkVersion()
+  enableDBs(upath)
+  showSection('title')
 }
 
 function showInstall() {

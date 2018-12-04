@@ -18,16 +18,11 @@ const decompressTargz = require('decompress-targz')
 
 let fse = require('fs-extra')
 
-// let srcpath
-// if (isDarwin) srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
-// else
-// let isDarwin = process.platform === "darwin"
-
 export function initDBs() {
   let cfg = readCfg()
   if (cfg) return
-  let srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
-  // let srcpath = path.resolve(apath, 'pouch')
+  // let srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
+  let srcpath = path.resolve(apath, 'pouch')
   let destpath = path.resolve(upath, 'pouch')
   // log('init - SRC:', srcpath, 'DEST:', destpath)
   try {
@@ -81,18 +76,16 @@ export function readCfg() {
 export function writeCfg(cfg) {
   let cfgpath = path.resolve(upath, 'pouch/cfg.json')
   fse.writeJsonSync(cfgpath, cfg)
-  enableDBs(upath, apath, isDev)
+  enableDBs(upath)
 }
 
 export function recreateDBs() {
-  let pouchpath = path.resolve(upath, 'pouch')
+  let destpath = path.resolve(upath, 'pouch')
   try {
-    if (fse.pathExistsSync(pouchpath)) {
-      fse.removeSync(pouchpath)
-    }
-    enableDBs(upath, apath, isDev)
+    fse.removeSync(destpath)
+    initDBs()
   } catch (err) {
     log('ERR re-creating DBs', err)
-    app.quit()
+    // app.quit()
   }
 }
