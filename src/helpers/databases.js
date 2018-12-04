@@ -10,34 +10,54 @@ const log = console.log
 const path = require('path')
 const app = remote.app
 const isDev = require('electron-is-dev')
-const appPath = app.getAppPath()
-const userDataPath = app.getPath("userData")
+const apath = app.getAppPath()
+const upath = app.getPath("userData")
 
 const decompress = require('decompress')
 const decompressTargz = require('decompress-targz')
 
 let fse = require('fs-extra')
 
+export function initDBs() {
+  let cfg = readCfg()
+  if (cfg) return
+  let srcpath = path.resolve(apath, 'pouch')
+  let destpath = path.resolve(upath, 'pouch')
+  log('init - SRC:', srcpath, 'DEST:', destpath)
+  try {
+    fse.ensureDirSync(destpath)
+    fse.copySync(srcpath, destpath, {
+      overwrite: true
+    })
+  } catch (err) {
+    log('ERR copying default DBs', err)
+  }
+}
 
 export function readCfg() {
-  let cfgpath = path.resolve(userDataPath, 'pouch/cfg.json')
-  let cfg = fse.readJsonSync(cfgpath)
+  let cfg
+  try {
+    let cfgpath = path.resolve(upath, 'pouch/cfg.json')
+    cfg = fse.readJsonSync(cfgpath)
+  } catch (err) {
+    log('init cfg')
+  }
   return cfg
 }
 
 export function writeCfg(cfg) {
-  let cfgpath = path.resolve(userDataPath, 'pouch/cfg.json')
+  let cfgpath = path.resolve(upath, 'pouch/cfg.json')
   fse.writeJsonSync(cfgpath, cfg)
-  enableDBs(userDataPath, appPath, isDev)
+  enableDBs(upath, apath, isDev)
 }
 
 export function recreateDBs() {
-  let pouchpath = path.resolve(userDataPath, 'pouch')
+  let pouchpath = path.resolve(upath, 'pouch')
   try {
     if (fse.pathExistsSync(pouchpath)) {
       fse.removeSync(pouchpath)
     }
-    enableDBs(userDataPath, appPath, isDev)
+    enableDBs(upath, apath, isDev)
   } catch (err) {
     log('ERR re-creating DBs', err)
     app.quit()

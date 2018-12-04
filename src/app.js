@@ -5,7 +5,7 @@ import "./stylesheets/main.css";
 import Split from 'split.js'
 
 import "./helpers/context_menu.js";
-// import { readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
+import { initDBs, readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
 // import { antrax, enableDBs } from '../../antrax'
@@ -43,6 +43,8 @@ const app = remote.app;
 const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
 // enableDBs(userDataPath, appPath, isDev)
+
+initDBs()
 
 let split
 let splitSizes = [60, 40]
