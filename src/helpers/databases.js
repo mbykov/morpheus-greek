@@ -29,7 +29,7 @@ export function initDBs() {
   // let srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
   let srcpath = path.resolve(apath, 'pouch')
   let destpath = path.resolve(upath, 'pouch')
-  log('init - SRC:', srcpath, 'DEST:', destpath)
+  // log('init - SRC:', srcpath, 'DEST:', destpath)
   try {
     fse.ensureDirSync(destpath)
     fse.copySync(srcpath, destpath, {
