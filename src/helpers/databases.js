@@ -21,7 +21,11 @@ let fse = require('fs-extra')
 export function initDBs() {
   let cfg = readCfg()
   if (cfg) return
-  let srcpath = path.resolve(apath, '../asar.unpacked/pouch')
+  let isDarwin = process.platform === "darwin"
+  // let srcpath
+  // if (isDarwin) srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
+  // else
+  let srcpath = path.resolve(apath, '../app.asar.unpacked/pouch')
   let destpath = path.resolve(upath, 'pouch')
   log('init - SRC:', srcpath, 'DEST:', destpath)
   try {
