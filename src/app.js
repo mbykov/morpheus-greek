@@ -5,11 +5,11 @@ import "./stylesheets/main.css";
 import Split from 'split.js'
 
 import "./helpers/context_menu.js";
-import { initDBs, readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
+import { initDBs, checkVersion, readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
 // import { antrax, enableDBs } from '../../antrax'
-// import { antrax, enableDBs } from 'antrax'
+import { antrax, enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
@@ -40,11 +40,12 @@ let hstates = []
 // const isDev = false
 const isDev = true
 const app = remote.app;
-const appPath = app.getAppPath()
-let userDataPath = app.getPath("userData")
-// enableDBs(userDataPath, appPath, isDev)
+const apath = app.getAppPath()
+let upath = app.getPath("userData")
 
 initDBs()
+checkVersion()
+enableDBs(upath)
 
 let split
 let splitSizes = [60, 40]
@@ -87,7 +88,7 @@ function orthoPars(pars) {
 
 function showSection(name) {
   let oapp = q('#app')
-  let secpath = path.resolve(appPath, 'src/sections', [name, 'html'].join('.'))
+  let secpath = path.resolve(apath, 'src/sections', [name, 'html'].join('.'))
   const section = fse.readFileSync(secpath)
   oapp.innerHTML = section
 }
@@ -150,25 +151,25 @@ function showResults(query) {
   query = enclitic(query)
   query = cleanStr(query)
 
-  // antrax(query)
-  //   .then(chains => {
-  //     if (!chains || !chains.length) showNoRes()
-  //     chains = _.sortBy(chains, chain => {
-  //       let weight
-  //       let penult = chain[chain.length-2]
-  //       if (!penult) return 1000
-  //       if (penult.weight) weight = penult.weight
-  //       else if (penult && penult.dicts) weight = penult.dicts[0].weight
-  //       else weight = 1000
-  //       return weight
-  //     })
-  //     chains.forEach(chain => {
-  //       let owf
-  //       if (_.isArray(chain)) owf = showWF(chain)
-  //       else owf = showTerm(chain)
-  //       ores.appendChild(owf)
-  //     })
-  //   })
+  antrax(query)
+    .then(chains => {
+      if (!chains || !chains.length) showNoRes()
+      chains = _.sortBy(chains, chain => {
+        let weight
+        let penult = chain[chain.length-2]
+        if (!penult) return 1000
+        if (penult.weight) weight = penult.weight
+        else if (penult && penult.dicts) weight = penult.dicts[0].weight
+        else weight = 1000
+        return weight
+      })
+      chains.forEach(chain => {
+        let owf
+        if (_.isArray(chain)) owf = showWF(chain)
+        else owf = showTerm(chain)
+        ores.appendChild(owf)
+      })
+    })
 }
 
 function showNoRes() {
@@ -306,10 +307,8 @@ Mousetrap.bind(['1', '2'], function(ev) {
   let sizes = split.getSizes()
   if (sizes[0] == 60 && ev.which == 49) {
     splitSizes = [90, 0]
-    // split.collapse(1)
   } else if (sizes[0] == 60 && ev.which == 50) {
     splitSizes = [0, 90]
-    // split.collapse(0)
   } else if (sizes[0] != 60) {
     splitSizes = [60, 40]
   }
@@ -324,7 +323,7 @@ function showDicts() {
   let mins = _.filter(cfg, db => { return !hiddens.includes(db.name)})
   let obj = {dbs: mins}
 
-  const tablePath = path.resolve(appPath, 'src/sections/dictTable.mustache')
+  const tablePath = path.resolve(apath, 'src/sections/dictTable.mustache')
   const tmpl = fse.readFileSync(tablePath).toString()
   let html = mustache.render(tmpl, obj);
 
