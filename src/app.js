@@ -5,11 +5,11 @@ import "./stylesheets/main.css";
 import Split from 'split.js'
 
 import "./helpers/context_menu.js";
-import { readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
+// import { readCfg, writeCfg, recreateDBs } from "./helpers/databases.js";
 import { getPos, getMorphs, rDict, rMorph, rTrns } from "./helpers/results.js";
 
 // import { antrax, enableDBs } from '../../antrax'
-import { antrax, enableDBs } from 'antrax'
+// import { antrax, enableDBs } from 'antrax'
 
 import _ from "lodash";
 import { remote } from "electron";
@@ -42,7 +42,7 @@ const isDev = true
 const app = remote.app;
 const appPath = app.getAppPath()
 let userDataPath = app.getPath("userData")
-enableDBs(userDataPath, appPath, isDev)
+// enableDBs(userDataPath, appPath, isDev)
 
 let split
 let splitSizes = [60, 40]
@@ -148,25 +148,25 @@ function showResults(query) {
   query = enclitic(query)
   query = cleanStr(query)
 
-  antrax(query)
-    .then(chains => {
-      if (!chains || !chains.length) showNoRes()
-      chains = _.sortBy(chains, chain => {
-        let weight
-        let penult = chain[chain.length-2]
-        if (!penult) return 1000
-        if (penult.weight) weight = penult.weight
-        else if (penult && penult.dicts) weight = penult.dicts[0].weight
-        else weight = 1000
-        return weight
-      })
-      chains.forEach(chain => {
-        let owf
-        if (_.isArray(chain)) owf = showWF(chain)
-        else owf = showTerm(chain)
-        ores.appendChild(owf)
-      })
-    })
+  // antrax(query)
+  //   .then(chains => {
+  //     if (!chains || !chains.length) showNoRes()
+  //     chains = _.sortBy(chains, chain => {
+  //       let weight
+  //       let penult = chain[chain.length-2]
+  //       if (!penult) return 1000
+  //       if (penult.weight) weight = penult.weight
+  //       else if (penult && penult.dicts) weight = penult.dicts[0].weight
+  //       else weight = 1000
+  //       return weight
+  //     })
+  //     chains.forEach(chain => {
+  //       let owf
+  //       if (_.isArray(chain)) owf = showWF(chain)
+  //       else owf = showTerm(chain)
+  //       ores.appendChild(owf)
+  //     })
+  //   })
 }
 
 function showNoRes() {
