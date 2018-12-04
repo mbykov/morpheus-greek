@@ -21,7 +21,7 @@ let fse = require('fs-extra')
 export function initDBs() {
   let cfg = readCfg()
   if (cfg) return
-  let srcpath = path.resolve(apath, 'pouch')
+  let srcpath = path.resolve(apath, '../asar.unpacked/pouch')
   let destpath = path.resolve(upath, 'pouch')
   log('init - SRC:', srcpath, 'DEST:', destpath)
   try {
@@ -35,14 +35,8 @@ export function initDBs() {
 }
 
 export function readCfg() {
-  let cfg
-  try {
-    let cfgpath = path.resolve(upath, 'pouch/cfg.json')
-    cfg = fse.readJsonSync(cfgpath)
-  } catch (err) {
-    log('init cfg')
-  }
-  return cfg
+  let cfgpath = path.resolve(upath, 'pouch/cfg.json')
+  return fse.readJsonSync(cfgpath, { throws: false })
 }
 
 export function writeCfg(cfg) {
