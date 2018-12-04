@@ -138,7 +138,6 @@ function showText (pars) {
 
   let grs = qs('span.greek')
   if (grs.length == 1) showResults(grs[0].textContent)
-  // log('GRS', grs.length)
   oprg.style.display = "none"
 }
 

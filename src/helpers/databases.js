@@ -33,7 +33,6 @@ export function writeCfg(cfg) {
 
 export function recreateDBs() {
   let pouchpath = path.resolve(userDataPath, 'pouch')
-  // log('RECREATE', pouchpath)
   try {
     if (fse.pathExistsSync(pouchpath)) {
       fse.removeSync(pouchpath)
@@ -44,30 +43,3 @@ export function recreateDBs() {
     app.quit()
   }
 }
-
-// export function addDB(fpath) {
-//   let dbpath = path.resolve(userDataPath, 'pouch')
-//   decompress(fpath, dbpath, {
-//     plugins: [
-//       decompressTargz()
-//     ]
-//   }).then(() => {
-//     addCfg()
-//   })
-// }
-
-// function addCfg() {
-//   let cfg = readCfg()
-//   let fns = jetData.list('pouch')
-//   fns.forEach(dn => {
-//     let exists = _.find(cfg, cf => { return cf.name == dn})
-//     if (exists) return
-//     let dpath = ['pouch/', dn].join('')
-//     if (jetData.exists(dpath) !== 'dir') return
-//     let newcf = {name: dn, active: true, idx: cfg.length}
-//     cfg.push(newcf)
-//   })
-//   cfg.forEach((cf, idx) => { cf.idx = idx })
-//   jetData.write('pouch/cfg.json', cfg)
-//     enableDBs(userDataPath, appPath, isDev)
-// }
